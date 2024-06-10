@@ -1,0 +1,42 @@
+Read data: 
+7, 0
+6.9, 0
+6.8, 0
+6.7, 0
+6.6, 0
+6.5, 0
+6.4, 0
+6.3, 0
+6.2, 0
+6.1, 0
+6, 0
+5.9, 0
+5.8, 0
+5.7, 0
+5.6, 0
+5.5, 0
+5.4, 0
+5.3, 0
+5.2, 0
+5.1, 0
+5, 1
+4.9, 1
+4.8, 1
+4.7, 1
+4.6, 1
+4.5, 1
+4.4, 1
+4.3, 1
+4.2, 1
+4.1, 1
+4, 1
+SEED: 1718055000
+Found NVIDIA GeForce RTX 3080 Ti PCI id 1
+Adding NVIDIA GeForce RTX 3080 Ti PCI id 1 to available GPUs
+Running force_pCa_curve
+Residual: 1.4778
+data successfully saved into the file name: Force_out dATP 1.000000 k_force 0.200000 k_plus_SR_ref 16.000000 k_minus_SR_ref 15.000000.csv
+data successfully saved into the file name: States_out dATP 1.000000 k_force 0.200000 k_plus_SR_ref 16.000000 k_minus_SR_ref 15.000000.csv
+ data successfully saved into the file name: Force_pCa_Optmz dATP 1.000000 k_force 0.200000 k_plus_SR_ref 16.000000 k_minus_SR_ref 15.000000.csv
+ data successfully saved into the file name: Force_pCa_Optmz_Normalized dATP 1.000000 k_force 0.200000 k_plus_SR_ref 16.000000 k_minus_SR_ref 15.000000.csv
+One iteration runtime: 174 second(s)

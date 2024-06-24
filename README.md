@@ -5,7 +5,7 @@ Contains code for the manuscript "Multiscale modeling shows how 2'-deoxy-ATP res
 The three main scripts for running the simulations from the paper are plot_script_myocyte_new.m, plot_script_ventricular_new.m, and plot_script_filament. Running these scripts will run all simulations (except for spatially explicit sarcomere simulations) and generate all of the main and supplemental figures from the paper.
 
 FILAMENT (Spatially explicit sarcomere model)
-Note: This code is set up to run on an NVIDIA GeForce RTX 3030 Ti with CUDA 11.7; you may need to reconfigure the code if you have a different GPU/version
+Note: This code is set up to run on an NVIDIA GeForce RTX 3080 Ti with CUDA 11.7; you may need to reconfigure the code if you have a different GPU/version
 *Refer to McCabe et al. 2020 for more details
 - Makefile: If you change anything in any of the source files, you will need to run "make clean" and then "make all"
 - sweep.py: Runs force pCa simulation for spatially explicit sarcomere model; change parameters here to run ATP vs dATP, varying percentages of dATP etc

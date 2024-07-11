@@ -1,0 +1,258 @@
+<contacts>
+  <combinations>
+    <molecule0>
+
+      <contact>
+        <atom> SG </atom> <residue> CYS </residue>
+      </contact>
+      <contact>
+        <atom> NE2 </atom> <residue> HIS </residue>
+      </contact>
+      <contact>
+        <atom> ND1 </atom> <residue> HIS </residue>
+      </contact>
+      <contact>
+        <atom> NZ </atom> <residue> LYS </residue>
+      </contact>
+      <contact>
+        <atom> ND2 </atom> <residue> ASN </residue>
+      </contact>
+      <contact>
+        <atom> NE2 </atom> <residue> GLN </residue>
+      </contact>
+      <contact>
+        <atom> NH1 </atom> <residue> ARG </residue>
+      </contact>
+      <contact>
+        <atom> NZ </atom> <residue> ARG </residue>
+      </contact>
+      <contact>
+        <atom> NH2 </atom> <residue> ARG </residue>
+      </contact>
+      <contact>
+        <atom> OG </atom> <residue> SER </residue>
+      </contact>
+      <contact>
+        <atom> OH </atom> <residue> TYR </residue>
+      </contact>
+      <contact>
+        <atom> NE1 </atom> <residue> TRP </residue>
+      </contact>
+
+      <contact> <atom> N </atom> <residue> ALA </residue> </contact>   
+      <contact> <atom> N </atom> <residue> ARG </residue> </contact> 
+      <contact> <atom> N </atom> <residue> ASN </residue> </contact>  
+      <contact> <atom> N </atom> <residue> ASP </residue> </contact> 
+      <contact> <atom> N </atom> <residue> CYS </residue> </contact>
+      <contact> <atom> N </atom> <residue> GLU </residue> </contact>
+      <contact> <atom> N </atom> <residue> GLN </residue> </contact>
+      <contact> <atom> N </atom> <residue> GLY </residue> </contact>
+      <contact> <atom> N </atom> <residue> HIS </residue> </contact>
+      <contact> <atom> N </atom> <residue> ILE </residue> </contact>
+      <contact> <atom> N </atom> <residue> LEU </residue> </contact>
+      <contact> <atom> N </atom> <residue> LYS </residue> </contact>
+      <contact> <atom> N </atom> <residue> MET </residue> </contact>
+      <contact> <atom> N </atom> <residue> PHE </residue> </contact>
+      <contact> <atom> N </atom> <residue> PRO </residue> </contact>
+      <contact> <atom> N </atom> <residue> SER </residue> </contact>
+      <contact> <atom> N </atom> <residue> THR </residue> </contact>
+      <contact> <atom> N </atom> <residue> TRP </residue> </contact>
+      <contact> <atom> N </atom> <residue> TYR </residue> </contact>
+      <contact> <atom> N </atom> <residue> VAL </residue> </contact>
+
+    </molecule0>
+
+    <molecule1>
+      <contact>
+        <atom> SG </atom> <residue> CYS </residue>
+      </contact>
+      <contact>
+        <atom> OD1 </atom> <residue> ASP </residue>
+      </contact>
+      <contact>
+        <atom> OD2 </atom> <residue> ASP </residue>
+      </contact>
+      <contact>
+        <atom> OE1 </atom> <residue> GLU </residue>
+      </contact>
+      <contact>
+        <atom> OE2 </atom> <residue> GLU </residue>
+      </contact>
+      <contact>
+        <atom> ND1 </atom> <residue> HIS </residue>
+      </contact>
+      <contact>
+        <atom> SD </atom> <residue> MET </residue>
+      </contact>
+      <contact>
+        <atom> OD1 </atom> <residue> ASN </residue>
+      </contact>
+      <contact>
+        <atom> OE1 </atom> <residue> GLN</residue>
+      </contact>
+      <contact>
+        <atom> OG </atom> <residue> SER </residue>
+      </contact>
+      <contact>
+        <atom> OG1 </atom> <residue> THR </residue>
+      </contact>
+      <contact>
+        <atom> OH </atom> <residue> TYR </residue>
+      </contact>
+
+      <contact> <atom> O </atom> <residue> ALA </residue> </contact>   
+      <contact> <atom> O </atom> <residue> ARG </residue> </contact> 
+      <contact> <atom> O </atom> <residue> ASN </residue> </contact>  
+      <contact> <atom> O </atom> <residue> ASP </residue> </contact> 
+      <contact> <atom> O </atom> <residue> CYS </residue> </contact>
+      <contact> <atom> O </atom> <residue> GLU </residue> </contact>
+      <contact> <atom> O </atom> <residue> GLN </residue> </contact>
+      <contact> <atom> O </atom> <residue> GLY </residue> </contact>
+      <contact> <atom> O </atom> <residue> HIS </residue> </contact>
+      <contact> <atom> O </atom> <residue> ILE </residue> </contact>
+      <contact> <atom> O </atom> <residue> LEU </residue> </contact>
+      <contact> <atom> O </atom> <residue> LYS </residue> </contact>
+      <contact> <atom> O </atom> <residue> MET </residue> </contact>
+      <contact> <atom> O </atom> <residue> PHE </residue> </contact>
+      <contact> <atom> O </atom> <residue> PRO </residue> </contact>
+      <contact> <atom> O </atom> <residue> SER </residue> </contact>
+      <contact> <atom> O </atom> <residue> THR </residue> </contact>
+      <contact> <atom> O </atom> <residue> TRP </residue> </contact>
+      <contact> <atom> O </atom> <residue> TYR </residue> </contact>
+      <contact> <atom> O </atom> <residue> VAL </residue> </contact>
+
+    </molecule1>
+
+  </combinations>
+
+  <combinations>
+    <molecule1>
+
+      <contact>
+        <atom> SG </atom> <residue> CYS </residue>
+      </contact>
+      <contact>
+        <atom> NE2 </atom> <residue> HIS </residue>
+      </contact>
+      <contact>
+        <atom> ND1 </atom> <residue> HIS </residue>
+      </contact>
+      <contact>
+        <atom> NZ </atom> <residue> LYS </residue>
+      </contact>
+      <contact>
+        <atom> ND2 </atom> <residue> ASN </residue>
+      </contact>
+      <contact>
+        <atom> NE2 </atom> <residue> GLN </residue>
+      </contact>
+      <contact>
+        <atom> NH1 </atom> <residue> ARG </residue>
+      </contact>
+      <contact>
+        <atom> NZ </atom> <residue> ARG </residue>
+      </contact>
+      <contact>
+        <atom> NH2 </atom> <residue> ARG </residue>
+      </contact>
+      <contact>
+        <atom> OG </atom> <residue> SER </residue>
+      </contact>
+      <contact>
+        <atom> OH </atom> <residue> TYR </residue>
+      </contact>
+      <contact>
+        <atom> NE1 </atom> <residue> TRP </residue>
+      </contact>
+
+      <contact> <atom> N </atom> <residue> ALA </residue> </contact>   
+      <contact> <atom> N </atom> <residue> ARG </residue> </contact> 
+      <contact> <atom> N </atom> <residue> ASN </residue> </contact>  
+      <contact> <atom> N </atom> <residue> ASP </residue> </contact> 
+      <contact> <atom> N </atom> <residue> CYS </residue> </contact>
+      <contact> <atom> N </atom> <residue> GLU </residue> </contact>
+      <contact> <atom> N </atom> <residue> GLN </residue> </contact>
+      <contact> <atom> N </atom> <residue> GLY </residue> </contact>
+      <contact> <atom> N </atom> <residue> HIS </residue> </contact>
+      <contact> <atom> N </atom> <residue> ILE </residue> </contact>
+      <contact> <atom> N </atom> <residue> LEU </residue> </contact>
+      <contact> <atom> N </atom> <residue> LYS </residue> </contact>
+      <contact> <atom> N </atom> <residue> MET </residue> </contact>
+      <contact> <atom> N </atom> <residue> PHE </residue> </contact>
+      <contact> <atom> N </atom> <residue> PRO </residue> </contact>
+      <contact> <atom> N </atom> <residue> SER </residue> </contact>
+      <contact> <atom> N </atom> <residue> THR </residue> </contact>
+      <contact> <atom> N </atom> <residue> TRP </residue> </contact>
+      <contact> <atom> N </atom> <residue> TYR </residue> </contact>
+      <contact> <atom> N </atom> <residue> VAL </residue> </contact>
+
+    </molecule1>
+
+    <molecule0>
+      <contact>
+        <atom> SG </atom> <residue> CYS </residue>
+      </contact>
+      <contact>
+        <atom> OD1 </atom> <residue> ASP </residue>
+      </contact>
+      <contact>
+        <atom> OD2 </atom> <residue> ASP </residue>
+      </contact>
+      <contact>
+        <atom> OE1 </atom> <residue> GLU </residue>
+      </contact>
+      <contact>
+        <atom> OE2 </atom> <residue> GLU </residue>
+      </contact>
+      <contact>
+        <atom> ND1 </atom> <residue> HIS </residue>
+      </contact>
+      <contact>
+        <atom> SD </atom> <residue> MET </residue>
+      </contact>
+      <contact>
+        <atom> OD1 </atom> <residue> ASN </residue>
+      </contact>
+      <contact>
+        <atom> OE1 </atom> <residue> GLN</residue>
+      </contact>
+      <contact>
+        <atom> OG </atom> <residue> SER </residue>
+      </contact>
+      <contact>
+        <atom> OG1 </atom> <residue> THR </residue>
+      </contact>
+      <contact>
+        <atom> OH </atom> <residue> TYR </residue>
+      </contact>
+
+      <contact> <atom> O </atom> <residue> ALA </residue> </contact>   
+      <contact> <atom> O </atom> <residue> ARG </residue> </contact> 
+      <contact> <atom> O </atom> <residue> ASN </residue> </contact>  
+      <contact> <atom> O </atom> <residue> ASP </residue> </contact> 
+      <contact> <atom> O </atom> <residue> CYS </residue> </contact>
+      <contact> <atom> O </atom> <residue> GLU </residue> </contact>
+      <contact> <atom> O </atom> <residue> GLN </residue> </contact>
+      <contact> <atom> O </atom> <residue> GLY </residue> </contact>
+      <contact> <atom> O </atom> <residue> HIS </residue> </contact>
+      <contact> <atom> O </atom> <residue> ILE </residue> </contact>
+      <contact> <atom> O </atom> <residue> LEU </residue> </contact>
+      <contact> <atom> O </atom> <residue> LYS </residue> </contact>
+      <contact> <atom> O </atom> <residue> MET </residue> </contact>
+      <contact> <atom> O </atom> <residue> PHE </residue> </contact>
+      <contact> <atom> O </atom> <residue> PRO </residue> </contact>
+      <contact> <atom> O </atom> <residue> SER </residue> </contact>
+      <contact> <atom> O </atom> <residue> THR </residue> </contact>
+      <contact> <atom> O </atom> <residue> TRP </residue> </contact>
+      <contact> <atom> O </atom> <residue> TYR </residue> </contact>
+      <contact> <atom> O </atom> <residue> VAL </residue> </contact>
+
+    </molecule0>
+
+  </combinations>
+
+
+
+
+</contacts>
+

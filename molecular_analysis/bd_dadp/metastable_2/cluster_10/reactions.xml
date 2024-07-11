@@ -1,0 +1,1613 @@
+<roottag>
+  <first_state> before </first_state>
+  <reactions>
+    <reaction>
+      <name> association </name>
+      <state_before> before </state_before>
+      <state_after> after </state_after>
+      <criterion>
+        <molecules>
+          <molecule0> myosin myosin </molecule0>
+          <molecule1> actin actin </molecule1>
+        </molecules>
+        <n_needed> 3 </n_needed>
+        <pair>
+          <atoms> 10066 13 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6381 253 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8568 5215 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8501 5290 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10125 247 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10136 235 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10001 1438 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10044 287 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8568 2117 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10045 256 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8548 5240 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6474 5067 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8716 6252 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9979 286 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8807 5326 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6359 5145 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6359 244 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10088 286 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6374 5060 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6337 5049 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6381 5046 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8502 5285 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8505 5318 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8531 5288 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8547 5285 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8505 5288 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6353 244 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10149 229 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10136 236 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10045 247 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6381 5169 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8567 5237 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6410 5121 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6395 161 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10112 1438 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10149 287 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10022 42 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10089 4 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6381 5099 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10022 277 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10067 280 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6474 5068 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8598 2159 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8582 2159 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9952 286 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10039 215 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9993 5226 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10045 266 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8720 6231 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8436 5320 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6381 5153 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8541 5290 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9969 287 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8793 6228 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6321 5049 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10125 16 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10136 225 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8598 2166 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10089 16 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8670 6228 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8581 2156 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6382 4639 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10001 5231 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6359 5063 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6382 5049 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10001 178 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8504 5315 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6353 5231 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10067 16 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10140 225 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6411 5078 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6375 5145 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8516 5296 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10139 286 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10017 1496 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10095 287 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8598 2068 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10182 215 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8708 6231 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6374 5147 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6382 2089 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8568 5240 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8670 6252 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9993 5193 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6410 5142 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6337 5068 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8582 2117 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10022 212 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10023 195 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10128 286 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6353 5025 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8808 5331 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8793 6235 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8455 5315 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6382 5063 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8717 6259 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6381 5060 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6392 5060 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8736 5331 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10017 1439 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10066 23 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10118 16 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8719 6228 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10117 287 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9980 244 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6408 5107 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6374 5121 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6395 5147 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10022 222 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10044 192 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10088 287 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6392 3249 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10182 235 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10044 212 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8719 6235 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10129 225 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8598 2098 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8541 5237 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6407 5099 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8456 5320 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6396 5078 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10022 301 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10136 232 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6395 5142 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10083 1438 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8505 5320 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6392 161 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8598 2087 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8742 6231 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6337 5067 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8531 5240 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8502 5315 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6407 5121 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9994 5172 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10039 195 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6375 5063 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8598 5318 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10044 286 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9993 5177 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6381 5193 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6382 5102 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8717 6252 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10039 5288 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10083 232 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6411 4560 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8501 5320 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10150 236 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10023 188 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6395 5121 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10066 287 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10001 188 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10089 248 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9980 235 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6375 5078 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6382 4551 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10022 23 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10045 195 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9970 232 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10089 1439 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10140 247 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8504 5296 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10117 13 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8794 6231 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6381 5121 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8568 5196 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10112 1439 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6427 5075 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9994 5231 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8501 5296 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6375 5147 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10129 236 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10000 222 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8716 6259 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9994 5229 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6375 5132 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9993 229 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6375 244 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10061 1336 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8548 5290 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10150 232 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9104 7023 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8501 5374 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6392 5032 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10118 236 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8547 5256 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8598 6198 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10128 229 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6427 5060 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8870 5390 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10045 188 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8502 5374 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10001 1439 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9986 286 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10129 235 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6396 5102 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8667 6215 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10039 248 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8501 5275 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10001 225 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8374 5374 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10083 5231 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8567 5256 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8598 2052 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9987 232 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6382 5147 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10000 212 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8502 5290 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6375 5124 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10088 13 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6381 5107 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6428 5067 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8736 6215 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10000 301 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10023 215 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10000 229 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9979 287 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10139 287 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8654 2464 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10095 1 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10181 222 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6410 5099 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10045 280 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6374 5099 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6428 5035 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8502 5296 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10017 5196 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6392 5107 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9987 5172 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6359 5124 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8501 5285 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10001 195 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6428 5063 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10039 5278 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8541 222 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10066 277 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10083 1355 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6474 5049 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10022 229 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10170 236 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10129 215 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6407 3241 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9024 7041 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10061 1321 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9994 232 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8548 5259 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10017 1434 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10066 286 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8716 6276 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10039 247 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10045 16 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8808 6231 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10089 280 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10089 247 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8667 6228 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10150 235 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6375 5156 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8598 2150 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8489 5296 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10039 5290 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10129 195 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10061 247 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10044 185 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10023 225 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6443 5084 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10067 1456 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8501 5326 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6359 5068 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6474 5035 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10136 286 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10023 266 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6396 4551 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10067 4 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8654 6255 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8455 5320 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6381 5075 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6321 5067 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9986 229 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8582 2138 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10117 192 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8490 5320 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8598 6215 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6443 5032 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8502 5326 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8603 2125 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9980 247 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6320 5046 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6381 2089 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10125 212 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6336 5060 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10083 1439 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9980 232 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8531 5290 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10000 241 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8717 6273 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8501 5340 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9024 6948 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8598 2148 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6381 5132 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6428 5068 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6382 5124 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8437 5320 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9979 241 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10039 5132 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10118 195 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9024 7017 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6381 263 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6374 5142 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8548 5229 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6457 5046 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10039 16 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8501 5315 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10000 5231 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10149 241 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8716 6235 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9993 5231 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8761 6231 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10140 236 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10017 5231 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10017 5172 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6396 5132 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10044 277 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9994 236 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8541 5285 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8541 5256 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8782 6231 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6428 5049 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6408 161 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6374 5075 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9104 7024 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8598 2138 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10128 212 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9987 5231 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8736 5318 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9993 222 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8667 6198 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8719 6252 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6454 5046 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6382 5132 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6381 4551 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6395 5132 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10022 5231 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6396 5124 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10136 222 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8530 5290 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10022 5177 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10182 236 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6444 5035 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8501 5256 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10088 1456 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6474 5025 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8502 5340 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6353 248 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10136 215 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8581 2125 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6353 5006 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8581 2163 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6353 5132 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10125 248 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10117 286 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8504 5290 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6375 5102 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9024 6956 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10139 229 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10017 178 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6444 5067 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8598 5299 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10017 156 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9979 253 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6395 4551 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9969 286 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9986 5231 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8598 2125 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6408 5121 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6395 5060 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10001 247 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6443 5046 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9986 241 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6407 161 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9987 244 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6321 5068 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6374 5153 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10128 222 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8516 5315 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10067 266 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 9024 6928 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6375 2087 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8490 5288 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10117 212 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10022 192 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10017 1480 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10140 232 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6411 5063 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8547 5290 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 6444 5049 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10044 222 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 8547 5237 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10023 280 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10017 1438 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+        <pair>
+          <atoms> 10095 286 </atoms>
+          <distance> 0.000000 </distance>
+        </pair>
+      </criterion>
+    </reaction>
+  </reactions>
+</roottag>

@@ -1,0 +1,82 @@
+# Metastable states: 0
+parm /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_strip.prmtop
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_1_2us_10ps.nc 73988 73988
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_1_2us_10ps.nc 132618 132618
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_1_2us_10ps.nc 16675 16675
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_3_2us_10ps.nc 22620 22620
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_2_2us_10ps.nc 114782 114782
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_1_2us_10ps.nc 152143 152143
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_1_2us_10ps.nc 16257 16257
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_1_2us_10ps.nc 176635 176635
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_2_2us_10ps.nc 190028 190028
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_1_2us_10ps.nc 100863 100863
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_1_2us_10ps.nc 119521 119521
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_1_2us_10ps.nc 108877 108877
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_1_2us_10ps.nc 173588 173588
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_1_2us_10ps.nc 60192 60192
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_2_2us_10ps.nc 83665 83665
+align :1-760@CA
+strip :811-813,970 parmout 1qvi_protein_test.parm7 
+
+for i=1;i<=15;i++
+	trajout metastable_0_$i.pdb pdb vdw nobox noter start $i stop $i 
+done
+
+run
+clear all
+
+# Metastable states: 1
+parm /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_strip.prmtop
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_2_2us_10ps.nc 122180 122180
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_3_2us_10ps.nc 22200 22200
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_2_2us_10ps.nc 178320 178320
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_2_2us_10ps.nc 143122 143122
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_3_2us_10ps.nc 196368 196368
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_2_2us_10ps.nc 4405 4405
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_1_2us_10ps.nc 50171 50171
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_1_2us_10ps.nc 187340 187340
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_2_2us_10ps.nc 115466 115466
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_3_2us_10ps.nc 1438 1438
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_1_2us_10ps.nc 184589 184589
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_2_2us_10ps.nc 104243 104243
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_1_2us_10ps.nc 184086 184086
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_3_2us_10ps.nc 191175 191175
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_1_2us_10ps.nc 9007 9007
+align :1-760@CA
+strip :811-813,970 parmout 1qvi_protein_test.parm7 
+
+for i=1;i<=15;i++
+	trajout metastable_1_$i.pdb pdb vdw nobox noter start $i stop $i 
+done
+
+run
+clear all
+
+# Metastable states: 2
+parm /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_strip.prmtop
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_3_2us_10ps.nc 103784 103784
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_3_2us_10ps.nc 70600 70600
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_3_2us_10ps.nc 64100 64100
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_3_2us_10ps.nc 86028 86028
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_3_2us_10ps.nc 54935 54935
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_3_2us_10ps.nc 55980 55980
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_3_2us_10ps.nc 48139 48139
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_2_2us_10ps.nc 134321 134321
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_2_2us_10ps.nc 134638 134638
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_3_2us_10ps.nc 50692 50692
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_2_2us_10ps.nc 180010 180010
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_3_2us_10ps.nc 140076 140076
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_2_2us_10ps.nc 45945 45945
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_3_2us_10ps.nc 41749 41749
+trajin /media/marcus/OS/Users/marcus/Documents/myosin_dynamics/trajectories/1qvi_adp_3_2us_10ps.nc 171352 171352
+align :1-760@CA
+strip :811-813,970 parmout 1qvi_protein_test.parm7 
+
+for i=1;i<=15;i++
+	trajout metastable_2_$i.pdb pdb vdw nobox noter start $i stop $i 
+done
+
+run
+clear all
+
+

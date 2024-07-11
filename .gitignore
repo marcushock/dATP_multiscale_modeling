@@ -2,3 +2,7 @@ molecular_analysis/.ipynb_checkpoints/Myosin_MSM_Analysis-checkpoint.ipynb
 molecular_analysis/old_msm_datafiles
 molecular_analysis/msm_datafiles/adp_sampled_frame_data.pkl
 molecular_analysis/msm_datafiles/dadp_sampled_frame_data.pkl
+molecular_analysis/msm_datafiles/adp_msm.h5
+molecular_analysis/msm_datafiles/ck_adp.h5
+molecular_analysis/msm_datafiles/ck_dadp.h5
+molecular_analysis/msm_datafiles/dadp_msm.h5

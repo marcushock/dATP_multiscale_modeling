@@ -12,6 +12,7 @@ do
     cd "$dir" || continue
 
     # Run your simulation commands
+    # Uncomment the run_apbs_inputs line if the electrostatic grids still need to be calculated
     # run_apbs_inputs input.xml
     bd_top input.xml
     nam_simulation myosin_actin_simulation.xml

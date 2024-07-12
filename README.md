@@ -3,8 +3,10 @@ Contains code for the manuscript "Multiscale modeling shows how 2'-deoxy-ATP res
 
 
 The three main scripts for running the simulations from the paper are plot_script_myocyte_new.m, plot_script_ventricular_new.m, and plot_script_filament. Running these scripts will run all simulations (except for spatially explicit sarcomere simulations) and generate all of the main and supplemental figures from the paper.
+## MOLECULAR 
+The `molecular_analysis` directory contains scripts and notebooks for performing molecular dynamics analysis, constructing and analyzing Markov State Models (MSM), and setting up and analyzing Brownian dynamics (BD) simulations to estimate actomyosin interaction, and the changes due to dATP or ATP.  A much more detailed README is within the directory. 
 
-FILAMENT (Spatially explicit sarcomere model)
+## FILAMENT (Spatially explicit sarcomere model)
 Note: This code is set up to run on an NVIDIA GeForce RTX 3080 Ti with CUDA 11.7; you may need to reconfigure the code if you have a different GPU/version
 *Refer to McCabe et al. 2020 for more details
 - Makefile: If you change anything in any of the source files, you will need to run "make clean" and then "make all"
@@ -28,7 +30,7 @@ Directories:
 - States: simulation data for plotting supplemental figures S7 and S10
 
 
-MYOCYTE (Spatially implicit sarcomere model)
+## MYOCYTE (Spatially implicit sarcomere model)
 - Read in digitized experimental data
 	- Read in digitized experimental data from Regnier et al. 2004 figure 1a (force pCa data)
 	- Interpolate data smoothly across timespan to match model
@@ -56,7 +58,7 @@ MYOCYTE (Spatially implicit sarcomere model)
 - pCa_calculate.m: calculates ec50, hill coefficient for force pCa simulations 
 - fit_Ca_params.m: utilized to fit a, b, c, and Ca0
 
-VENTRICULAR
+## VENTRICULAR
 - CardiovascularMechanics.m: Runs ventricular model (called by plot_script_ventricular.m) 
     - Flags:
 	    - Ca_flag: specifies ATP or dATP calcium transient

@@ -1,0 +1,68 @@
+<top>    
+   <n_threads> NUM_THREADS </n_threads>
+   <seed> 11111117 </seed>
+   <output> results.xml </output>
+   
+   <n_trajectories> NUM_TRAJECTORIES </n_trajectories>
+   <n_trajectories_per_output> 10 </n_trajectories_per_output>
+   <max_n_steps> 1000000 </max_n_steps>
+   <min_rxn_dist_file> output_distances.xml </min_rxn_dist_file>
+   <system>
+     <reaction_file> reactions.xml </reaction_file>
+
+     <solvent>
+       <dielectric> 78.0 </dielectric>
+       <relative_viscosity> 1.0 </relative_viscosity>
+       <kT> 1.0 </kT>
+       <desolvation_parameter> 1.0 </desolvation_parameter>
+       <ions> 
+		<ion>
+		  <radius> 2 </radius>
+		  <charge> 1 </charge> 
+		  <conc> 0.150 </conc> 
+	    </ion>
+		<ion>
+		  <radius> 2 </radius>
+		  <charge> -1 </charge> 
+		  <conc> 0.150 </conc> 
+		</ion>
+       </ions>
+	   <solvent_radius> 1.4 </solvent_radius>
+
+     </solvent>
+     
+     <time_step_tolerances>
+       <minimum_core_dt> 1.0 </minimum_core_dt>
+       <minimum_core_reaction_dt> 0.01 </minimum_core_reaction_dt>
+     </time_step_tolerances>
+
+     <group>
+       <name> myosin </name>
+       
+       <core>
+         <name> myosin </name>
+         <all_in_surface> false </all_in_surface>
+         <is_protein> true </is_protein>
+         <atoms> myosin.xml </atoms>
+	     <grid_spacing> 0.5 </grid_spacing>
+         <dielectric> 4.0 </dielectric>
+       </core>
+       
+     </group>
+     
+     <group>
+       <name> actin </name>
+       
+       <core>
+         <name> actin </name>
+         <all_in_surface> false </all_in_surface>
+         <is_protein> true </is_protein>
+	     <atoms> actin.xml </atoms>
+	     <grid_spacing> 0.5 </grid_spacing>
+         <dielectric> 4.0 </dielectric>
+       </core>    
+     </group>
+   </system>
+   
+</top>
+ 

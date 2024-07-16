@@ -28,3 +28,5 @@ As a summary, this approach: A) Creates a Markov Model for ADP.Pi bound myosin f
 5. Run the `run_all.sh` script within each of the `bd_(d)adp/metastable_*` directories which will run the `bd_top` setup program followed by `nam_simulation` program from Browndye. This analysis by default does not use a specified reaction distance (see `reactions.xml` file) and therefore will output a distance file. 
 6. Run the `compute_all_rates.sh` to generate a binding curve which estimates the binding rate against a specified binding reaction criteria distance. This script will search for all instances of `output_distances.xml` in any subdirectories, and then run the BD program `rates_of_distances`. 
 7. Carry out final analysis of the BD simulations using the `BD_results_analysis.ipynb` to estimate the overall binding rates based on the sampled structures from the MSMs. 
+
+For additional documentation about running Brownian Dynamics simulations, I recommend checking the [Browndye documentation](https://browndye.ucsd.edu/documentation.html) and specifically the Thrombin-Thrombomodulin tutorial online. 

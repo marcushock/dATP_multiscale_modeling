@@ -4,7 +4,7 @@ Contains code for the manuscript "Multiscale modeling shows how 2'-deoxy-ATP res
 
 The three main scripts for running the simulations from the paper are plot_script_myocyte_new.m, plot_script_ventricular_new.m, and plot_script_filament. Running these scripts will run all simulations (except for spatially explicit sarcomere simulations) and generate all of the main and supplemental figures from the paper.
 ## MOLECULAR 
-The `molecular_analysis` directory contains scripts and notebooks for performing molecular dynamics analysis, constructing and analyzing Markov State Models (MSM), and setting up and analyzing Brownian dynamics (BD) simulations to estimate actomyosin interaction, and the changes due to dATP or ATP.  A much more detailed README is within the directory. 
+The `molecular_analysis` directory contains scripts and notebooks for performing molecular dynamics analysis, constructing and analyzing Markov State Models (MSM), and setting up and analyzing Brownian dynamics (BD) simulations to estimate actomyosin interaction, and the changes due to dATP or ATP.  A much more detailed README is within the directory. The MD trajectories are available at the UC San Diego Library Digital Collections, dataset linked at https://doi.org/10.6075/J00G3KCC.
 
 ## FILAMENT (Spatially explicit sarcomere model)
 Note: This code is set up to run on an NVIDIA GeForce RTX 3080 Ti with CUDA 11.7; you may need to reconfigure the code if you have a different GPU/version

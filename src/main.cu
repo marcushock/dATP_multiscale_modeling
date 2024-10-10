@@ -54,6 +54,7 @@ initGPUSelection();
 
 //---------------------------------------------
 // Model reference parameters that we need to optimize
+// Note: atof converts strings into doubles 
 //--------------------------------------------
 float gamma_B = atof(argv[2]); // [unitless] - RU-RU cooperative coefficient
 float gamma_M = atof(argv[3]); // [unitless] - XB-RU/RU-XB coopcoefficient (Note: gamma_M = mu_B)

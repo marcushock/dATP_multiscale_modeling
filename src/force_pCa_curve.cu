@@ -238,16 +238,16 @@ repeat_simul<<<MAX_REPS/32, 32, 0, s>>>(lambda,
     gpuErrchk(cudaStreamSynchronize(s)); // wait for device to finish repeat_simul
     gpuErrchk(cudaStreamDestroy(s));
     //--------------------------------------------------------------------------------------
-    // Calculate The Steady-State Force using Impluse using data from the last 0.5 sec
+    // Calculate The Steady-State Force using Impluse using data from the last 5 sec (was previously 0.5)
     // (i.e., just 100000 time steps) only using numerical trapaziodal integration
     //--------------------------------------------------------------------------------------
 
-    for (int n = MAX_TSTEPS-100000; n < MAX_TSTEPS-1; n++)  // time marching
+    for (int n = MAX_TSTEPS-1000000; n < MAX_TSTEPS-1; n++)  // time marching Originally was set to 100000
     {
         Ftemp = Ftemp+Force[n];
     }
 
-    Fss[cc] = (Ftemp + (0.5f * Force[MAX_TSTEPS-100001]) + (0.5f * Force[MAX_TSTEPS-1])) / 100000.0f / MAX_REPS;    //Fss[cc] = 1;
+    Fss[cc] = (Ftemp + (0.5f * Force[MAX_TSTEPS-1000001]) + (0.5f * Force[MAX_TSTEPS-1])) / 1000000.0f / MAX_REPS;    //Fss[cc] = 1;
 
     //--------------------------------
 

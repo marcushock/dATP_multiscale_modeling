@@ -8,4 +8,9 @@ molecular_analysis/msm_datafiles/ck_dadp.h5
 molecular_analysis/msm_datafiles/dadp_msm.h5
 molecular_analysis/testing_setup
 .vscode/settings.json
+abby_simulation_results/
+MCMC_simulation_result_640/
+MCMC_simulation_results/
+MCMC_simulation_results_old/
 molecular_analysis/.ipynb_checkpoints/BD_Results_Analysis-checkpoint.ipynb
+sweep/sweep2/

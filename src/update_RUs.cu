@@ -73,7 +73,7 @@ __device__ void update_RUs(float lambda,
         x     = RU[i-1];
         y     = RU[i+1];
 
-        printf("%d %f %f\n", i, rand_dATP[i], randNum[i]);
+        // printf("%d %f %f\n", i, rand_dATP[i], randNum[i]);
         //-----------------------------------------------------------------
         // if (state = [B* = 0]): Then   [B1*]           else stay as [B0*]
         //     & caState = 0             ^  

@@ -23,3 +23,4 @@ sweep/sweep2/
 *.err
 *.out
 *.o
+.ipynb_checkpoints

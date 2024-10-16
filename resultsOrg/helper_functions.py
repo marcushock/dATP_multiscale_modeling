@@ -1,7 +1,7 @@
 import numpy as np 
 import pandas as pd
 
-class states_instance:
+class states_structure:
     def __init__(self, input_filename:'CSV') -> None: # type: ignore
         print('The filename is: ', input_filename)
         self.file_name = input_filename
@@ -45,7 +45,6 @@ class states_instance:
 
     def states_steadystate(self, end_time_amount= 500): 
         temp_series = self.states_df[self.states_df.Time>end_time_amount].mean()
-        # print(temp_series)
         # Define new steady state DF with each column a different state
         # And each row a different pCa (7,4,0.1 steap)
         # Also creating a place for the pCa first, then renaming 
@@ -60,7 +59,6 @@ class states_instance:
         while pca >= 4:
             for state in ['M2','M1','C','B','OFF']:
                 value = temp_series.get(f'{state} {pca:.1f}')
-                print(value)
                 df.at[round(pca,2), state] = value 
             pca -= 0.1
 
@@ -69,6 +67,37 @@ class states_instance:
 
 
 
+def extract_parameters(file_name):
+    # This assumes that there is "_States_out " or "_Force_out " or "_Force_pCa_Optmz " or "_Force_pCa_Optmz_Normalized "
+    # as the separator at the beginning. 
+    sep_options = ["_States_out ", "_Force_out ", "_Force_pCa_Optmz ", "_Force_pCa_Optmz_Normalized ", None]
+    for sep in sep_options:
+        if sep in file_name:
+            break 
+    if sep == None:
+        print("Cannot extract because no valid first separator found. ")
+        return
+    # 
+    parameters = {}
+    param_half_string = file_name.split(sep)[1].strip(".csv")
+    print(param_half_string)
+    params_list = param_half_string.split(' ')
+    i = 0 
+    while i < len(params_list):
+        try:
+            parameters[params_list[i]] = float(params_list[i+1])
+        except:
+            try:
+                print('Flipping order for parameters')
+                parameters[params_list[i+1]] = float(params_list[i])
+            except:
+                print('Failed to make with values {} and {}'.format(params_list[i], params_list[i+1]))
+                i +=1
+                next 
+        i += 2
+    print('Read in parameters', parameters)
+    return
 
-my_var = states_instance('/crucial/temp_MCMC/dATP_multiscale_modeling/MCMC_simulation_results/241004-1555_MR_640_States_out k2_plus_ref 0.002500 k3_plus 0.050000 k4_plus_ref 0.135000 kB_plus_ref 13.000000 kB_minus_ref 0.100000 kCa_plus_ref 0.090000 dATP 0.250000 k_force 0.000200 k_plus_SR_ref 16.000000 k_minus_SR_ref 15.000000.csv')
+# my_var = states_instance('/crucial/temp_MCMC/dATP_multiscale_modeling/MCMC_simulation_results/241004-1555_MR_640_States_out k2_plus_ref 0.002500 k3_plus 0.050000 k4_plus_ref 0.135000 kB_plus_ref 13.000000 kB_minus_ref 0.100000 kCa_plus_ref 0.090000 dATP 0.250000 k_force 0.000200 k_plus_SR_ref 16.000000 k_minus_SR_ref 15.000000.csv')
 
+    

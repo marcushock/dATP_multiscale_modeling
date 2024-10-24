@@ -19,7 +19,10 @@ def rename_undated(results_directory= 'MCMC_simulation_results/', extra_append =
 			print("Renaming '{}' \nto \n'{}'\n".format(name, new_filename))
 			original_path = results_directory+'/'+name
 			new_path = results_directory + '/' + new_filename
-			os.rename(original_path, new_path)
+			try:
+				os.rename(original_path, new_path)
+			except:
+				print('Could not rename. ')
 	return 
 
 
@@ -46,11 +49,11 @@ defaults = {
 
 def main():
 # Change parameters here for dATP simulation
-	k2_cycle = [0.0025] #kf+ [0.0025, ]
+	k2_cycle = [0.0025, 0.00478] #kf+ [0.0025, ]   # Original [0.0025] #[0.00478] #kf+
 	k3_cycle = [0.05] #[0.08] #kp+
 	k4_cycle = [0.135] #[0.23] #kg+ 
-	percent_cycle = [0.25] #percent dATP [0.05,0.1,0.15,0.25,0.5,0.75]
-	k_force_cycle = [0.0002] #krecruit 
+	percent_cycle = [0,0.25,0.5,1] #percent dATP [0.05,0.1,0.15,0.25,0.5,0.75]  # Original [1] #[0.01] #percent dATP 
+	k_force_cycle = [0.2] #krecruit default = 0.2  # Original [0.2] #[779] #krecruit 
 	k_plus_SR_ref_cycle = [16] #km+
 	k_minus_SR_ref_cycle = [15] #km-
 	for k2_plus_ref in k2_cycle:
@@ -66,17 +69,18 @@ def main():
 								# because they will be fille
 								callProgram({
 									"k2_plus_ref": k2_plus_ref,
-									"k3_plus": k3_plus,
-									"k4_plus_ref": k4_plus_ref,
+									#"k3_plus": k3_plus,
+									#"k4_plus_ref": k4_plus_ref,
 									"percent_dATP": percent_dATP,
 									"k_force": k_force,
-									"k_plus_SR_ref": k_plus_SR_ref,
-									"k_minus_SR_ref": k_minus_SR_ref
+									#"k_plus_SR_ref": k_plus_SR_ref,
+									#"k_minus_SR_ref": k_minus_SR_ref
 									},
 									folder="sweep/sweep2"
 									)
 	print("Done first cycle")
-	rename_undated('MCMC_simulation_results', '_MR_6400_') # Can change to add to file name appending
+	rename_undated('MCMC_simulation_results', '_640_') ### Can change to add to file name appending ###
+
 	# Most recent compilation is  defaults at 640 MAX_REPS
 
 

@@ -24,3 +24,5 @@ sweep/sweep2/
 *.out
 *.o
 .ipynb_checkpoints
+bin/
+resultsOrg/__pycache__/

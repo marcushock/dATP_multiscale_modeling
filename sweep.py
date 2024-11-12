@@ -15,7 +15,7 @@ def rename_undated(results_directory= 'MCMC_simulation_results/', extra_append =
 	time_str = time.strftime("%y%m%d-%H%M_")+extra_append
 	for name in file_names:
 		if "States_" == name[0:7] or "Force_" == name[0:6]:
-			new_filename = time_str+name
+			new_filename = time_str+fix_trailing_zeros(name)
 			print("Renaming '{}' \nto \n'{}'\n".format(name, new_filename))
 			original_path = results_directory+'/'+name
 			new_path = results_directory + '/' + new_filename
@@ -25,7 +25,20 @@ def rename_undated(results_directory= 'MCMC_simulation_results/', extra_append =
 				print('Could not rename. ')
 	return 
 
-
+def fix_trailing_zeros(filename_string):
+    new_name = ''
+    for filename_piece in filename_string.strip('.csv').split(' '):
+        try:
+            new_value = float(filename_piece)
+            new_name += str(new_value)
+            new_name += ' '
+        except:
+            new_name += filename_piece
+            new_name += ' '
+    if new_name[-1] == ' ':
+        new_name = new_name[0:-1]
+    new_name += '.csv'
+    return new_name
 
 
 binName= "MCMC_CUDA_10States"
@@ -49,11 +62,11 @@ defaults = {
 
 def main():
 # Change parameters here for dATP simulation
-	k2_cycle = [0.0025, 0.00478] #kf+ [0.0025, ]   # Original [0.0025] #[0.00478] #kf+
+	k2_cycle = [0.0025] #kf+ [0.0025, ]   # Original [0.0025] #[0.00478] #kf+
 	k3_cycle = [0.05] #[0.08] #kp+
 	k4_cycle = [0.135] #[0.23] #kg+ 
-	percent_cycle = [0,0.25,0.5,1] #percent dATP [0.05,0.1,0.15,0.25,0.5,0.75]  # Original [1] #[0.01] #percent dATP 
-	k_force_cycle = [0.2] #krecruit default = 0.2  # Original [0.2] #[779] #krecruit 
+	percent_cycle = [1] #percent dATP [0.05,0.1,0.15,0.25,0.5,0.75]  # Original [1] #[0.01] #percent dATP 
+	k_force_cycle = [16] #krecruit default = 0.2  # Original [0.2] #[779] #krecruit 
 	k_plus_SR_ref_cycle = [16] #km+
 	k_minus_SR_ref_cycle = [15] #km-
 	for k2_plus_ref in k2_cycle:
@@ -69,19 +82,18 @@ def main():
 								# because they will be fille
 								callProgram({
 									"k2_plus_ref": k2_plus_ref,
-									#"k3_plus": k3_plus,
-									#"k4_plus_ref": k4_plus_ref,
+									"k3_plus": k3_plus,
+									"k4_plus_ref": k4_plus_ref,
 									"percent_dATP": percent_dATP,
 									"k_force": k_force,
-									#"k_plus_SR_ref": k_plus_SR_ref,
-									#"k_minus_SR_ref": k_minus_SR_ref
+									"k_plus_SR_ref": k_plus_SR_ref,
+									"k_minus_SR_ref": k_minus_SR_ref
 									},
 									folder="sweep/sweep2"
 									)
 	print("Done first cycle")
-	rename_undated('MCMC_simulation_results', '_640_') ### Can change to add to file name appending ###
+	rename_undated('MCMC_simulation_results', '320_') ### Can change to add to file name appending ###
 
-	# Most recent compilation is  defaults at 640 MAX_REPS
 
 
 

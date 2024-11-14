@@ -90,18 +90,19 @@ float k_force_dATP = args.k_force;
 float k_plus_SR_ref_dATP = args.k_plus_SR_ref;
 float k_minus_SR_ref = args.k_minus_SR_ref;
 
-float k2_plus_ref_ATP = 0.0025; 
-float k3_plus_ATP = 0.05; 
-float k4_plus_ref_ATP = 0.135; 
-float k_plus_SR_ref_ATP = 16;
-float k_force_ATP = 0.2;
+float k2_plus_ref_ATP = 0.0025; // parameter defined here
+float k3_plus_ATP = 0.05; // parameter defined here
+float k4_plus_ref_ATP = 0.135; // parameter defined here
+float k_plus_SR_ref_ATP = 16; // parameter defined here
+float k_force_ATP = 0.2; // parameter defined here
 
 //-------------------------------
 //   Set rates using the input arguments
 //-------------------------------
-float r = 1; 
-float q = 1;
-float lambda = 0;
+float r = 1; // parameter defined here
+float q = 1; // parameter defined here
+// float lambda = 0;
+float lambda = args.lambda; 
 // calculating rates for XB cycling - use Tanner 2007/ Daniel 1998/ Pate & Cooke 1989
 float k2_minus_ref, k3_minus, k4_minus_ref;
 float conc_ADP,conc_Pi, conc_ATP, x_preR, g_Ca, g_Cb, g_Mc, g_Md, delta_G_ATP, delta_G, k_xb, x_xb;
@@ -110,7 +111,7 @@ float conc_ADP,conc_Pi, conc_ATP, x_preR, g_Ca, g_Cb, g_Mc, g_Md, delta_G_ATP, d
 conc_ADP    = 30;        //uM, Dawson et al 1978/ Kushmerick et al 1969 (frog)
 conc_ATP    = 3e3;        //uM
 conc_Pi     = 3e3;         //uM
-
+// parameter defined here
 //thermodynamic parameters
 //r_gas         = 8.314;      // Gas constant, J/mol*K
 //tc            = 15;
@@ -118,8 +119,8 @@ conc_Pi     = 3e3;         //uM
 
 
 // other constants
-float alpha = 0.28; 
-float eta = 0.68; 
+float alpha = 0.28; // parameter defined here
+float eta = 0.68; // parameter defined here
 //A = 2000; 
 //B = 100; // all from Tanner et al, 2007.
 //C = 1;
@@ -127,7 +128,7 @@ float eta = 0.68;
 //M = 3600;
 //N = 40;
 //P = 20;
-k_xb = 5; 
+k_xb = 5; // parameter defined here
 
 delta_G_ATP = 13; // units = RT
 delta_G = delta_G_ATP - log(conc_ATP/(conc_ADP*conc_Pi)); // units = RT
@@ -191,8 +192,9 @@ k4_minus
     //-----------------------------------------------------
 
     float Ftemp        = 0.0;                      // is used to calculate the steady-state force at the end
-    float Cal_conc           = pow(10.0f,-(args.experimentalData[cc].first-6));     // Ca2+ concentration
-    float kCa_plus     = Cal_conc*kCa_plus_ref;
+    float Cal_conc           = pow(10.0f,-(args.experimentalData[cc].first-6));     // Ca2+ concentration in uM
+    // float kCa_plus     = Cal_conc*kCa_plus_ref;
+    float kCa_plus     = kCa_plus_ref;
     float kCa_minus    = kCa_minus_ref;
     const int n_pCa = args.experimentalData.size();
     

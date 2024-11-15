@@ -42,7 +42,7 @@ float * k2_plus_ATP,
 float * k2_minus,
 float * kB_plus,
 float * kB_minus,
-float kCa_plus,
+float kCa_plus_ref,
 float kCa_minus,
 float percent_dATP,
 float k_force_dATP,
@@ -66,9 +66,13 @@ int cc
     int RU[N_RU];
     bool caRU[N_RU];
     curandState_t state;
-    //float kCa_plus;
-    //float calcium;
-    //float current_time;
+    float f;
+    int flag = 0;
+    float f_prev;
+    float SR_prev;
+    float kCa_plus;
+    float calcium;
+    float current_time;
 
 
     curand_init(randSeed, index, 0, &state);    
@@ -80,7 +84,7 @@ int cc
     memset(RU, 0, sizeof(int)*N_RU);
     memset(caRU, 0, sizeof(bool)*N_RU);
     RU[0]=2;
-    RU[25]=2;
+    RU[N_RU-1]=2;
     
     for(int i = 1; i < N_RU-1; ++i)
     {
@@ -99,9 +103,9 @@ int cc
         int count_SR_state = 0;
         genrand(randNum, N_RU, &state); // fills array with random numbers
         genrand(rand_dATP, N_RU, &state); // fills array with random numbers
-        //current_time = n*DT;
-        //calcium = lin_interp_ca(current_time);
-        //kCa_plus = kCa_plus_ref * calcium;
+        current_time = n*DT;
+        calcium = lin_interp_ca(current_time);
+        kCa_plus = kCa_plus_ref * calcium;
         //-----------------------------------
         // call the updated RUs
         //-----------------------------------
@@ -117,7 +121,6 @@ int cc
 
         
         
-        float f;
         if(n==0)
         {
         	f = 0;
@@ -184,6 +187,32 @@ int cc
         float SRValue = (float)count_SR_state / (N_RU);
         
         f = forceValue;
+        // float current_max = 0;
+        // // This is to look at what happens after the there is an instance where there is at least one state in the force producing state 
+        // // It also looks at the following state to see if everything transitions out. 
+
+        // if (flag == 1){
+        //     // % ['Count', 'f_prev','SR_prev','f','SRValue']
+        //     printf("%i, %f, %f, %f, %f\n",n, f_prev, SR_prev, f, SRValue);
+        //     // printf("current SRValue = %f, %i\n", f, n);
+        // }
+
+        // if (f > 0) {
+        //     flag = 1;
+        //     // printf("current f = %f, %i\n",f, n);
+        //     // printf("current SRValue = %f, %i\n", f, n);
+        //     f_prev = f;
+        //     SR_prev = SRValue;
+
+        // }
+        // else {
+        //     flag = 0;
+        // }
+
+        if ( n % 10000 == 0){
+            printf("current ca = %f, %f\n",calcium, current_time);
+        }
+
         
 
 

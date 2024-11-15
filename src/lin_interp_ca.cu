@@ -57,7 +57,7 @@ bool keep_going = 1;
 //------------------------------------
 // start time loop
 //------------------------------------
-for (int n = 0; n < 93; ++n)  // time marching ... ATP = 69, dATP = 30
+for (int n = 0; n < 93; ++n)  // time marching ... ATP = 69, dATP = 30, 93 for aficamten data 
 {
 
     if(keep_going == 1){

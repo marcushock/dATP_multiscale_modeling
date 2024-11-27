@@ -69,7 +69,7 @@ for (int n = 0; n < 93; ++n)  // time marching ... ATP = 69, dATP = 30, 93 for a
 
 }
 float slope = (cal_vals[index_t] - cal_vals[index_t-1])/(time_vals[index_t] - time_vals[index_t-1]);
-float calcium =cal_vals[index_t-1] + (slope * (current_time-(time_vals[index_t-1])));
+float calcium =(cal_vals[index_t-1] + (slope * (current_time-(time_vals[index_t-1])))) * 10;
 
 
 return calcium;

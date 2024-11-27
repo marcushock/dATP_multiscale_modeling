@@ -26,3 +26,4 @@ sweep/sweep2/
 .ipynb_checkpoints
 bin/
 resultsOrg/__pycache__/
+ODE_state_results/

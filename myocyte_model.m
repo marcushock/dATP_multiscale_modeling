@@ -97,6 +97,8 @@ parfor k = 1:length(Ca_fraction_fpca) % Parallel for loop
     options = odeset('RelTol', 1e-3, 'AbsTol', 1e-6, 'MaxStep', 5e-3);
     [t_fpca, Y_fpca] = ode15s(@dXdT_myocyte_mechanics, tspan_fpca, init_fpca, options, para, Ca_fraction_fpca(k), flag, Ca_flag);
     
+    // file_name = append('pCa_states_marcus_',num2str(Ca_fraction_fpca(k)),'.xls');
+    // % writematrix(Y_fpca, file_name);
     % Get states
     p1_0_fpca = Y_fpca(:,1);
     A1_fpca{k} = p1_0_fpca;
@@ -130,6 +132,7 @@ parfor k = 1:length(Ca_fraction_fpca) % Parallel for loop
     Ftotal_fpca = F_XB_fpca + F_passive_fpca; 
     SS_Ftotal_fpca(k) = Ftotal_fpca(end)/10; % Store force output
 end
+// writematrix(SS_Ftotal_fpca', 'Marcus_force_pCa.xls');
 end        
 
 if XB_protocol == 1 % Twitch

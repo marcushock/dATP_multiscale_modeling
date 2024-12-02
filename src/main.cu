@@ -55,6 +55,10 @@ initGPUSelection();
 //---------------------------------------------
 // Model reference parameters that we need to optimize
 // Note: atof converts strings into doubles 
+// The input arguments will define whether a twitch or 
+// force pCa is ran. 
+// Twitch = 0 
+// Force pca = 1
 //--------------------------------------------
 float gamma_B = atof(argv[2]); // [unitless] - RU-RU cooperative coefficient
 float gamma_M = atof(argv[3]); // [unitless] - XB-RU/RU-XB coopcoefficient (Note: gamma_M = mu_B)
@@ -71,6 +75,8 @@ float xbru_coeff = atof(argv[13]);
 float k_force = atof(argv[14]);
 float k_plus_SR_ref = atof(argv[15]);
 float k_minus_SR_ref = atof(argv[16]);
+int protocol = atoi(argv[17]);
+
 
 initParticleArgs args = initParticleArgs(experimentalData,
 gamma_B,
@@ -87,7 +93,8 @@ kCa_minus_ref,
 xbru_coeff,
 k_force,
 k_plus_SR_ref,
-k_minus_SR_ref
+k_minus_SR_ref, 
+protocol 
 );
 init_particle(args);
 std::cout << "One iteration runtime: " << (time(NULL)-startTime) << " second(s)" << std::endl;

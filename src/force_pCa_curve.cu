@@ -89,6 +89,7 @@ float kCa_minus_ref = args.kCa_minus_ref;
 float k_force_dATP = args.k_force;
 float k_plus_SR_ref_dATP = args.k_plus_SR_ref;
 float k_minus_SR_ref = args.k_minus_SR_ref;
+int protocol = args.protocol;
 
 float k2_plus_ref_ATP = 0.0025; // parameter defined here
 float k3_plus_ATP = 0.05; // parameter defined here
@@ -192,7 +193,7 @@ k4_minus
     //-----------------------------------------------------
 
     float Ftemp        = 0.0;                      // is used to calculate the steady-state force at the end
-    float Cal_conc           = pow(10.0f,-(args.experimentalData[cc].first-6));     // Ca2+ concentration in uM
+    float Calc_conc_exp           = pow(10.0f,-(args.experimentalData[cc].first-6));     // Ca2+ concentration in uM
     // float kCa_plus     = Cal_conc*kCa_plus_ref;
     float kCa_plus     = kCa_plus_ref;
     float kCa_minus    = kCa_minus_ref;
@@ -221,8 +222,8 @@ repeat_simul<<<MAX_REPS/32, 32, 0, s>>>(lambda,
                                         k2_minus,
                                         kB_plus,
                                         kB_minus,
-                                        kCa_plus,
-                                        kCa_minus,
+                                        kCa_plus_ref,
+                                        kCa_minus_ref,
                                         percent_dATP,
                                         k_force_dATP,
                                         k_force_ATP,
@@ -234,7 +235,9 @@ repeat_simul<<<MAX_REPS/32, 32, 0, s>>>(lambda,
                                         C,
                                         B,
                                         SR,
-                                        cc
+                                        cc, 
+                                        protocol, 
+                                        Calc_conc_exp
                                            );
 
     gpuErrchk(cudaStreamSynchronize(s)); // wait for device to finish repeat_simul

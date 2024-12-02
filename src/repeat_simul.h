@@ -15,7 +15,7 @@ __global__ void repeat_simul(float lambda,
                              float *kB_plus,
                              float *kB_minus,
                              float kCa_plus_ref,
-                             float kCa_minus,
+                             float kCa_minus_ref,
                              float percent_dATP,
                              float k_force_dATP,
                              float k_force_ATP,
@@ -27,6 +27,8 @@ __global__ void repeat_simul(float lambda,
                              float * C,
                              float * B,
                              float * SR,
-                             int cc
+                             int cc, 
+                             int protocol, 
+                             float Calc_conc_exp 
                              );
 #endif // REPEAT_SIMUL_H

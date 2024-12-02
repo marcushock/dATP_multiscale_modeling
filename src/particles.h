@@ -26,6 +26,7 @@ public:
     float k_force;
     float k_plus_SR_ref;
     float k_minus_SR_ref;
+    int protocol;
     initParticleArgs(std::vector< std::pair<float, float> > experimentalData,
                      float gamma_B,
                      float gamma_M,
@@ -41,7 +42,8 @@ public:
                      float percent_dATP,
                      float k_force,
                      float k_plus_SR_ref,
-                     float k_minus_SR_ref):experimentalData(experimentalData),
+                     float k_minus_SR_ref,
+                     int protocol):experimentalData(experimentalData),
         gamma_B(gamma_B),
         gamma_M(gamma_M),
         mu_M(mu_M),
@@ -56,7 +58,8 @@ public:
         percent_dATP(percent_dATP),
         k_force(k_force),
         k_plus_SR_ref(k_plus_SR_ref),
-        k_minus_SR_ref(k_minus_SR_ref)
+        k_minus_SR_ref(k_minus_SR_ref),
+        protocol(protocol)
        {}
 
 

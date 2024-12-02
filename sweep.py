@@ -58,6 +58,7 @@ defaults = {
     "k_force": 0.2, #krecruit
     "k_plus_SR_ref": 16, #km+
     "k_minus_SR_ref": 15, #km-
+	"protocol":1, # 1 = force pca, 0 = twitch protocol 
 }
 
 def main():
@@ -69,6 +70,7 @@ def main():
 	k_force_cycle = [0.207] #krecruit default = 0.2  # Original [0.2] #[779] #krecruit 
 	k_plus_SR_ref_cycle = [5e6] #km+
 	k_minus_SR_ref_cycle = [15] #km-
+	protocol = 1 # 1 = Force pCa, 0 = Twitch 
 	for k2_plus_ref in k2_cycle:
 		for k3_plus in k3_cycle:
 			for k4_plus_ref in k4_cycle:
@@ -88,6 +90,7 @@ def main():
 									"k_force": k_force,
 									"k_plus_SR_ref": k_plus_SR_ref,
 									"k_minus_SR_ref": k_minus_SR_ref,
+									"protocol": protocol,
 									},
 									folder="sweep/sweep2"
 									)
@@ -99,6 +102,15 @@ def main():
 
 
 def callProgram(parameters, folder="sweep"):
+	if parameters["protocol"] == 0:
+		protocol = "TWITCH"
+	elif parameters["protocol"] == 1:
+		protocol = "FORCE PCA"
+	else:
+		print("Protocol value not set to 0 (Twtich) or 1 (Force pCa), quitting program")
+		exit(-1)
+	print("The protocol value is set to: {} and therefore a {} is running.".format(parameters["protocol"], 
+																				protocol))
 	for key, value in defaults.items():
 		if key not in parameters:
 			parameters[key] = value
@@ -121,6 +133,7 @@ def callProgram(parameters, folder="sweep"):
 		str(parameters["k_force"]),
 		str(parameters["k_plus_SR_ref"]),
 		str(parameters["k_minus_SR_ref"]),
+		str(parameters["protocol"]),
 		 ]
 	try:
 		os.makedirs(folder)

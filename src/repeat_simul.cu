@@ -43,7 +43,7 @@ float * k2_minus,
 float * kB_plus,
 float * kB_minus,
 float kCa_plus_ref,
-float kCa_minus,
+float kCa_minus_ref,
 float percent_dATP,
 float k_force_dATP,
 float k_force_ATP,
@@ -55,7 +55,9 @@ float * Mc,
 float * C,
 float * B,
 float * SR,
-int cc
+int cc,
+int protocol, 
+float Calc_conc_exp
 )
 
 {
@@ -71,6 +73,7 @@ int cc
     float f_prev;
     float SR_prev;
     float kCa_plus;
+    float kCa_minus;
     float calcium;
     float current_time;
 
@@ -103,9 +106,22 @@ int cc
         int count_SR_state = 0;
         genrand(randNum, N_RU, &state); // fills array with random numbers
         genrand(rand_dATP, N_RU, &state); // fills array with random numbers
-        current_time = n*DT;
-        calcium = lin_interp_ca(current_time);
-        kCa_plus = kCa_plus_ref * calcium;
+
+
+        if (protocol == 1){
+            kCa_plus = Calc_conc_exp*kCa_plus_ref; 
+        }
+        else if  (protocol == 0){
+            current_time = n*DT;
+            calcium = lin_interp_ca(current_time);
+            kCa_plus = kCa_plus_ref * calcium;
+        }
+
+        kCa_minus = kCa_minus_ref;
+    // float kCa_plus     = Cal_conc*kCa_plus_ref;
+        // current_time = n*DT;
+        // calcium = lin_interp_ca(current_time);
+        // kCa_plus = kCa_plus_ref * calcium;
         //-----------------------------------
         // call the updated RUs
         //-----------------------------------

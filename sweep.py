@@ -67,10 +67,10 @@ def main():
 	k3_cycle = [0.05] #[0.08] #kp+
 	k4_cycle = [0.135] #[0.23] #kg+ 
 	percent_cycle = [1] #percent dATP [0.05,0.1,0.15,0.25,0.5,0.75]  # Original [1] #[0.01] #percent dATP 
-	k_force_cycle = [0.207] #krecruit default = 0.2  # Original [0.2] #[779] #krecruit 
-	k_plus_SR_ref_cycle = [5e6] #km+
+	k_force_cycle = [0.2, 779] #krecruit default = 0.2  # Original [0.2] #[779] #krecruit 
+	k_plus_SR_ref_cycle = [16, 5e6] #km+
 	k_minus_SR_ref_cycle = [15] #km-
-	protocol = 1 # 1 = Force pCa, 0 = Twitch 
+	protocol = 0 # 1 = Force pCa, 0 = Twitch 
 	for k2_plus_ref in k2_cycle:
 		for k3_plus in k3_cycle:
 			for k4_plus_ref in k4_cycle:
@@ -95,7 +95,7 @@ def main():
 									folder="sweep/sweep2"
 									)
 	print("Done first cycle")
-	rename_undated('MCMC_simulation_results', 'check_following_') ### Can change to add to file name appending ###
+	rename_undated('MCMC_simulation_results', 'twitch_new_') ### Can change to add to file name appending ###
 
 
 

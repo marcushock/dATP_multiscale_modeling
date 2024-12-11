@@ -170,5 +170,9 @@ void init_particle(initParticleArgs & args)
 
     gpuErrchk(cudaFree(ForceArrays_return));
     gpuErrchk(cudaFree(Fss_return));
+    gpuErrchk(cudaFree(McArrays_return));
+    gpuErrchk(cudaFree(CArrays_return));
+    gpuErrchk(cudaFree(BArrays_return));
+    gpuErrchk(cudaFree(SRArrays_return));
 
 }

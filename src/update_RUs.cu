@@ -108,11 +108,11 @@ __device__ void update_RUs(float lambda,
             // Based on the fact that lambda is 0, it appears that we can only transition from B0* to B1*
             // In summary, the blocked (calcium free) and SRX (off) state can only transition to the 
             // Calcium bound confirmation of the SRX. 
-            if ((p3 < 1) || (p2 > 1) || (p1 > 1))
-            {
-                // printf("Step i: %d. dATP rand %f, p1: %f, p2: %f, p3: %f\n", i, rand_dATP[i], p1, p2, p3);
-                //asm("trap;"); // Force the kernel to terminate immediately
-            }
+            // if ((p3 < 1) || (p2 > 1) || (p1 > 1))
+            // {
+            //     // printf("Step i: %d. dATP rand %f, p1: %f, p2: %f, p3: %f\n", i, rand_dATP[i], p1, p2, p3);
+            //     //asm("trap;"); // Force the kernel to terminate immediately
+            // }
             if (randNum[i] < p1)
             {
                 caRU[i] = 1;   // switch [B0*---->B1*]'
@@ -128,11 +128,11 @@ __device__ void update_RUs(float lambda,
         }
         //-----------------------------------------------------------------
         // if (state = [B* = 0]): Then	  ---->[B1]      else stay as [B1*]
-        //     & caState = 1		 |	
-        // 		               [B1*]---->[C1*]
-        //     			        |
-        //			        v
-        //			      [B0*]
+        //     & caState = 1	          |	
+        // 		                        [B1*]---->[C1*]
+        //     			                  |
+        //			                      v
+        //			                    [B0*]
         //-----------------------------------------------------------------
         else if ((state == 0) && (caState == 1))
         {
@@ -165,10 +165,10 @@ __device__ void update_RUs(float lambda,
         //-----------------------------------------------------------------
         // if (state = [C* = 1]): Then  [C1*]            else stay as [C0*]
         //     & caState = 0             ^  
-        //			         | 
-        //	             [B0*]<----[C0*]
-        //				\
-        //				 ---->[C0]
+        //		             	         | 
+        //	                 [B0*]<----[C0*]
+        //			                   	 |
+        //				                 ---->[C0]
         //-----------------------------------------------------------------
         // Starting in the C* state (without calcium bound )
         else if ((state == 1) && (caState == 0))
@@ -202,7 +202,7 @@ __device__ void update_RUs(float lambda,
         //     & caState = 1               /
         //                    [B1*]<----[C1*]          
         //                               |
-        //		                 v
+        //		                         v
         //                             [C0*]
         //-----------------------------------------------------------------
         // Starting with calcium bound, in the C* (SRX) state 
@@ -241,8 +241,8 @@ __device__ void update_RUs(float lambda,
         //     & caState = 0               ^  
         //                                 | 
         //                               [B0]---->[C0]
-        //		      	          /
-        //			[B0*]<----
+        //		      	                  /
+        //			            [B0*]<----
         //----------------------------------------------------------------
         // In the ON state (not SRX/OFF) and calcium unbound. 
         // Once again lambda is included in these calculations which appears to prevent certain transitions. 
@@ -268,11 +268,11 @@ __device__ void update_RUs(float lambda,
         }
         //-----------------------------------------------------------------
         // if (state = [B = 2]): Then  [B1*]<----	  else stay as [B1]
-        //     & caState = 1		        |	
-        // 		                      [B1]---->[C1]
-        //     			               |
-        //			               v
-        //			             [B0]
+        //     & caState = 1		            |	
+        // 		                               [B1]---->[C1]
+        //     			                        |
+        //			                            v
+        //			                          [B0]
         //-----------------------------------------------------------------
         // Starting in the B state, ON state, with calcium bound 
         else if ((state == 2) && (caState == 1))
@@ -307,6 +307,7 @@ __device__ void update_RUs(float lambda,
         // Closed state of myosin, but without calcium bound... 
         // However, it should be noted, that with the cooperative parameters, maybe there is a way to 
         // Move into one of these states with the cooperativity alone.
+        // Above diagrams seems to be wrong...
 
         else if ((state == 3) && (caState == 0))
         {
@@ -350,15 +351,15 @@ __device__ void update_RUs(float lambda,
         //                                         \  /  
         //                               [B1]<----[C1]          
         //                                         | \
-        //				           v  ---->[M2,1]
+        //				                           v  ---->[M2,1]
         //                                       [C0]
         //-----------------------------------------------------------------
         else if ((state == 3) && (caState ==1))
         {
             p1 = lambda*kCa_minus*dt;
             p2 = p1 + kB_minus[x*N_S+y]*dt;
-	    p3 = p2 + k_minus_SR*dt;
-	    if (rand_dATP[i] <= percent_dATP)
+	        p3 = p2 + k_minus_SR*dt;
+	        if (rand_dATP[i] <= percent_dATP)
             {
                 p4 = p3 + k2_plus_dATP[x*N_S+y]*dt;
             }
@@ -392,12 +393,12 @@ __device__ void update_RUs(float lambda,
         }
         //-----------------------------------------------------------------
         // if (state = [M1 = 4]): Then     [M1,1]       else stay as [M1,0]
-        //     & caState = 0		     ^
-        //     		                     |	
-        // 		                   [M1,0]
-        //     			          / |
-        //		         [C0]<----  v
-        //			          [M2,0]
+        //     & caState = 0		       ^
+        //     		                       |	
+        // 		                        [M1,0]
+        //     			                 / |
+        //		                [C0]<----  v
+        //			                     [M2,0]
         //-----------------------------------------------------------------
         // This is in state M1, which is the weakly bound state. 
         // There is no calcium bound, so it's still surprising to be in this state to be honest. 
@@ -429,9 +430,9 @@ __device__ void update_RUs(float lambda,
         }
         //-----------------------------------------------------------------
         // if (state = [M1 = 4]): Then     [M1,1]       else stay as [M1,1]
-        //     & caState = 1		  / |   \
-        // 		         [C1]<----  v    ---->[M1,0]  
-        //     			          [M2,1]          
+        //     & caState = 1	           / |   \
+        // 		                  [C1]<----  v    ---->[M1,0]  
+        //     			                   [M2,1]          
         //-----------------------------------------------------------------
         // This is in state M1, which is the weakly bound state. 
         // Now we do have calcium bound, so it's more likely that we do visit this state. 

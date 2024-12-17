@@ -3,9 +3,9 @@
 #include "particles.h"
 void force_pCa_curve(initParticleArgs & args,
                      unsigned long randSeed,
-                     float * ForceArrays,
+                     float * M3Arrays,
                      float * Fss,
-                     float * McArrays,
+                     float * M1Arrays,
                      float * CArrays,
                      float * BArrays,
                      float * SRArrays,

@@ -32,15 +32,15 @@ void init_particle(initParticleArgs & args)
     //-----------------------------------------------------------------------------------------
 
     // allocate arrays for Force outside of kernel to use global GPU memory
-    float * ForceArrays_return;
-    gpuErrchk(cudaMallocManaged(&ForceArrays_return, sizeof(float)*n_pCa*MAX_TSTEPS));
-    gpuErrchk(cudaMemset(ForceArrays_return, 0, sizeof(float)*n_pCa*MAX_TSTEPS));
+    float * M3Arrays_return;
+    gpuErrchk(cudaMallocManaged(&M3Arrays_return, sizeof(float)*n_pCa*MAX_TSTEPS));
+    gpuErrchk(cudaMemset(M3Arrays_return, 0, sizeof(float)*n_pCa*MAX_TSTEPS));
     float * Fss_return;
     gpuErrchk(cudaMallocManaged(&Fss_return, sizeof(float)*n_pCa));
     gpuErrchk(cudaMemset(Fss_return, 0, sizeof(float)*n_pCa));
-    float * McArrays_return;
-    gpuErrchk(cudaMallocManaged(&McArrays_return, sizeof(float)*n_pCa*MAX_TSTEPS));
-    gpuErrchk(cudaMemset(McArrays_return, 0, sizeof(float)*n_pCa*MAX_TSTEPS));
+    float * M1Arrays_return;
+    gpuErrchk(cudaMallocManaged(&M1Arrays_return, sizeof(float)*n_pCa*MAX_TSTEPS));
+    gpuErrchk(cudaMemset(M1Arrays_return, 0, sizeof(float)*n_pCa*MAX_TSTEPS));
     float * CArrays_return;
     gpuErrchk(cudaMallocManaged(&CArrays_return, sizeof(float)*n_pCa*MAX_TSTEPS));
     gpuErrchk(cudaMemset(CArrays_return, 0, sizeof(float)*n_pCa*MAX_TSTEPS));
@@ -58,9 +58,9 @@ void init_particle(initParticleArgs & args)
         pcaThreadGroup.add_thread(new boost::thread(force_pCa_curve,
             args,
             RANDVAL,
-            ForceArrays_return,
+            M3Arrays_return,
             Fss_return,
-            McArrays_return,
+            M1Arrays_return,
             CArrays_return,
             BArrays_return,
             SRArrays_return,
@@ -123,7 +123,7 @@ void init_particle(initParticleArgs & args)
             Force_out << DT*j;
             for (int cc = 0; cc < n_pCa; cc++)  // Ca-loop
             {
-                Force_out << "," << ForceArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS;
+                Force_out << "," << M3Arrays_return[cc * MAX_TSTEPS + j]/MAX_REPS;
 
             }
             Force_out << std::endl;
@@ -139,7 +139,7 @@ void init_particle(initParticleArgs & args)
             States_out << DT*j;
             for (int cc = 0; cc < n_pCa; cc++)  // Ca-loop
             {
-                States_out << "," << ForceArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << McArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << CArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << BArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << SRArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS;
+                States_out << "," << M3Arrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << M1Arrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << CArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << BArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << SRArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS;
 
             }
             States_out << std::endl;
@@ -168,9 +168,9 @@ void init_particle(initParticleArgs & args)
         std::cout << " data successfully saved into the file name: " << Force_pCa_normalized_out_Filename << std::endl;
         /* end pca + pca normalized out */
 
-    gpuErrchk(cudaFree(ForceArrays_return));
+    gpuErrchk(cudaFree(M3Arrays_return));
     gpuErrchk(cudaFree(Fss_return));
-    gpuErrchk(cudaFree(McArrays_return));
+    gpuErrchk(cudaFree(M1Arrays_return));
     gpuErrchk(cudaFree(CArrays_return));
     gpuErrchk(cudaFree(BArrays_return));
     gpuErrchk(cudaFree(SRArrays_return));

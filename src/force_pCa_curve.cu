@@ -30,9 +30,9 @@ static boost::mutex lock;
 
 void force_pCa_curve(initParticleArgs & args,
                      unsigned long randSeed,
-                     float * ForceArrays,
+                     float * M3Arrays,
                      float * Fss,
-                     float * McArrays,
+                     float * M1Arrays,
                      float * CArrays,
                      float * BArrays,
                      float * SRArrays,
@@ -44,8 +44,8 @@ void force_pCa_curve(initParticleArgs & args,
 int GPUid = getGPU();
 setGPU(GPUid);
 // select beginning of this loop's Force array
-float * Force = &(ForceArrays[cc * MAX_TSTEPS]);
-float * Mc = &(McArrays[cc * MAX_TSTEPS]);
+float * M3 = &(M3Arrays[cc * MAX_TSTEPS]);
+float * M1 = &(M1Arrays[cc * MAX_TSTEPS]);
 float * C = &(CArrays[cc * MAX_TSTEPS]);
 float * B  = &(BArrays[cc * MAX_TSTEPS]);
 float * SR  = &(SRArrays[cc * MAX_TSTEPS]);
@@ -230,8 +230,8 @@ repeat_simul<<<MAX_REPS/32, 32, 0, s>>>(lambda,
 					k_plus_SR_ref_dATP,
 					k_plus_SR_ref_ATP,
 					k_minus_SR_ref,
-                                        Force,
-                                        Mc,
+                                        M3,
+                                        M1,
                                         C,
                                         B,
                                         SR,
@@ -249,10 +249,10 @@ repeat_simul<<<MAX_REPS/32, 32, 0, s>>>(lambda,
 
     for (int n = MAX_TSTEPS-1000000; n < MAX_TSTEPS-1; n++)  // time marching Originally was set to 100000
     {
-        Ftemp = Ftemp+Force[n];
+        Ftemp = Ftemp+M3[n];
     }
 
-    Fss[cc] = (Ftemp + (0.5f * Force[MAX_TSTEPS-1000001]) + (0.5f * Force[MAX_TSTEPS-1])) / 1000000.0f / MAX_REPS;    //Fss[cc] = 1;
+    Fss[cc] = (Ftemp + (0.5f * M3[MAX_TSTEPS-1000001]) + (0.5f * M3[MAX_TSTEPS-1])) / 1000000.0f / MAX_REPS;    //Fss[cc] = 1;
 
     //--------------------------------
 

@@ -50,8 +50,8 @@ float k_force_ATP,
 float k_plus_SR_ref_dATP,
 float k_plus_SR_ref_ATP,
 float k_minus_SR_ref,
-float * Force,
-float * Mc,
+float * M3,
+float * M1,
 float * C,
 float * B,
 float * SR,
@@ -99,8 +99,8 @@ float Calc_conc_exp
     for (int n = 0; n < MAX_TSTEPS; ++n)  // time marching
     {
         // begin n-loop for time marching
-        int count_Md_state  = 0;                // used to find how many Md-state in each iteration
-        int count_Mc_state  = 0;
+        int count_M3_state  = 0;                // used to find how many M3-state in each iteration
+        int count_M1_state  = 0;
         int count_C_state  = 0;
         int count_B_state   = 0;
         int count_SR_state = 0;
@@ -173,11 +173,11 @@ float Calc_conc_exp
         {
             if(RU[i]==5) // this represents M2
             {
-                ++count_Md_state;
+                ++count_M3_state;
             }
             else if(RU[i]==4) // this represents M1
             {
-                ++count_Mc_state;
+                ++count_M1_state;
             }
             else if(RU[i]==3) // this represents C
             {
@@ -196,8 +196,8 @@ float Calc_conc_exp
                 ++count_SR_state;
             }
         }
-        float forceValue = (float)count_Md_state / (N_RU); // Type casting because count_Md_state is defined as an int 
-        float McValue = (float)count_Mc_state / (N_RU);
+        float forceValue = (float)count_M3_state / (N_RU); // Type casting because count_M3_state is defined as an int 
+        float M1Value = (float)count_M1_state / (N_RU);
         float CValue = (float)count_C_state / (N_RU);
         float BValue = (float)count_B_state / (N_RU);
         float SRValue = (float)count_SR_state / (N_RU);
@@ -232,8 +232,8 @@ float Calc_conc_exp
         
 
 
-        atomicAdd(&(Force[n]), forceValue); // add results every repeat
-        atomicAdd(&(Mc[n]), McValue); // add results every repeat
+        atomicAdd(&(M3[n]), forceValue); // add results every repeat
+        atomicAdd(&(M1[n]), M1Value); // add results every repeat
         atomicAdd(&(C[n]), CValue); // add results every repeat
         atomicAdd(&(B[n]), BValue); // add results every repeat
         atomicAdd(&(SR[n]), SRValue); // add results every repeat

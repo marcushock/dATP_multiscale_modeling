@@ -99,21 +99,21 @@ void init_particle(initParticleArgs & args)
         //" gammaB " + std::to_string(args.gamma_B) +
         //" gammaM " + std::to_string(args.gamma_M) +
         //" mu_M " + std::to_string(args.mu_M) +
-        //" k2_plus_ref " + std::to_string(args.k2_plus_ref) +
-        //" k3_plus " + std::to_string(args.k3_plus) +
-        //" k4_plus_ref " + std::to_string(args.k4_plus_ref) +
-        //" kB_plus_ref " + std::to_string(args.kB_plus_ref) +
-        //" kB_minus_ref " + std::to_string(args.kB_minus_ref) +
+        " k2_plus_ref " + std::to_string(args.k2_plus_ref) +
+        " k3_plus " + std::to_string(args.k3_plus) +
+        " k4_plus_ref " + std::to_string(args.k4_plus_ref) +
+        " kB_plus_ref " + std::to_string(args.kB_plus_ref) +
+        " kB_minus_ref " + std::to_string(args.kB_minus_ref) +
         //" lambda " + std::to_string(args.lambda) +
-        //" kCa_plus_ref " + std::to_string(args.kCa_plus_ref) +
+        " kCa_plus_ref " + std::to_string(args.kCa_plus_ref) +
         " dATP " + std::to_string(args.percent_dATP) +
         " k_force " + std::to_string(args.k_force) +
         " k_plus_SR_ref " + std::to_string(args.k_plus_SR_ref) +
         " k_minus_SR_ref " + std::to_string(args.k_minus_SR_ref);
-        std::string Force_out_Filename = ("Force_out"+dataAppend+".csv");
-        std::string States_out_Filename = ("States_out"+dataAppend+".csv");
-        std::string Force_pCa_out_Filename = ("Force_pCa_Optmz"+dataAppend+".csv");
-        std::string Force_pCa_normalized_out_Filename = ("Force_pCa_Optmz_Normalized"+dataAppend+".csv");
+        std::string Force_out_Filename = ("MCMC_simulation_results/Force_out"+dataAppend+".csv");
+        std::string States_out_Filename = ("MCMC_simulation_results/States_out"+dataAppend+".csv");
+        std::string Force_pCa_out_Filename = ("MCMC_simulation_results/Force_pCa_Optmz"+dataAppend+".csv");
+        std::string Force_pCa_normalized_out_Filename = ("MCMC_simulation_results/Force_pCa_Optmz_Normalized"+dataAppend+".csv");
 
         /* raw force out */
         const int skipFactor = 1000;

@@ -17,8 +17,19 @@
 // Output
 //---------
 // RUs:     updated RUs according to Neighboring states (X,Y)
+// Generally, these can be considered the 5 macrostates. 
+// B* - 0 Good
+// C* - 1 Good 
+// B  - 2 Good
+// C  - 3 Good 
+// M1 - 4 
+// M2 - 5
 //--------------------------------------------------------------------------%
 #include "update_RUs.h"
+#include <stdio.h>
+
+
+
 // arr[x][y] == arr[x * row_len + y]
 __device__ void update_RUs(float lambda,
                             float dt,
@@ -62,32 +73,51 @@ __device__ void update_RUs(float lambda,
         x     = RU[i-1];
         y     = RU[i+1];
 
+        // printf("%d %f %f\n", i, rand_dATP[i], randNum[i]);
         //-----------------------------------------------------------------
         // if (state = [B* = 0]): Then   [B1*]           else stay as [B0*]
         //     & caState = 0             ^  
         //                               | 
         //                             [B0*]---->[C0*]
-        //				 \
-        //				  ---->[B0]
+        //				                 |
+        //				                 ---->[B0]
+        // So this is starting in state B0*
+        // We have no calcium bound caState = 0
         //----------------------------------------------------------------
         if ((state == 0) && (caState == 0))
         {
-            p1 = kCa_plus*dt;
-            p2 = p1 + lambda*kB_plus[x*N_S+y]*dt;
-            if (rand_dATP[i] <= percent_dATP)
+            p1 = kCa_plus*dt; // This calculates the transition transition probability into calcium bound state...
+            // kCa_plus appears to be calculated by multiplying the calcium concentration by the kCa_plus_ref value in the repeat_simul.cu function. 
+            
+            p2 = p1 + lambda*kB_plus[x*N_S+y]*dt;  // Unclear as to why we multiply by lambda, which I beleive is set to 0 
+            // Per Abby, is due to a prevention of calcium from unbinding (in a general case). 
+            // Here, it appears that you cannot move into a C0 state ever... 
+
+            // This chunk of code is used to calculate kinetics based on either ATP parameters or dATP parameters 
+            if (rand_dATP[i] <= percent_dATP) // percent dATP is somewhere between 0 and 1, which then helps to identify if we have ATP kinetics or dATP kinetics 
             {
-                p3 = p2 + k_plus_SR_dATP*(1+k_force_dATP*f)*dt;
+                p3 = p2 + k_plus_SR_dATP*(1+k_force_dATP*f)*dt; // We calculate a new probability p3 using dATP kinetic parameters 
             }
             else
             {
-                p3 = p2 + k_plus_SR_ATP*(1+k_force_ATP*f)*dt;
+                p3 = p2 + k_plus_SR_ATP*(1+k_force_ATP*f)*dt; // Otherwise use the basal ATP kinetic parameters to calcualte p3
             }
+            // P3 is used for calculating whether we transition into or out of the SRX. 
             
+            // Determine stochastically whether after this timestep if Ca will be bound to the thin finalment. 
+            // Based on the fact that lambda is 0, it appears that we can only transition from B0* to B1*
+            // In summary, the blocked (calcium free) and SRX (off) state can only transition to the 
+            // Calcium bound confirmation of the SRX. 
+            if ((p3 < 1) || (p2 > 1) || (p1 > 1))
+            {
+                // printf("Step i: %d. dATP rand %f, p1: %f, p2: %f, p3: %f\n", i, rand_dATP[i], p1, p2, p3);
+                //asm("trap;"); // Force the kernel to terminate immediately
+            }
             if (randNum[i] < p1)
             {
-                caRU[i] = 1;   // switch [B0*---->B1*]
+                caRU[i] = 1;   // switch [B0*---->B1*]'
             }
-            else if(randNum[i] < p2)
+            else if(randNum[i] < p2) // This checks if the 
             {
                 RU[i] = 1; //switch [B0*---->C0*]
             }
@@ -106,17 +136,18 @@ __device__ void update_RUs(float lambda,
         //-----------------------------------------------------------------
         else if ((state == 0) && (caState == 1))
         {
-            p1 = kCa_minus*dt;
-            p2 = p1 + kB_plus[x*N_S+y]*dt;
+            p1 = kCa_minus*dt; // Calculate unbinding probability of calcium 
+            p2 = p1 + kB_plus[x*N_S+y]*dt; // Calculate the transition probability from B1* to C1* which is the unblocking of the thin filament. 
             if (rand_dATP[i] <= percent_dATP)
             {
-                p3 = p2 + k_plus_SR_dATP*(1+k_force_dATP*f)*dt;
+                p3 = p2 + k_plus_SR_dATP*(1+k_force_dATP*f)*dt; // Calculate the probability of transitioning out of the SRX/OFF state
             }
             else
             {
-                p3 = p2 + k_plus_SR_ATP*(1+k_force_ATP*f)*dt;
+                p3 = p2 + k_plus_SR_ATP*(1+k_force_ATP*f)*dt; //Calculate rate of out OFF state but instead assuming ATP kinetics. 
             }
             
+            // Check if we have a state change in one of the 3 possible transitions based on above calculated probabilities. 
             if (randNum[i] < p1)
             {
                 caRU[i] = 0; // switch [B1*---->B0*]
@@ -139,28 +170,29 @@ __device__ void update_RUs(float lambda,
         //				\
         //				 ---->[C0]
         //-----------------------------------------------------------------
+        // Starting in the C* state (without calcium bound )
         else if ((state == 1) && (caState == 0))
         {
-            p1 = kCa_plus*dt;
-            p2 = p1 + kB_minus[x*N_S+y]*dt;
+            p1 = kCa_plus*dt; // Calculate the probability for calcium binding. 
+            p2 = p1 + kB_minus[x*N_S+y]*dt; // Calculate probability of moving back into the blocked state 
             if (rand_dATP[i] <= percent_dATP)
             {
-                p3 = p2 + k_plus_SR_dATP*(1+k_force_dATP*f)*dt;
+                p3 = p2 + k_plus_SR_dATP*(1+k_force_dATP*f)*dt; // Calcualte probability out of the SRX/OFF state (dATP)
             }
             else
             {
-                p3 = p2 + k_plus_SR_ATP*(1+k_force_ATP*f)*dt;
+                p3 = p2 + k_plus_SR_ATP*(1+k_force_ATP*f)*dt; // Calcualte probability out of the SRX/OFF state (dATP)
             }
 
-            if  (randNum[i] < p1)
+            if  (randNum[i] < p1) // Check to see if moving into calcium bound state 
             {
                 caRU[i] = 1;   // switch [C0*---->C1*]
             }
-            else if (randNum[i] < p2)
+            else if (randNum[i] < p2) // Check to see if moving back into the blocked state 
             {
                 RU[i] = 0; // switch [C0*---->B0*]
             }
-            else if (randNum[i] < p3)
+            else if (randNum[i] < p3) // Check to see if moving out of the SRX state 
             {
                 RU[i] = 3; // switch [C0*---->C0]
             }
@@ -173,11 +205,15 @@ __device__ void update_RUs(float lambda,
         //		                 v
         //                             [C0*]
         //-----------------------------------------------------------------
+        // Starting with calcium bound, in the C* (SRX) state 
+        // P1 is forced to be 0 because Lambda is also zero. Therefore we never move from the 
+        // C* state with calcium bound back to the C* state without calcium bound. This appears to assume that ca cannot unbind when 
+        // in the closed state. It must first transition back to the blocked state before calcium can unbind. 
         else if ((state == 1) && (caState ==1))
         {
-            p1 = lambda*kCa_minus*dt;
-            p2 = p1 + kB_minus[x*N_S+y]*dt;
-            if (rand_dATP[i] <= percent_dATP)
+            p1 = lambda*kCa_minus*dt; // Once again Lambda is included and still set to 0. 
+            p2 = p1 + kB_minus[x*N_S+y]*dt; // Calculate prob of going back to the blocked state 
+            if (rand_dATP[i] <= percent_dATP) // Calculate prob of going out of the SRX (again dATP dependent)
             {
                 p3 = p2 + k_plus_SR_dATP*(1+k_force_dATP*f)*dt;
             }
@@ -208,11 +244,14 @@ __device__ void update_RUs(float lambda,
         //		      	          /
         //			[B0*]<----
         //----------------------------------------------------------------
+        // In the ON state (not SRX/OFF) and calcium unbound. 
+        // Once again lambda is included in these calculations which appears to prevent certain transitions. 
+        // Specifically, this appears to prevent the transition from B0 to C0. 
         if ((state == 2) && (caState == 0))
         {
             p1 = kCa_plus*dt;
             p2 = p1 + lambda*kB_plus[x*N_S+y]*dt;
-            p3 = p2 + k_minus_SR*dt;
+            p3 = p2 + k_minus_SR*dt; // Calculate the probility of moving back into the SRX/OFF state 
 
             if (randNum[i] < p1)
             {
@@ -235,40 +274,46 @@ __device__ void update_RUs(float lambda,
         //			               v
         //			             [B0]
         //-----------------------------------------------------------------
+        // Starting in the B state, ON state, with calcium bound 
         else if ((state == 2) && (caState == 1))
         {
-            p1 = kCa_minus*dt;
-            p2 = p1 + kB_plus[x*N_S+y]*dt;
-            p3 = p2 + k_minus_SR*dt;
+            p1 = kCa_minus*dt; // Calculate the probility of calcium unbinding. 
+            p2 = p1 + kB_plus[x*N_S+y]*dt; // Calculate probability of moving into the close state from blocked state 
+            p3 = p2 + k_minus_SR*dt; // Calculate the probability of moving 
 
             if (randNum[i] < p1)
             {
-                caRU[i] = 0; // switch [B1---->B0]
+                caRU[i] = 0; // switch [B1---->B0] calcium unbinding 
             }
             else if(randNum[i] < p2)
             {
-                RU[i] = 3; //switch [B1---->C1]
+                RU[i] = 3; //switch [B1---->C1] moving into the closed state
             }
             else if(randNum[i] < p3)
             {
-                RU[i] = 0; //switch [B1---->B1*]
+                RU[i] = 0; //switch [B1---->B1*] moving back into the blocked SRX state
             }
 
         }
         //-----------------------------------------------------------------
         // if (state = [C = 3]):  Then     [C1]           else stay as [C0]
         //     & caState = 0                ^  ---->[M1,0]
-        //			            | /
-        //	                 [B0]<----[C0]
-        //			           / \
-        //	                 [C0*]<----   ---->[M2,0]
+        //			                        | /
+        //	                               [B0]<----[C0]
+        //			                       / \
+        //	                     [C0*]<----   ---->[M2,0]
         //-----------------------------------------------------------------
+        // With Lambda set to 0, I don't beleive that we can ever get to this state
+        // Closed state of myosin, but without calcium bound... 
+        // However, it should be noted, that with the cooperative parameters, maybe there is a way to 
+        // Move into one of these states with the cooperativity alone.
+
         else if ((state == 3) && (caState == 0))
         {
-            p1 = kCa_plus*dt;
+            p1 = kCa_plus*dt; // Calculate probability of calcium binding. 
             p2 = p1 + kB_minus[x*N_S+y]*dt;
-	    p3 = p2 + k_minus_SR*dt;
-	    if (rand_dATP[i] <= percent_dATP)
+	        p3 = p2 + k_minus_SR*dt;
+	        if (rand_dATP[i] <= percent_dATP)
             {
                 p4 = p3 + k2_plus_dATP[x*N_S+y]*dt;
             }
@@ -354,6 +399,8 @@ __device__ void update_RUs(float lambda,
         //		         [C0]<----  v
         //			          [M2,0]
         //-----------------------------------------------------------------
+        // This is in state M1, which is the weakly bound state. 
+        // There is no calcium bound, so it's still surprising to be in this state to be honest. 
         else if ((state == 4) && (caState == 0))
         {
             p1 = kCa_plus*dt;
@@ -386,6 +433,8 @@ __device__ void update_RUs(float lambda,
         // 		         [C1]<----  v    ---->[M1,0]  
         //     			          [M2,1]          
         //-----------------------------------------------------------------
+        // This is in state M1, which is the weakly bound state. 
+        // Now we do have calcium bound, so it's more likely that we do visit this state. 
         else if ((state == 4) && (caState == 1))
         {
             p1 = lambda*kCa_minus*dt;
@@ -418,6 +467,8 @@ __device__ void update_RUs(float lambda,
         // 		                   \  |  / 
         //			           [M2,0]
         //-----------------------------------------------------------------
+        // Now in the strongly bound state. 
+        // Again no calcium is bound. Not sure how we could ever visit this state. 
         else if ((state == 5) && (caState == 0))
         {
             p1 = kCa_plus*dt;
@@ -453,6 +504,8 @@ __device__ void update_RUs(float lambda,
         //			             v
         //			          [M2,0]
         //-----------------------------------------------------------------
+        // In the M2 force producing state. 
+        // Calcium is actually bound, but is not able to unbind. 
         else if ((state == 5) && (caState == 1))
         {
             p1 = lambda*kCa_minus*dt;

@@ -45,7 +45,7 @@ if(argc < 11){
 std::cerr << "Parameter list needed." << std::endl;
 return 1;
 }
-std::vector< std::pair<float, float> > experimentalData = csvReader(argv[1]);
+std::vector< std::pair<float, float> > experimentalData = csvReader(argv[1]); // Defining a vector using std::vector < std::pair<flaot,float> > experimentalData. This is based on namespaces, and the standard library includes basic structures for vectors. 
 srand(SEED); //Random-Seed initialization (must be outside any loop)
 std::cout << "SEED: " << SEED << std::endl;
 long long startTime = time(NULL);
@@ -54,6 +54,7 @@ initGPUSelection();
 
 //---------------------------------------------
 // Model reference parameters that we need to optimize
+// Note: atof converts strings into doubles 
 //--------------------------------------------
 float gamma_B = atof(argv[2]); // [unitless] - RU-RU cooperative coefficient
 float gamma_M = atof(argv[3]); // [unitless] - XB-RU/RU-XB coopcoefficient (Note: gamma_M = mu_B)

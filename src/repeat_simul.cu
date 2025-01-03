@@ -117,18 +117,27 @@ int cc
 
         
         
-        
         float f;
         if(n==0)
         {
         	f = 0;
         }
-        else
-        {
-        	f = (float)Force[n-1];
-        }
-        
-        //printf("%f\n",f);
+        // NOTE: This has been commented out, because I believe that this was the cause of the max_repeats issue. 
+        // Force is eventually normalized when it saved, however, at this point, with all of the repeats 
+        // running simultaneously, the Force array is inflated when there are more repeats running. 
+        // Instead, we are getting the previous fraction of force states from the filament via the 
+        // code below after counting the states (f = forceValue;)
+
+
+        // else
+        // {
+        // 	f = (float)Force[n-1];
+        // }
+        // float current_max=0.0;
+        // if (current_max < f){
+        //     current_max = f;
+        //     printf("New_max = %f, %i\n",f, cc);
+        // }
         
         float k_plus_SR_ATP = k_plus_SR_ref_ATP; //*(1+k_force_ATP*f);
         float k_plus_SR_dATP = k_plus_SR_ref_dATP; //*(1+k_force_dATP*f);
@@ -168,12 +177,13 @@ int cc
                 ++count_SR_state;
             }
         }
-        float forceValue = (float)count_Md_state / (N_RU);
+        float forceValue = (float)count_Md_state / (N_RU); // Type casting because count_Md_state is defined as an int 
         float McValue = (float)count_Mc_state / (N_RU);
         float CValue = (float)count_C_state / (N_RU);
         float BValue = (float)count_B_state / (N_RU);
         float SRValue = (float)count_SR_state / (N_RU);
         
+        f = forceValue;
         
 
 

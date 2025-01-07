@@ -195,8 +195,8 @@ k4_minus
     float Ftemp        = 0.0;                      // is used to calculate the steady-state force at the end
     float Calc_conc_exp           = pow(10.0f,-(args.experimentalData[cc].first-6));     // Ca2+ concentration in uM
     // float kCa_plus     = Cal_conc*kCa_plus_ref;
-    float kCa_plus     = kCa_plus_ref;
-    float kCa_minus    = kCa_minus_ref;
+    // float kCa_plus     = kCa_plus_ref; Removing becuase not refenced
+    // float kCa_minus    = kCa_minus_ref; Removing because not referenced in this part yet 
     const int n_pCa = args.experimentalData.size();
     
     

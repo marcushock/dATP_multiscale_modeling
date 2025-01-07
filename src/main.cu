@@ -71,7 +71,7 @@ float kB_minus_ref = atof(argv[9]); //               - (m = minus)
 float lambda = atof(argv[10]); // [unitless] must be between (0,1)
 float kCa_plus_ref = atof(argv[11]);
 float kCa_minus_ref = atof(argv[12]);
-float xbru_coeff = atof(argv[13]);
+float percent_dATP = atof(argv[13]);
 float k_force = atof(argv[14]);
 float k_plus_SR_ref = atof(argv[15]);
 float k_minus_SR_ref = atof(argv[16]);
@@ -90,7 +90,7 @@ kB_minus_ref,
 lambda,
 kCa_plus_ref,
 kCa_minus_ref,
-xbru_coeff,
+percent_dATP,
 k_force,
 k_plus_SR_ref,
 k_minus_SR_ref, 

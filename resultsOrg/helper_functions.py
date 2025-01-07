@@ -50,6 +50,7 @@ class states_structure:
 
     def states_steadystate(self, end_time_amount= 500): 
         temp_series = self.states_df[self.states_df.Time>end_time_amount].mean()
+        std_series = self.states_df[self.states_df.Time>end_time_amount].std()
         # Define new steady state DF with each column a different state
         # And each row a different pCa (7,4,0.1 steap)
         # Also creating a place for the pCa first, then renaming 
@@ -59,16 +60,43 @@ class states_structure:
             df.pCa[i] = round(df.pCa[i],1)
         df = df.set_index('pCa')
 
+        df_std = pd.DataFrame(np.zeros((31,6)), columns = ['pCa','M2','M1','C','B','OFF'])
+        df_std.pCa = np.arange(7,3.9,-0.1)
+        for i in range(len(df_std.pCa)):
+            df_std.pCa[i] = round(df_std.pCa[i],1)
+        df_std = df_std.set_index('pCa')
+
         # Annoying rounding necessary for the python decimal storage necessity
         pca = 7
         while pca >= 4:
             for state in self.state_list:
                 value = temp_series.get(f'{state} {pca:.1f}')
                 df.at[round(pca,2), state] = value 
+
+                value = std_series.get(f'{state} {pca:.1f}')
+                df_std.at[round(pca,2), state] = value 
             pca -= 0.1
+        
+        max_force = df['M2'].max()
+        min_force = df['M2'].min()
+        half_force = (max_force + min_force) / 2
+        self.pCa_50 = np.interp(half_force, df['M2'].values, df.index)
 
         self.steady_states_all  = df
+        self.steady_states_all_std  = df_std
         self.force_pCa = self.steady_states_all['M2']
+        df_std['M2'].index, df_std['M2'].values
+
+        upper_curve = self.force_pCa + self.steady_states_all_std['M2']
+        upper_half = (upper_curve.max() + upper_curve.min())/2
+        self.upper_pCa_50  = np.interp(upper_half, upper_curve.values, upper_curve.index)
+        
+
+        lower_curve = self.force_pCa - self.steady_states_all_std['M2']
+        lower_half = (lower_curve.max() + lower_curve.min())/2
+        self.lower_pCa_50 = np.interp(lower_half, lower_curve.values, lower_curve.index)
+
+
 
 
 

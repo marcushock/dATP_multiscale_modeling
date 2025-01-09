@@ -47,16 +47,16 @@ float kCa_minus_ref,
 float percent_dATP,
 float k_force_dATP,
 float k_force_ATP,
-float k_plus_SR_ref_dATP,
-float k_plus_SR_ref_ATP,
-float k_minus_SR_ref,
+float k_plus_SR_dATP,
+float k_plus_SR_ATP,
+float k_minus_SR,
 float * M3,
 float * M1,
 float * C,
 float * B,
 float * SR,
 int cc,
-int protocol, 
+float protocol, 
 float Calc_conc_exp
 )
 
@@ -158,9 +158,9 @@ float Calc_conc_exp
         //     printf("New_max = %f, %i\n",f, cc);
         // }
         
-        float k_plus_SR_ATP = k_plus_SR_ref_ATP; //*(1+k_force_ATP*f);
-        float k_plus_SR_dATP = k_plus_SR_ref_dATP; //*(1+k_force_dATP*f);
-        float k_minus_SR = k_minus_SR_ref;
+        // float k_plus_SR_ATP = k_plus_SR_ATP; //*(1+k_force_ATP*f); DELETE THIS
+        // float k_plus_SR_dATP = k_plus_SR_ref_dATP; //*(1+k_force_dATP*f); DELETE THIS LINE
+        // float k_minus_SR = k_minus_SR_ref; // DELETE THIS LINE 
         //printf("%f\n",k_plus_SR);
         //printf("%f\n",k_minus_SR);
 

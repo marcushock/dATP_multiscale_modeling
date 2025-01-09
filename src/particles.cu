@@ -92,6 +92,7 @@ void init_particle(initParticleArgs & args)
 
     // set return residual
     float force_pCa_residual = pow(residual_temp,0.5f);
+    // Note: All of these are looking at the dATP parameter changes in the printed file name. 
     std::cout << "Residual: " << force_pCa_residual << std::endl;
 
         std::string dataAppend =
@@ -99,17 +100,17 @@ void init_particle(initParticleArgs & args)
         //" gammaB " + std::to_string(args.gamma_B) +
         //" gammaM " + std::to_string(args.gamma_M) +
         //" mu_M " + std::to_string(args.mu_M) +
-        " k2_plus_ref " + std::to_string(args.k2_plus_ref) +
-        " k3_plus " + std::to_string(args.k3_plus) +
-        " k4_plus_ref " + std::to_string(args.k4_plus_ref) +
+        " k2_plus_ref " + std::to_string(args.k2_plus_ref_dATP) +
+        " k3_plus " + std::to_string(args.k3_plus_dATP) +
+        " k4_plus_ref " + std::to_string(args.k4_plus_ref_dATP) +
         " kB_plus_ref " + std::to_string(args.kB_plus_ref) +
         " kB_minus_ref " + std::to_string(args.kB_minus_ref) +
         //" lambda " + std::to_string(args.lambda) +
         " kCa_plus_ref " + std::to_string(args.kCa_plus_ref) +
         " dATP " + std::to_string(args.percent_dATP) +
-        " k_force " + std::to_string(args.k_force) +
-        " k_plus_SR_ref " + std::to_string(args.k_plus_SR_ref) +
-        " k_minus_SR_ref " + std::to_string(args.k_minus_SR_ref);
+        " k_force " + std::to_string(args.k_force_dATP) +
+        " k_plus_SR_ref " + std::to_string(args.k_plus_SR_dATP) +
+        " k_minus_SR_ref " + std::to_string(args.k_minus_SR);
         std::string Force_out_Filename = ("MCMC_simulation_results/Force_out"+dataAppend+".csv");
         std::string States_out_Filename = ("MCMC_simulation_results/States_out"+dataAppend+".csv");
         std::string Force_pCa_out_Filename = ("MCMC_simulation_results/Force_pCa_Optmz"+dataAppend+".csv");

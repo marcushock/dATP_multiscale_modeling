@@ -6,7 +6,7 @@
 #include <string>
 #include <boost/tokenizer.hpp>
 
-std::vector< std::vector<float> > parameterReader(const char * name);
+std::vector< std::vector<float> > argumentReader(const char * name);
 
 
 #endif // PARAMETERREADER_H

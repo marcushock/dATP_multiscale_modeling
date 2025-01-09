@@ -23,9 +23,9 @@ __device__ void update_RUs(float lambda,
                 float percent_dATP,
                 float k_force_dATP,
                 float k_force_ATP, 
-                float k_plus_SR_ref_dATP,
-                float k_plus_SR_ref_ATP, 
-                float k_minus_SR_ref,
+                float k_plus_SR_dATP,
+                float k_plus_SR_ATP, 
+                float k_minus_SR,
                 float f
                );
 #endif // UPDATE_RUS_H

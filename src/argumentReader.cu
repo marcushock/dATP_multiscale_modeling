@@ -1,4 +1,4 @@
-#include "parameterReader.h"
+#include "argumentReader.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -8,7 +8,7 @@
 #define NUM_COLUMNS 35
 
 // Define the kernel function to process the parameters with the data type given first (unlike void)
-std::vector< std::vector<float> > parameterReader(const char * name)
+std::vector< std::vector<float> > argumentReader(const char * name)
 {
     using namespace std;  // Use the standard namespace
     using namespace boost;  // Use the Boost namespace

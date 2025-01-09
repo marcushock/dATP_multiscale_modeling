@@ -80,28 +80,36 @@ float mu_B = args.gamma_M;
 float mu_M = args.mu_M;
 float kB_plus_ref = args.kB_plus_ref;
 float kB_minus_ref = args.kB_minus_ref;
-float k2_plus_ref_dATP = args.k2_plus_ref;
-float k3_plus_dATP   = args.k3_plus;
-float k4_plus_ref_dATP = args.k4_plus_ref;
+
+float k2_plus_ref_ATP = args.k2_plus_ref_ATP;
+float k2_plus_ref_dATP = args.k2_plus_ref_dATP;
+
+float k3_plus_ATP = args.k3_plus_ATP; 
+float k3_plus_dATP   = args.k3_plus_dATP;
+
+float k4_plus_ref_ATP = args.k4_plus_ref_ATP; 
+float k4_plus_ref_dATP = args.k4_plus_ref_dATP;
+
 float percent_dATP = args.percent_dATP;
 float kCa_plus_ref = args.kCa_plus_ref;
 float kCa_minus_ref = args.kCa_minus_ref;
-float k_force_dATP = args.k_force;
-float k_plus_SR_ref_dATP = args.k_plus_SR_ref;
-float k_minus_SR_ref = args.k_minus_SR_ref;
-int protocol = args.protocol;
 
-float k2_plus_ref_ATP = 0.0025; // parameter defined here
-float k3_plus_ATP = 0.05; // parameter defined here
-float k4_plus_ref_ATP = 0.135; // parameter defined here
-float k_plus_SR_ref_ATP = 16; // parameter defined here
-float k_force_ATP = 0.2; // parameter defined here
+float k_force_ATP = args.k_force_ATP;
+float k_force_dATP = args.k_force_dATP;
+
+float k_plus_SR_ATP = args.k_plus_SR_ATP;
+float k_plus_SR_dATP = args.k_plus_SR_dATP;
+
+float k_minus_SR = args.k_minus_SR;
+float protocol = args.protocol;
+
+
 
 //-------------------------------
 //   Set rates using the input arguments
 //-------------------------------
-float r = 1; // parameter defined here
-float q = 1; // parameter defined here
+float r = args.r; // parameter defined here
+float q = args.q; // parameter defined here
 // float lambda = 0;
 float lambda = args.lambda; 
 // calculating rates for XB cycling - use Tanner 2007/ Daniel 1998/ Pate & Cooke 1989
@@ -109,9 +117,9 @@ float k2_minus_ref, k3_minus, k4_minus_ref;
 float conc_ADP,conc_Pi, conc_ATP, x_preR, g_Ca, g_Cb, g_Mc, g_Md, delta_G_ATP, delta_G, k_xb, x_xb;
 //float  A, B, C, D, M, N, P, x_b0;
 //metabolite concentrations in cytosol
-conc_ADP    = 30;        //uM, Dawson et al 1978/ Kushmerick et al 1969 (frog)
-conc_ATP    = 3e3;        //uM
-conc_Pi     = 3e3;         //uM
+conc_ADP    = args.conc_ADP;        //uM, Dawson et al 1978/ Kushmerick et al 1969 (frog)
+conc_ATP    = args.conc_ATP;        //uM
+conc_Pi     = args.conc_Pi;         //uM
 // parameter defined here
 //thermodynamic parameters
 //r_gas         = 8.314;      // Gas constant, J/mol*K
@@ -120,8 +128,8 @@ conc_Pi     = 3e3;         //uM
 
 
 // other constants
-float alpha = 0.28; // parameter defined here
-float eta = 0.68; // parameter defined here
+float alpha = args.alpha; // parameter defined here
+float eta = args.eta; // parameter defined here
 //A = 2000; 
 //B = 100; // all from Tanner et al, 2007.
 //C = 1;
@@ -129,21 +137,21 @@ float eta = 0.68; // parameter defined here
 //M = 3600;
 //N = 40;
 //P = 20;
-k_xb = 5; // parameter defined here
+k_xb = args.k_xb; // parameter defined here
 
-delta_G_ATP = 13; // units = RT
+delta_G_ATP = args.delta_G_ATP; // units = RT
 delta_G = delta_G_ATP - log(conc_ATP/(conc_ADP*conc_Pi)); // units = RT
 
-x_preR      = 0; // XB distortion when pre-rotated.
-x_xb        = 0.075;        // nm, XB distortion
+x_preR      = args.x_preR; // 0; XB distortion when pre-rotated.
+x_xb        = args.x_xb;        // 0.075; nm, XB distortion
 //x_b0        = eta * delta_G / k_xb; // xb distortion due to ATP hydrolysis
 
 
 
-g_Cb    =  0                                    ;//free energy of XB state Cb
+g_Cb    =  args.g_Cb                                    ;//free energy of XB state Cb
 g_Mc    = alpha * delta_G + k_xb * (x_preR)     ;//free energy of XB state Mc
 g_Md    = eta* delta_G + k_xb*pow(x_xb,2)       ;//free energy of XB state Md
-g_Ca    =   g_Cb                                ;//free energy of XB state Ca
+g_Ca    =   args.g_Ca;                                ;//free energy of XB state Ca
 
 
 // to get reverse values, keep in mind that rij/rji = e^(gi - gj)
@@ -227,9 +235,9 @@ repeat_simul<<<MAX_REPS/32, 32, 0, s>>>(lambda,
                                         percent_dATP,
                                         k_force_dATP,
                                         k_force_ATP,
-					k_plus_SR_ref_dATP,
-					k_plus_SR_ref_ATP,
-					k_minus_SR_ref,
+                                        k_plus_SR_dATP,
+                                        k_plus_SR_ATP,
+                                        k_minus_SR,
                                         M3,
                                         M1,
                                         C,
@@ -238,7 +246,7 @@ repeat_simul<<<MAX_REPS/32, 32, 0, s>>>(lambda,
                                         cc, 
                                         protocol, 
                                         Calc_conc_exp
-                                           );
+                                        );
 
     gpuErrchk(cudaStreamSynchronize(s)); // wait for device to finish repeat_simul
     gpuErrchk(cudaStreamDestroy(s));

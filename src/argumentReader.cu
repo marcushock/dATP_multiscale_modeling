@@ -34,7 +34,8 @@ std::vector< std::vector<float> > argumentReader(const char * name)
         }
 
         // Check if the line is a list of header variable names, or numeric 
-        if (lineVector[0] != "protocol"){
+        // Also ensures the CSV row actually starts with a value, not a ','
+        if ((lineVector[0] != "protocol") && (line[0] != ',')){
             // Convert the tokens to floats and add them as a pair to the output vector
             std::vector<float> row(NUM_COLUMNS);
             for (int i = 0; i < NUM_COLUMNS; ++i) {

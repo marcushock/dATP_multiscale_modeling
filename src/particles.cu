@@ -21,7 +21,7 @@ inline float getRand()
     return (float) (RANDVAL) / (float) (RAND_MAX);
 }
 
-void init_particle(initParticleArgs & args)
+void init_particle(initParticleArgs & args, int replicate_number)
 {
     const int n_pCa = args.experimentalData.size();
 
@@ -96,6 +96,7 @@ void init_particle(initParticleArgs & args)
     std::cout << "Residual: " << force_pCa_residual << std::endl;
 
         std::string dataAppend =
+        " rep_" + std::to_string(replicate_number) +
         //" percent " + std::to_string(args.percent_dATP) +
         //" gammaB " + std::to_string(args.gamma_B) +
         //" gammaM " + std::to_string(args.gamma_M) +

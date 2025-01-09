@@ -69,7 +69,7 @@ for(int i = 0; i < argsArray.size(); ++i){
     startTime = time(NULL);
     argsVector = argsArray[i];
     initParticleArgs args = initParticleArgs(experimentalData, argsVector);
-    init_particle(args);
+    init_particle(args, i);
     std::cout << "One iteration runtime: " << (time(NULL)-startTime) << " second(s)" << std::endl;
 }
 

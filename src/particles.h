@@ -105,6 +105,6 @@ public:
 
 };
 
-void init_particle(initParticleArgs & args);
+void init_particle(initParticleArgs & args, int replicate_number);
 
 #endif // PARTICLES_H

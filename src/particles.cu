@@ -96,7 +96,6 @@ void init_particle(initParticleArgs & args, int replicate_number)
     std::cout << "Residual: " << force_pCa_residual << std::endl;
 
         std::string dataAppend =
-        " rep_" + std::to_string(replicate_number) +
         //" percent " + std::to_string(args.percent_dATP) +
         //" gammaB " + std::to_string(args.gamma_B) +
         //" gammaM " + std::to_string(args.gamma_M) +
@@ -112,10 +111,10 @@ void init_particle(initParticleArgs & args, int replicate_number)
         " k_force " + std::to_string(args.k_force_dATP) +
         " k_plus_SR_ref " + std::to_string(args.k_plus_SR_dATP) +
         " k_minus_SR_ref " + std::to_string(args.k_minus_SR);
-        std::string Force_out_Filename = ("MCMC_simulation_results/Force_out"+dataAppend+".csv");
-        std::string States_out_Filename = ("MCMC_simulation_results/States_out"+dataAppend+".csv");
-        std::string Force_pCa_out_Filename = ("MCMC_simulation_results/Force_pCa_Optmz"+dataAppend+".csv");
-        std::string Force_pCa_normalized_out_Filename = ("MCMC_simulation_results/Force_pCa_Optmz_Normalized"+dataAppend+".csv");
+        std::string Force_out_Filename = ("MCMC_simulation_results/Rep_" + std::to_string(replicate_number) + "Force_out"+dataAppend+".csv");
+        std::string States_out_Filename = ("MCMC_simulation_results/Rep_" + std::to_string(replicate_number) + "States_out"+dataAppend+".csv");
+        std::string Force_pCa_out_Filename = ("MCMC_simulation_results/Rep_" + std::to_string(replicate_number) + "Force_pCa_Optmz"+dataAppend+".csv");
+        std::string Force_pCa_normalized_out_Filename = ("MCMC_simulation_results/Rep_" + std::to_string(replicate_number) + "Force_pCa_Optmz_Normalized"+dataAppend+".csv");
 
         /* raw force out */
         const int skipFactor = 1000;

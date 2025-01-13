@@ -36,25 +36,25 @@ __device__ void update_RUs(float lambda,
                             float kCa_plus,
                             float kCa_minus,
                             float randNum[N_RU],
-                            float rand_dATP[N_RU],
+                            float rand_drug[N_RU],
                             int   RU[N_RU],
                             bool caRU[N_RU],
                             float * kB_plus,
                             float * kB_minus,
-                            float * k2_plus_dATP,
-                            float * k2_plus_ATP,
+                            float * k2_plus_drug,
+                            float * k2_plus_baseline,
                             float * k2_minus,
-                            float k3_plus_dATP,
-                            float k3_plus_ATP,
+                            float k3_plus_drug,
+                            float k3_plus_baseline,
                             float k3_minus,
-                            float * k4_plus_dATP,
-                            float * k4_plus_ATP,
+                            float * k4_plus_drug,
+                            float * k4_plus_baseline,
                             float * k4_minus,
-                            float percent_dATP,
-                            float k_force_dATP,
-                            float k_force_ATP, 
-                            float k_plus_SR_dATP,
-                            float k_plus_SR_ATP, 
+                            float percent_drug,
+                            float k_force_drug,
+                            float k_force_baseline, 
+                            float k_plus_SR_drug,
+                            float k_plus_SR_baseline, 
                             float k_minus_SR,
                             float f
                             )
@@ -73,7 +73,7 @@ __device__ void update_RUs(float lambda,
         x     = RU[i-1];
         y     = RU[i+1];
 
-        // printf("%d %f %f\n", i, rand_dATP[i], randNum[i]);
+        // printf("%d %f %f\n", i, rand_drug[i], randNum[i]);
         //-----------------------------------------------------------------
         // if (state = [B* = 0]): Then   [B1*]           else stay as [B0*]
         //     & caState = 0             ^  
@@ -93,14 +93,14 @@ __device__ void update_RUs(float lambda,
             // Per Abby, is due to a prevention of calcium from unbinding (in a general case). 
             // Here, it appears that you cannot move into a C0 state ever... 
 
-            // This chunk of code is used to calculate kinetics based on either ATP parameters or dATP parameters 
-            if (rand_dATP[i] <= percent_dATP) // percent dATP is somewhere between 0 and 1, which then helps to identify if we have ATP kinetics or dATP kinetics 
+            // This chunk of code is used to calculate kinetics based on either ATP parameters or drug parameters 
+            if (rand_drug[i] <= percent_drug) // percent drug is somewhere between 0 and 1, which then helps to identify if we have baseline kinetics or drug kinetics 
             {
-                p3 = p2 + k_plus_SR_dATP*(1+k_force_dATP*f)*dt; // We calculate a new probability p3 using dATP kinetic parameters 
+                p3 = p2 + k_plus_SR_drug*(1+k_force_drug*f)*dt; // We calculate a new probability p3 using drug kinetic parameters 
             }
             else
             {
-                p3 = p2 + k_plus_SR_ATP*(1+k_force_ATP*f)*dt; // Otherwise use the basal ATP kinetic parameters to calcualte p3
+                p3 = p2 + k_plus_SR_baseline*(1+k_force_baseline*f)*dt; // Otherwise use the basal baseline kinetic parameters to calcualte p3
             }
             // P3 is used for calculating whether we transition into or out of the SRX. 
             
@@ -110,7 +110,7 @@ __device__ void update_RUs(float lambda,
             // Calcium bound confirmation of the SRX. 
             // if ((p3 < 1) || (p2 > 1) || (p1 > 1))
             // {
-            //     // printf("Step i: %d. dATP rand %f, p1: %f, p2: %f, p3: %f\n", i, rand_dATP[i], p1, p2, p3);
+            //     // printf("Step i: %d. drug rand %f, p1: %f, p2: %f, p3: %f\n", i, rand_drug[i], p1, p2, p3);
             //     //asm("trap;"); // Force the kernel to terminate immediately
             // }
             if (randNum[i] < p1)
@@ -138,13 +138,13 @@ __device__ void update_RUs(float lambda,
         {
             p1 = kCa_minus*dt; // Calculate unbinding probability of calcium 
             p2 = p1 + kB_plus[x*N_S+y]*dt; // Calculate the transition probability from B1* to C1* which is the unblocking of the thin filament. 
-            if (rand_dATP[i] <= percent_dATP)
+            if (rand_drug[i] <= percent_drug)
             {
-                p3 = p2 + k_plus_SR_dATP*(1+k_force_dATP*f)*dt; // Calculate the probability of transitioning out of the SRX/OFF state
+                p3 = p2 + k_plus_SR_drug*(1+k_force_drug*f)*dt; // Calculate the probability of transitioning out of the SRX/OFF state
             }
             else
             {
-                p3 = p2 + k_plus_SR_ATP*(1+k_force_ATP*f)*dt; //Calculate rate of out OFF state but instead assuming ATP kinetics. 
+                p3 = p2 + k_plus_SR_baseline*(1+k_force_baseline*f)*dt; //Calculate rate of out OFF state but instead assuming baseline kinetics. 
             }
             
             // Check if we have a state change in one of the 3 possible transitions based on above calculated probabilities. 
@@ -175,13 +175,13 @@ __device__ void update_RUs(float lambda,
         {
             p1 = kCa_plus*dt; // Calculate the probability for calcium binding. 
             p2 = p1 + kB_minus[x*N_S+y]*dt; // Calculate probability of moving back into the blocked state 
-            if (rand_dATP[i] <= percent_dATP)
+            if (rand_drug[i] <= percent_drug)
             {
-                p3 = p2 + k_plus_SR_dATP*(1+k_force_dATP*f)*dt; // Calcualte probability out of the SRX/OFF state (dATP)
+                p3 = p2 + k_plus_SR_drug*(1+k_force_drug*f)*dt; // Calcualte probability out of the SRX/OFF state (drug)
             }
             else
             {
-                p3 = p2 + k_plus_SR_ATP*(1+k_force_ATP*f)*dt; // Calcualte probability out of the SRX/OFF state (dATP)
+                p3 = p2 + k_plus_SR_baseline*(1+k_force_baseline*f)*dt; // Calcualte probability out of the SRX/OFF state (drug)
             }
 
             if  (randNum[i] < p1) // Check to see if moving into calcium bound state 
@@ -213,13 +213,13 @@ __device__ void update_RUs(float lambda,
         {
             p1 = lambda*kCa_minus*dt; // Once again Lambda is included and still set to 0. 
             p2 = p1 + kB_minus[x*N_S+y]*dt; // Calculate prob of going back to the blocked state 
-            if (rand_dATP[i] <= percent_dATP) // Calculate prob of going out of the SRX (again dATP dependent)
+            if (rand_drug[i] <= percent_drug) // Calculate prob of going out of the SRX (again drug dependent)
             {
-                p3 = p2 + k_plus_SR_dATP*(1+k_force_dATP*f)*dt;
+                p3 = p2 + k_plus_SR_drug*(1+k_force_drug*f)*dt;
             }
             else
             {
-                p3 = p2 + k_plus_SR_ATP*(1+k_force_ATP*f)*dt;
+                p3 = p2 + k_plus_SR_baseline*(1+k_force_baseline*f)*dt;
             }
   
 
@@ -314,13 +314,13 @@ __device__ void update_RUs(float lambda,
             p1 = kCa_plus*dt; // Calculate probability of calcium binding. 
             p2 = p1 + kB_minus[x*N_S+y]*dt;
 	        p3 = p2 + k_minus_SR*dt;
-	        if (rand_dATP[i] <= percent_dATP)
+	        if (rand_drug[i] <= percent_drug)
             {
-                p4 = p3 + k2_plus_dATP[x*N_S+y]*dt;
+                p4 = p3 + k2_plus_drug[x*N_S+y]*dt;
             }
             else
             {
-                p4 = p3 + k2_plus_ATP[x*N_S+y]*dt;
+                p4 = p3 + k2_plus_baseline[x*N_S+y]*dt;
             }
             p5 = p4 + k4_minus[x*N_S+y]*dt;
 
@@ -359,13 +359,13 @@ __device__ void update_RUs(float lambda,
             p1 = lambda*kCa_minus*dt;
             p2 = p1 + kB_minus[x*N_S+y]*dt;
 	        p3 = p2 + k_minus_SR*dt;
-	        if (rand_dATP[i] <= percent_dATP)
+	        if (rand_drug[i] <= percent_drug)
             {
-                p4 = p3 + k2_plus_dATP[x*N_S+y]*dt;
+                p4 = p3 + k2_plus_drug[x*N_S+y]*dt;
             }
             else
             {
-                p4 = p3 + k2_plus_ATP[x*N_S+y]*dt;
+                p4 = p3 + k2_plus_baseline[x*N_S+y]*dt;
             }
             p5 = p4 + k4_minus[x*N_S+y]*dt;
   
@@ -405,13 +405,13 @@ __device__ void update_RUs(float lambda,
         else if ((state == 4) && (caState == 0))
         {
             p1 = kCa_plus*dt;
-            if (rand_dATP[i] <= percent_dATP)
+            if (rand_drug[i] <= percent_drug)
             {
-                p2 = p3 + k3_plus_dATP*dt;
+                p2 = p3 + k3_plus_drug*dt;
             }
             else
             {
-                p2 = p3 + k3_plus_ATP*dt;
+                p2 = p3 + k3_plus_baseline*dt;
             }
             p3 = p2 + k2_minus[x*N_S+y]*dt;
 
@@ -439,13 +439,13 @@ __device__ void update_RUs(float lambda,
         else if ((state == 4) && (caState == 1))
         {
             p1 = lambda*kCa_minus*dt;
-            if (rand_dATP[i] <= percent_dATP)
+            if (rand_drug[i] <= percent_drug)
             {
-                p2 = p1 + k3_plus_dATP*dt;
+                p2 = p1 + k3_plus_drug*dt;
             }
             else
             {
-                p2 = p1 + k3_plus_ATP*dt;
+                p2 = p1 + k3_plus_baseline*dt;
             }
             p3 = p2 + k2_minus[x*N_S+y]*dt;
 
@@ -473,13 +473,13 @@ __device__ void update_RUs(float lambda,
         else if ((state == 5) && (caState == 0))
         {
             p1 = kCa_plus*dt;
-            if (rand_dATP[i] <= percent_dATP)
+            if (rand_drug[i] <= percent_drug)
             {
-                p2 = p1 + k4_plus_dATP[x*N_S+y]*dt;
+                p2 = p1 + k4_plus_drug[x*N_S+y]*dt;
             }
             else
             {
-                p2 = p1 + k4_plus_ATP[x*N_S+y]*dt;
+                p2 = p1 + k4_plus_baseline[x*N_S+y]*dt;
             }
             p3 = p2 + k3_minus*dt;
 
@@ -510,13 +510,13 @@ __device__ void update_RUs(float lambda,
         else if ((state == 5) && (caState == 1))
         {
             p1 = lambda*kCa_minus*dt;
-            if (rand_dATP[i] <= percent_dATP)
+            if (rand_drug[i] <= percent_drug)
             {
-                p2 = p1 + k4_plus_dATP[x*N_S+y]*dt;
+                p2 = p1 + k4_plus_drug[x*N_S+y]*dt;
             }
             else
             {
-                p2 = p1 + k4_plus_ATP[x*N_S+y]*dt;
+                p2 = p1 + k4_plus_baseline[x*N_S+y]*dt;
             }
             p3 = p2 + k3_minus*dt;
 

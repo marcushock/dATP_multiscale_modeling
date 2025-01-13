@@ -12,23 +12,23 @@ public:
     // model reference parameters that we need to optimize
     //--------------------------------------------
     float protocol;
-    float k_force_ATP;
-    float k_force_dATP;
-    float k_plus_SR_ATP;
-    float k_plus_SR_dATP;
+    float k_force_baseline;
+    float k_force_drug;
+    float k_plus_SR_baseline;
+    float k_plus_SR_drug;
     float k_minus_SR;
     float k_xb;
-    float k2_plus_ref_ATP;
-    float k2_plus_ref_dATP;
-    float k3_plus_ATP;
-    float k3_plus_dATP;
-    float k4_plus_ref_ATP;
-    float k4_plus_ref_dATP;
+    float k2_plus_ref_baseline;
+    float k2_plus_ref_drug;
+    float k3_plus_baseline;
+    float k3_plus_drug;
+    float k4_plus_ref_baseline;
+    float k4_plus_ref_drug;
     float kB_plus_ref;
     float kB_minus_ref;
     float kCa_plus_ref;
     float kCa_minus_ref;
-    float percent_dATP;
+    float percent_drug;
     float lambda;
     float gamma_B;
     float gamma_M;
@@ -58,7 +58,7 @@ public:
     // float lambda; // [unitless] must be between (0,1)
     // float kCa_plus_ref;
     // float kCa_minus_ref;
-    // float percent_dATP;
+    // float percent_drug;
     // float k_force;
     // float k_plus_SR_ref;
     // float k_minus_SR_ref;
@@ -66,23 +66,23 @@ public:
     initParticleArgs(std::vector< std::pair<float, float> > experimentalData, std::vector<float> argsVector)
         :experimentalData(experimentalData),
         protocol(argsVector[0]),
-        k_force_ATP(argsVector[1]),
-        k_force_dATP(argsVector[2]),
-        k_plus_SR_ATP(argsVector[3]),
-        k_plus_SR_dATP(argsVector[4]),
+        k_force_baseline(argsVector[1]),
+        k_force_drug(argsVector[2]),
+        k_plus_SR_baseline(argsVector[3]),
+        k_plus_SR_drug(argsVector[4]),
         k_minus_SR(argsVector[5]),
         k_xb(argsVector[6]),
-        k2_plus_ref_ATP(argsVector[7]),
-        k2_plus_ref_dATP(argsVector[8]),
-        k3_plus_ATP(argsVector[9]),
-        k3_plus_dATP(argsVector[10]),
-        k4_plus_ref_ATP(argsVector[11]),
-        k4_plus_ref_dATP(argsVector[12]),
+        k2_plus_ref_baseline(argsVector[7]),
+        k2_plus_ref_drug(argsVector[8]),
+        k3_plus_baseline(argsVector[9]),
+        k3_plus_drug(argsVector[10]),
+        k4_plus_ref_baseline(argsVector[11]),
+        k4_plus_ref_drug(argsVector[12]),
         kB_plus_ref(argsVector[13]),
         kB_minus_ref(argsVector[14]),
         kCa_plus_ref(argsVector[15]),
         kCa_minus_ref(argsVector[16]),
-        percent_dATP(argsVector[17]),
+        percent_drug(argsVector[17]),
         lambda(argsVector[18]),
         gamma_B(argsVector[19]),
         gamma_M(argsVector[20]),

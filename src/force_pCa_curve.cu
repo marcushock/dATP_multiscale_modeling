@@ -55,21 +55,21 @@ gpuErrchk(cudaMemset(kB_plus, 0, sizeof(float)*N_S*N_S));
 float * kB_minus;
 gpuErrchk(cudaMallocManaged(&kB_minus, sizeof(float)*N_S*N_S));
 gpuErrchk(cudaMemset(kB_minus, 0, sizeof(float)*N_S*N_S));
-float * k2_plus_dATP;
-gpuErrchk(cudaMallocManaged(&k2_plus_dATP, sizeof(float)*N_S*N_S));
-gpuErrchk(cudaMemset(k2_plus_dATP, 0, sizeof(float)*N_S*N_S));
-float * k2_plus_ATP;
-gpuErrchk(cudaMallocManaged(&k2_plus_ATP, sizeof(float)*N_S*N_S));
-gpuErrchk(cudaMemset(k2_plus_ATP, 0, sizeof(float)*N_S*N_S));
+float * k2_plus_drug;
+gpuErrchk(cudaMallocManaged(&k2_plus_drug, sizeof(float)*N_S*N_S));
+gpuErrchk(cudaMemset(k2_plus_drug, 0, sizeof(float)*N_S*N_S));
+float * k2_plus_baseline;
+gpuErrchk(cudaMallocManaged(&k2_plus_baseline, sizeof(float)*N_S*N_S));
+gpuErrchk(cudaMemset(k2_plus_baseline, 0, sizeof(float)*N_S*N_S));
 float * k2_minus;
 gpuErrchk(cudaMallocManaged(&k2_minus, sizeof(float)*N_S*N_S));
 gpuErrchk(cudaMemset(k2_minus, 0, sizeof(float)*N_S*N_S));
-float * k4_plus_dATP;
-gpuErrchk(cudaMallocManaged(&k4_plus_dATP, sizeof(float)*N_S*N_S));
-gpuErrchk(cudaMemset(k4_plus_dATP, 0, sizeof(float)*N_S*N_S));
-float * k4_plus_ATP;
-gpuErrchk(cudaMallocManaged(&k4_plus_ATP, sizeof(float)*N_S*N_S));
-gpuErrchk(cudaMemset(k4_plus_ATP, 0, sizeof(float)*N_S*N_S));
+float * k4_plus_drug;
+gpuErrchk(cudaMallocManaged(&k4_plus_drug, sizeof(float)*N_S*N_S));
+gpuErrchk(cudaMemset(k4_plus_drug, 0, sizeof(float)*N_S*N_S));
+float * k4_plus_baseline;
+gpuErrchk(cudaMallocManaged(&k4_plus_baseline, sizeof(float)*N_S*N_S));
+gpuErrchk(cudaMemset(k4_plus_baseline, 0, sizeof(float)*N_S*N_S));
 float * k4_minus;
 gpuErrchk(cudaMallocManaged(&k4_minus, sizeof(float)*N_S*N_S));
 gpuErrchk(cudaMemset(k4_minus, 0, sizeof(float)*N_S*N_S));
@@ -81,24 +81,24 @@ float mu_M = args.mu_M;
 float kB_plus_ref = args.kB_plus_ref;
 float kB_minus_ref = args.kB_minus_ref;
 
-float k2_plus_ref_ATP = args.k2_plus_ref_ATP;
-float k2_plus_ref_dATP = args.k2_plus_ref_dATP;
+float k2_plus_ref_baseline = args.k2_plus_ref_baseline;
+float k2_plus_ref_drug = args.k2_plus_ref_drug;
 
-float k3_plus_ATP = args.k3_plus_ATP; 
-float k3_plus_dATP   = args.k3_plus_dATP;
+float k3_plus_baseline = args.k3_plus_baseline; 
+float k3_plus_drug   = args.k3_plus_drug;
 
-float k4_plus_ref_ATP = args.k4_plus_ref_ATP; 
-float k4_plus_ref_dATP = args.k4_plus_ref_dATP;
+float k4_plus_ref_baseline = args.k4_plus_ref_baseline; 
+float k4_plus_ref_drug = args.k4_plus_ref_drug;
 
-float percent_dATP = args.percent_dATP;
+float percent_drug = args.percent_drug;
 float kCa_plus_ref = args.kCa_plus_ref;
 float kCa_minus_ref = args.kCa_minus_ref;
 
-float k_force_ATP = args.k_force_ATP;
-float k_force_dATP = args.k_force_dATP;
+float k_force_baseline = args.k_force_baseline;
+float k_force_drug = args.k_force_drug;
 
-float k_plus_SR_ATP = args.k_plus_SR_ATP;
-float k_plus_SR_dATP = args.k_plus_SR_dATP;
+float k_plus_SR_baseline = args.k_plus_SR_baseline;
+float k_plus_SR_drug = args.k_plus_SR_drug;
 
 float k_minus_SR = args.k_minus_SR;
 float protocol = args.protocol;
@@ -161,11 +161,11 @@ g_Ca    =   args.g_Ca;                                ;//free energy of XB state
 //kCa_minus_ref   = 0.113;                    //X_kCa_minus_ref_PSO[i];
 //kB_minus_ref    = 0.327;                    //X_kB_minus_ref_PSO[i];
 //k2_plus_ref     = A * pow(k_xb/2*M_PI,0.5)*exp(-k_xb*pow(x_preR-x_b0,2)/2); // from tanner 2007
-k2_minus_ref    = k2_plus_ref_ATP/ exp(g_Cb - g_Mc);//0.5 / exp(g_Cb - g_Mc);    //using vals from optimization_0227 (k2_plus = 0.615440)
+k2_minus_ref    = k2_plus_ref_baseline/ exp(g_Cb - g_Mc);//0.5 / exp(g_Cb - g_Mc);    //using vals from optimization_0227 (k2_plus = 0.615440)
 //k3_plus         = (B/pow(k_xb,.5))*(1-tanh(C*pow(k_xb,.5)*(x_xb-x_b0)))+D;        //X_k3_plus_PSO[i];
-k3_minus        = k3_plus_ATP / exp(g_Mc - g_Md) ;//0.3 / exp(g_Mc - g_Md);  //
+k3_minus        = k3_plus_baseline / exp(g_Mc - g_Md) ;//0.3 / exp(g_Mc - g_Md);  //
 //k4_plus_ref     = pow(k_xb,0.5)*(pow(M*pow(x_xb,2),0.5)-N*x_xb)+ P;                 //X_k4_plus_PSO[i];
-k4_minus_ref    = k4_plus_ref_ATP * exp(g_Ca - g_Md - delta_G);
+k4_minus_ref    = k4_plus_ref_baseline * exp(g_Ca - g_Md - delta_G);
 
 //-------------------------------------
 // Call the transition rates function:
@@ -174,11 +174,11 @@ k4_minus_ref    = k4_plus_ref_ATP * exp(g_Ca - g_Md - delta_G);
 rates_trans_matrix(N_S,
 kB_plus_ref,
 kB_minus_ref,
-k2_plus_ref_dATP,
-k2_plus_ref_ATP,
+k2_plus_ref_drug,
+k2_plus_ref_baseline,
 k2_minus_ref,
-k4_plus_ref_dATP,
-k4_plus_ref_ATP,
+k4_plus_ref_drug,
+k4_plus_ref_baseline,
 k4_minus_ref,
 gamma_B,
 gamma_M,
@@ -188,11 +188,11 @@ r,
 q,
 kB_plus,
 kB_minus,
-k2_plus_dATP,
-k2_plus_ATP,
+k2_plus_drug,
+k2_plus_baseline,
 k2_minus,
-k4_plus_dATP,
-k4_plus_ATP,
+k4_plus_drug,
+k4_plus_baseline,
 k4_minus
 );
 
@@ -219,24 +219,24 @@ k4_minus
     }
 repeat_simul<<<MAX_REPS/32, 32, 0, s>>>(lambda,
                                         randSeed,
-                                        k4_plus_dATP,
-                                        k4_plus_ATP,
+                                        k4_plus_drug,
+                                        k4_plus_baseline,
                                         k4_minus,
-                                        k3_plus_dATP,
-                                        k3_plus_ATP,
+                                        k3_plus_drug,
+                                        k3_plus_baseline,
                                         k3_minus,
-                                        k2_plus_dATP,
-                                        k2_plus_ATP,
+                                        k2_plus_drug,
+                                        k2_plus_baseline,
                                         k2_minus,
                                         kB_plus,
                                         kB_minus,
                                         kCa_plus_ref,
                                         kCa_minus_ref,
-                                        percent_dATP,
-                                        k_force_dATP,
-                                        k_force_ATP,
-                                        k_plus_SR_dATP,
-                                        k_plus_SR_ATP,
+                                        percent_drug,
+                                        k_force_drug,
+                                        k_force_baseline,
+                                        k_plus_SR_drug,
+                                        k_plus_SR_baseline,
                                         k_minus_SR,
                                         M3,
                                         M1,
@@ -267,11 +267,11 @@ repeat_simul<<<MAX_REPS/32, 32, 0, s>>>(lambda,
     // free allocated memory
 gpuErrchk(cudaFree(kB_plus));
 gpuErrchk(cudaFree(kB_minus));
-gpuErrchk(cudaFree(k2_plus_dATP));
-gpuErrchk(cudaFree(k2_plus_ATP));
+gpuErrchk(cudaFree(k2_plus_drug));
+gpuErrchk(cudaFree(k2_plus_baseline));
 gpuErrchk(cudaFree(k2_minus));
-gpuErrchk(cudaFree(k4_plus_dATP));
-gpuErrchk(cudaFree(k4_plus_ATP));
+gpuErrchk(cudaFree(k4_plus_drug));
+gpuErrchk(cudaFree(k4_plus_baseline));
 gpuErrchk(cudaFree(k4_minus));
 
     lock.lock();

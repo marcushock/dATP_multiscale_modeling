@@ -92,24 +92,24 @@ void init_particle(initParticleArgs & args, int replicate_number)
 
     // set return residual
     float force_pCa_residual = pow(residual_temp,0.5f);
-    // Note: All of these are looking at the dATP parameter changes in the printed file name. 
+    // Note: All of these are looking at the drug parameter changes in the printed file name. 
     std::cout << "Residual: " << force_pCa_residual << std::endl;
 
         std::string dataAppend =
-        //" percent " + std::to_string(args.percent_dATP) +
+        //" percent " + std::to_string(args.percent_drug) +
         //" gammaB " + std::to_string(args.gamma_B) +
         //" gammaM " + std::to_string(args.gamma_M) +
         //" mu_M " + std::to_string(args.mu_M) +
-        " k2_plus_ref " + std::to_string(args.k2_plus_ref_dATP) +
-        " k3_plus " + std::to_string(args.k3_plus_dATP) +
-        " k4_plus_ref " + std::to_string(args.k4_plus_ref_dATP) +
+        " k2_plus_ref " + std::to_string(args.k2_plus_ref_drug) +
+        " k3_plus " + std::to_string(args.k3_plus_drug) +
+        " k4_plus_ref " + std::to_string(args.k4_plus_ref_drug) +
         " kB_plus_ref " + std::to_string(args.kB_plus_ref) +
         " kB_minus_ref " + std::to_string(args.kB_minus_ref) +
         //" lambda " + std::to_string(args.lambda) +
         " kCa_plus_ref " + std::to_string(args.kCa_plus_ref) +
-        " dATP " + std::to_string(args.percent_dATP) +
-        " k_force " + std::to_string(args.k_force_dATP) +
-        " k_plus_SR_ref " + std::to_string(args.k_plus_SR_dATP) +
+        " drug " + std::to_string(args.percent_drug) +
+        " k_force " + std::to_string(args.k_force_drug) +
+        " k_plus_SR_ref " + std::to_string(args.k_plus_SR_drug) +
         " k_minus_SR_ref " + std::to_string(args.k_minus_SR);
         std::string Force_out_Filename = ("MCMC_simulation_results/Rep_" + std::to_string(replicate_number) + "Force_out"+dataAppend+".csv");
         std::string States_out_Filename = ("MCMC_simulation_results/Rep_" + std::to_string(replicate_number) + "States_out"+dataAppend+".csv");

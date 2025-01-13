@@ -27,22 +27,24 @@ std::vector< std::vector<float> > argumentReader(const char * name)
         tokenizer< escaped_list_separator<char> > tok(line);
         lineVector.assign(tok.begin(), tok.end());  // Assign the tokens to the lineVector
 
-        if (lineVector.size() != NUM_COLUMNS) {
+        if (lineVector.size() == NUM_COLUMNS) {
+            // Check if the line is a list of header variable names, or numeric 
+            // Also ensures the CSV row actually starts with a value, not a ','
+            if ((lineVector[0] != "protocol") && (line[0] != ',') && (line[0] != '#')) {
+                // Convert the tokens to floats and add them as a pair to the output vector
+                std::vector<float> row(NUM_COLUMNS);
+                for (int i = 0; i < NUM_COLUMNS; ++i) {
+                    row[i] = atof(lineVector[i].c_str());
+                }
+                params_out.push_back(row);
+            }
+        }
+        else {
             cout<< "Error: The number of columns in the file is not equal to 35" << endl;
             cout<< "Number of columns in the file: " << lineVector.size() << endl;
-            break;  // If the line does not have exactly 35 tokens, break the loop
         }
 
-        // Check if the line is a list of header variable names, or numeric 
-        // Also ensures the CSV row actually starts with a value, not a ','
-        if ((lineVector[0] != "protocol") && (line[0] != ',')){
-            // Convert the tokens to floats and add them as a pair to the output vector
-            std::vector<float> row(NUM_COLUMNS);
-            for (int i = 0; i < NUM_COLUMNS; ++i) {
-                row[i] = atof(lineVector[i].c_str());
-            }
-            params_out.push_back(row);
-        }
+
     }
     
     // Print the read data

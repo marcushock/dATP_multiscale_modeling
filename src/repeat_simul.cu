@@ -31,24 +31,24 @@
 
 __global__ void repeat_simul(float lambda,
 const unsigned long randSeed,
-float * k4_plus_dATP,
-float * k4_plus_ATP,
+float * k4_plus_drug,
+float * k4_plus_baseline,
 float * k4_minus,
-float k3_plus_dATP,
-float k3_plus_ATP,
+float k3_plus_drug,
+float k3_plus_baseline,
 float k3_minus,
-float * k2_plus_dATP,
-float * k2_plus_ATP,
+float * k2_plus_drug,
+float * k2_plus_baseline,
 float * k2_minus,
 float * kB_plus,
 float * kB_minus,
 float kCa_plus_ref,
 float kCa_minus_ref,
-float percent_dATP,
-float k_force_dATP,
-float k_force_ATP,
-float k_plus_SR_dATP,
-float k_plus_SR_ATP,
+float percent_drug,
+float k_force_drug,
+float k_force_baseline,
+float k_plus_SR_drug,
+float k_plus_SR_baseline,
 float k_minus_SR,
 float * M3,
 float * M1,
@@ -64,7 +64,7 @@ float Calc_conc_exp
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     /* initialize random number generation per thread */
     float randNum[N_RU];
-    float rand_dATP[N_RU];
+    float rand_drug[N_RU];
     int RU[N_RU];
     bool caRU[N_RU];
     curandState_t state;
@@ -105,7 +105,7 @@ float Calc_conc_exp
         int count_B_state   = 0;
         int count_SR_state = 0;
         genrand(randNum, N_RU, &state); // fills array with random numbers
-        genrand(rand_dATP, N_RU, &state); // fills array with random numbers
+        genrand(rand_drug, N_RU, &state); // fills array with random numbers
 
 
         if (protocol == 1){
@@ -158,13 +158,13 @@ float Calc_conc_exp
         //     printf("New_max = %f, %i\n",f, cc);
         // }
         
-        // float k_plus_SR_ATP = k_plus_SR_ATP; //*(1+k_force_ATP*f); DELETE THIS
-        // float k_plus_SR_dATP = k_plus_SR_ref_dATP; //*(1+k_force_dATP*f); DELETE THIS LINE
+        // float k_plus_SR_ATP = k_plus_SR_baseline; //*(1+k_force_ATP*f); DELETE THIS
+        // float k_plus_SR_drug = k_plus_SR_ref_drug; //*(1+k_force_drug*f); DELETE THIS LINE
         // float k_minus_SR = k_minus_SR_ref; // DELETE THIS LINE 
         //printf("%f\n",k_plus_SR);
         //printf("%f\n",k_minus_SR);
 
-       update_RUs(lambda, DT, kCa_plus, kCa_minus, randNum, rand_dATP, RU, caRU, kB_plus, kB_minus, k2_plus_dATP, k2_plus_ATP, k2_minus, k3_plus_dATP, k3_plus_ATP, k3_minus, k4_plus_dATP, k4_plus_ATP, k4_minus, percent_dATP, k_force_dATP, k_force_ATP, k_plus_SR_dATP, k_plus_SR_ATP, k_minus_SR,f);
+       update_RUs(lambda, DT, kCa_plus, kCa_minus, randNum, rand_drug, RU, caRU, kB_plus, kB_minus, k2_plus_drug, k2_plus_baseline, k2_minus, k3_plus_drug, k3_plus_baseline, k3_minus, k4_plus_drug, k4_plus_baseline, k4_minus, percent_drug, k_force_drug, k_force_baseline, k_plus_SR_drug, k_plus_SR_baseline, k_minus_SR,f);
 
         //--------------------------------------------
         // Obtain Force estimate based on the M-state

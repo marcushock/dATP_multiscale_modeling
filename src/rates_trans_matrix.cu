@@ -39,11 +39,11 @@
 void rates_trans_matrix(const int n_s,
                         const float kB_plus_ref,
                         const float kB_minus_ref,
-                        const float k2_plus_ref_dATP,
-                        const float k2_plus_ref_ATP,
+                        const float k2_plus_ref_drug,
+                        const float k2_plus_ref_baseline,
                         const float k2_minus_ref,
-                        const float k4_plus_ref_dATP,
-                        const float k4_plus_ref_ATP,
+                        const float k4_plus_ref_drug,
+                        const float k4_plus_ref_baseline,
                         const float k4_minus_ref,
                         const float gamma_B,
                         const float gamma_M,
@@ -53,11 +53,11 @@ void rates_trans_matrix(const int n_s,
                         const float q,
                         float *kB_plus,
                         float *kB_minus,
-                        float *k2_plus_dATP,
-                        float *k2_plus_ATP,
+                        float *k2_plus_drug,
+                        float *k2_plus_baseline,
                         float *k2_minus,
-                        float *k4_plus_dATP,
-                        float *k4_plus_ATP,
+                        float *k4_plus_drug,
+                        float *k4_plus_baseline,
                         float *k4_minus
                        )
 
@@ -157,92 +157,92 @@ kB_minus[5*N_S+5] = kB_minus_ref*pow(pow(gamma_M,2),q-1);
 //--------------------------------------------------
 // Step 3: Build the k2_plus [ns*N_S+ns] matrix
 //--------------------------------------------------
-k2_plus_ATP[0*N_S+0] = k2_plus_ref_ATP*pow(mu_B,-2*r);
-k2_plus_ATP[0*N_S+1] = k2_plus_ref_ATP*pow(mu_B,-r);
-k2_plus_ATP[0*N_S+2] = k2_plus_ref_ATP*pow(mu_B,-2*r);
-k2_plus_ATP[0*N_S+3] = k2_plus_ref_ATP*pow(mu_B,-r);
-k2_plus_ATP[0*N_S+4] = k2_plus_ref_ATP*pow((mu_M/mu_B),r);
-k2_plus_ATP[0*N_S+5] = k2_plus_ref_ATP*pow((mu_M/mu_B),r);
+k2_plus_baseline[0*N_S+0] = k2_plus_ref_baseline*pow(mu_B,-2*r);
+k2_plus_baseline[0*N_S+1] = k2_plus_ref_baseline*pow(mu_B,-r);
+k2_plus_baseline[0*N_S+2] = k2_plus_ref_baseline*pow(mu_B,-2*r);
+k2_plus_baseline[0*N_S+3] = k2_plus_ref_baseline*pow(mu_B,-r);
+k2_plus_baseline[0*N_S+4] = k2_plus_ref_baseline*pow((mu_M/mu_B),r);
+k2_plus_baseline[0*N_S+5] = k2_plus_ref_baseline*pow((mu_M/mu_B),r);
 //-------
-k2_plus_ATP[1*N_S+0] = k2_plus_ref_ATP*pow(mu_B,-r);
-k2_plus_ATP[1*N_S+1] = k2_plus_ref_ATP;
-k2_plus_ATP[1*N_S+2] = k2_plus_ref_ATP*pow(mu_B,-r);
-k2_plus_ATP[1*N_S+3] = k2_plus_ref_ATP;
-k2_plus_ATP[1*N_S+4] = k2_plus_ref_ATP*pow(mu_M,r);
-k2_plus_ATP[1*N_S+5] = k2_plus_ref_ATP*pow(mu_M,r);
+k2_plus_baseline[1*N_S+0] = k2_plus_ref_baseline*pow(mu_B,-r);
+k2_plus_baseline[1*N_S+1] = k2_plus_ref_baseline;
+k2_plus_baseline[1*N_S+2] = k2_plus_ref_baseline*pow(mu_B,-r);
+k2_plus_baseline[1*N_S+3] = k2_plus_ref_baseline;
+k2_plus_baseline[1*N_S+4] = k2_plus_ref_baseline*pow(mu_M,r);
+k2_plus_baseline[1*N_S+5] = k2_plus_ref_baseline*pow(mu_M,r);
 //-------
-k2_plus_ATP[2*N_S+0] = k2_plus_ref_ATP*pow(mu_B,-2*r);
-k2_plus_ATP[2*N_S+1] = k2_plus_ref_ATP*pow(mu_B,-r);
-k2_plus_ATP[2*N_S+2] = k2_plus_ref_ATP*pow(mu_B,-2*r);
-k2_plus_ATP[2*N_S+3] = k2_plus_ref_ATP*pow(mu_B,-r);
-k2_plus_ATP[2*N_S+4] = k2_plus_ref_ATP*pow((mu_M/mu_B),r);
-k2_plus_ATP[2*N_S+5] = k2_plus_ref_ATP*pow((mu_M/mu_B),r);
+k2_plus_baseline[2*N_S+0] = k2_plus_ref_baseline*pow(mu_B,-2*r);
+k2_plus_baseline[2*N_S+1] = k2_plus_ref_baseline*pow(mu_B,-r);
+k2_plus_baseline[2*N_S+2] = k2_plus_ref_baseline*pow(mu_B,-2*r);
+k2_plus_baseline[2*N_S+3] = k2_plus_ref_baseline*pow(mu_B,-r);
+k2_plus_baseline[2*N_S+4] = k2_plus_ref_baseline*pow((mu_M/mu_B),r);
+k2_plus_baseline[2*N_S+5] = k2_plus_ref_baseline*pow((mu_M/mu_B),r);
 //-------
-k2_plus_ATP[3*N_S+0] = k2_plus_ref_ATP*pow(mu_B,-r);
-k2_plus_ATP[3*N_S+1] = k2_plus_ref_ATP;
-k2_plus_ATP[3*N_S+2] = k2_plus_ref_ATP*pow(mu_B,-r);
-k2_plus_ATP[3*N_S+3] = k2_plus_ref_ATP;
-k2_plus_ATP[3*N_S+4] = k2_plus_ref_ATP*pow(mu_M,r);
-k2_plus_ATP[3*N_S+5] = k2_plus_ref_ATP*pow(mu_M,r);
+k2_plus_baseline[3*N_S+0] = k2_plus_ref_baseline*pow(mu_B,-r);
+k2_plus_baseline[3*N_S+1] = k2_plus_ref_baseline;
+k2_plus_baseline[3*N_S+2] = k2_plus_ref_baseline*pow(mu_B,-r);
+k2_plus_baseline[3*N_S+3] = k2_plus_ref_baseline;
+k2_plus_baseline[3*N_S+4] = k2_plus_ref_baseline*pow(mu_M,r);
+k2_plus_baseline[3*N_S+5] = k2_plus_ref_baseline*pow(mu_M,r);
 //-------
-k2_plus_ATP[4*N_S+0] = k2_plus_ref_ATP*pow((mu_M/mu_B),r);
-k2_plus_ATP[4*N_S+1] = k2_plus_ref_ATP*pow(mu_M,r);
-k2_plus_ATP[4*N_S+2] = k2_plus_ref_ATP*pow((mu_M/mu_B),r);
-k2_plus_ATP[4*N_S+3] = k2_plus_ref_ATP*pow(mu_M,r);
-k2_plus_ATP[4*N_S+4] = k2_plus_ref_ATP*pow(mu_M,2*r);
-k2_plus_ATP[4*N_S+5] = k2_plus_ref_ATP*pow(mu_M,2*r);
+k2_plus_baseline[4*N_S+0] = k2_plus_ref_baseline*pow((mu_M/mu_B),r);
+k2_plus_baseline[4*N_S+1] = k2_plus_ref_baseline*pow(mu_M,r);
+k2_plus_baseline[4*N_S+2] = k2_plus_ref_baseline*pow((mu_M/mu_B),r);
+k2_plus_baseline[4*N_S+3] = k2_plus_ref_baseline*pow(mu_M,r);
+k2_plus_baseline[4*N_S+4] = k2_plus_ref_baseline*pow(mu_M,2*r);
+k2_plus_baseline[4*N_S+5] = k2_plus_ref_baseline*pow(mu_M,2*r);
 //-------
-k2_plus_ATP[5*N_S+0] = k2_plus_ref_ATP*pow((mu_M/mu_B),r);
-k2_plus_ATP[5*N_S+1] = k2_plus_ref_ATP*pow(mu_M,r);
-k2_plus_ATP[5*N_S+2] = k2_plus_ref_ATP*pow((mu_M/mu_B),r);
-k2_plus_ATP[5*N_S+3] = k2_plus_ref_ATP*pow(mu_M,r);
-k2_plus_ATP[5*N_S+4] = k2_plus_ref_ATP*pow(mu_M,2*r);
-k2_plus_ATP[5*N_S+5] = k2_plus_ref_ATP*pow(mu_M,2*r);
+k2_plus_baseline[5*N_S+0] = k2_plus_ref_baseline*pow((mu_M/mu_B),r);
+k2_plus_baseline[5*N_S+1] = k2_plus_ref_baseline*pow(mu_M,r);
+k2_plus_baseline[5*N_S+2] = k2_plus_ref_baseline*pow((mu_M/mu_B),r);
+k2_plus_baseline[5*N_S+3] = k2_plus_ref_baseline*pow(mu_M,r);
+k2_plus_baseline[5*N_S+4] = k2_plus_ref_baseline*pow(mu_M,2*r);
+k2_plus_baseline[5*N_S+5] = k2_plus_ref_baseline*pow(mu_M,2*r);
 //-------
 
 
 
-k2_plus_dATP[0*N_S+0] = k2_plus_ref_dATP*pow(mu_B,-2*r);
-k2_plus_dATP[0*N_S+1] = k2_plus_ref_dATP*pow(mu_B,-r);
-k2_plus_dATP[0*N_S+2] = k2_plus_ref_dATP*pow(mu_B,-2*r);
-k2_plus_dATP[0*N_S+3] = k2_plus_ref_dATP*pow(mu_B,-r);
-k2_plus_dATP[0*N_S+4] = k2_plus_ref_dATP*pow((mu_M/mu_B),r);
-k2_plus_dATP[0*N_S+5] = k2_plus_ref_dATP*pow((mu_M/mu_B),r);
+k2_plus_drug[0*N_S+0] = k2_plus_ref_drug*pow(mu_B,-2*r);
+k2_plus_drug[0*N_S+1] = k2_plus_ref_drug*pow(mu_B,-r);
+k2_plus_drug[0*N_S+2] = k2_plus_ref_drug*pow(mu_B,-2*r);
+k2_plus_drug[0*N_S+3] = k2_plus_ref_drug*pow(mu_B,-r);
+k2_plus_drug[0*N_S+4] = k2_plus_ref_drug*pow((mu_M/mu_B),r);
+k2_plus_drug[0*N_S+5] = k2_plus_ref_drug*pow((mu_M/mu_B),r);
 //-------
-k2_plus_dATP[1*N_S+0] = k2_plus_ref_dATP*pow(mu_B,-r);
-k2_plus_dATP[1*N_S+1] = k2_plus_ref_dATP;
-k2_plus_dATP[1*N_S+2] = k2_plus_ref_dATP*pow(mu_B,-r);
-k2_plus_dATP[1*N_S+3] = k2_plus_ref_dATP;
-k2_plus_dATP[1*N_S+4] = k2_plus_ref_dATP*pow(mu_M,r);
-k2_plus_dATP[1*N_S+5] = k2_plus_ref_dATP*pow(mu_M,r);
+k2_plus_drug[1*N_S+0] = k2_plus_ref_drug*pow(mu_B,-r);
+k2_plus_drug[1*N_S+1] = k2_plus_ref_drug;
+k2_plus_drug[1*N_S+2] = k2_plus_ref_drug*pow(mu_B,-r);
+k2_plus_drug[1*N_S+3] = k2_plus_ref_drug;
+k2_plus_drug[1*N_S+4] = k2_plus_ref_drug*pow(mu_M,r);
+k2_plus_drug[1*N_S+5] = k2_plus_ref_drug*pow(mu_M,r);
 //-------
-k2_plus_dATP[2*N_S+0] = k2_plus_ref_dATP*pow(mu_B,-2*r);
-k2_plus_dATP[2*N_S+1] = k2_plus_ref_dATP*pow(mu_B,-r);
-k2_plus_dATP[2*N_S+2] = k2_plus_ref_dATP*pow(mu_B,-2*r);
-k2_plus_dATP[2*N_S+3] = k2_plus_ref_dATP*pow(mu_B,-r);
-k2_plus_dATP[2*N_S+4] = k2_plus_ref_dATP*pow((mu_M/mu_B),r);
-k2_plus_dATP[2*N_S+5] = k2_plus_ref_dATP*pow((mu_M/mu_B),r);
+k2_plus_drug[2*N_S+0] = k2_plus_ref_drug*pow(mu_B,-2*r);
+k2_plus_drug[2*N_S+1] = k2_plus_ref_drug*pow(mu_B,-r);
+k2_plus_drug[2*N_S+2] = k2_plus_ref_drug*pow(mu_B,-2*r);
+k2_plus_drug[2*N_S+3] = k2_plus_ref_drug*pow(mu_B,-r);
+k2_plus_drug[2*N_S+4] = k2_plus_ref_drug*pow((mu_M/mu_B),r);
+k2_plus_drug[2*N_S+5] = k2_plus_ref_drug*pow((mu_M/mu_B),r);
 //-------
-k2_plus_dATP[3*N_S+0] = k2_plus_ref_dATP*pow(mu_B,-r);
-k2_plus_dATP[3*N_S+1] = k2_plus_ref_dATP;
-k2_plus_dATP[3*N_S+2] = k2_plus_ref_dATP*pow(mu_B,-r);
-k2_plus_dATP[3*N_S+3] = k2_plus_ref_dATP;
-k2_plus_dATP[3*N_S+4] = k2_plus_ref_dATP*pow(mu_M,r);
-k2_plus_dATP[3*N_S+5] = k2_plus_ref_dATP*pow(mu_M,r);
+k2_plus_drug[3*N_S+0] = k2_plus_ref_drug*pow(mu_B,-r);
+k2_plus_drug[3*N_S+1] = k2_plus_ref_drug;
+k2_plus_drug[3*N_S+2] = k2_plus_ref_drug*pow(mu_B,-r);
+k2_plus_drug[3*N_S+3] = k2_plus_ref_drug;
+k2_plus_drug[3*N_S+4] = k2_plus_ref_drug*pow(mu_M,r);
+k2_plus_drug[3*N_S+5] = k2_plus_ref_drug*pow(mu_M,r);
 //-------
-k2_plus_dATP[4*N_S+0] = k2_plus_ref_dATP*pow((mu_M/mu_B),r);
-k2_plus_dATP[4*N_S+1] = k2_plus_ref_dATP*pow(mu_M,r);
-k2_plus_dATP[4*N_S+2] = k2_plus_ref_dATP*pow((mu_M/mu_B),r);
-k2_plus_dATP[4*N_S+3] = k2_plus_ref_dATP*pow(mu_M,r);
-k2_plus_dATP[4*N_S+4] = k2_plus_ref_dATP*pow(mu_M,2*r);
-k2_plus_dATP[4*N_S+5] = k2_plus_ref_dATP*pow(mu_M,2*r);
+k2_plus_drug[4*N_S+0] = k2_plus_ref_drug*pow((mu_M/mu_B),r);
+k2_plus_drug[4*N_S+1] = k2_plus_ref_drug*pow(mu_M,r);
+k2_plus_drug[4*N_S+2] = k2_plus_ref_drug*pow((mu_M/mu_B),r);
+k2_plus_drug[4*N_S+3] = k2_plus_ref_drug*pow(mu_M,r);
+k2_plus_drug[4*N_S+4] = k2_plus_ref_drug*pow(mu_M,2*r);
+k2_plus_drug[4*N_S+5] = k2_plus_ref_drug*pow(mu_M,2*r);
 //-------
-k2_plus_dATP[5*N_S+0] = k2_plus_ref_dATP*pow((mu_M/mu_B),r);
-k2_plus_dATP[5*N_S+1] = k2_plus_ref_dATP*pow(mu_M,r);
-k2_plus_dATP[5*N_S+2] = k2_plus_ref_dATP*pow((mu_M/mu_B),r);
-k2_plus_dATP[5*N_S+3] = k2_plus_ref_dATP*pow(mu_M,r);
-k2_plus_dATP[5*N_S+4] = k2_plus_ref_dATP*pow(mu_M,2*r);
-k2_plus_dATP[5*N_S+5] = k2_plus_ref_dATP*pow(mu_M,2*r);
+k2_plus_drug[5*N_S+0] = k2_plus_ref_drug*pow((mu_M/mu_B),r);
+k2_plus_drug[5*N_S+1] = k2_plus_ref_drug*pow(mu_M,r);
+k2_plus_drug[5*N_S+2] = k2_plus_ref_drug*pow((mu_M/mu_B),r);
+k2_plus_drug[5*N_S+3] = k2_plus_ref_drug*pow(mu_M,r);
+k2_plus_drug[5*N_S+4] = k2_plus_ref_drug*pow(mu_M,2*r);
+k2_plus_drug[5*N_S+5] = k2_plus_ref_drug*pow(mu_M,2*r);
 //---------------------------------------------------
 
 //---------------------------------------------------
@@ -294,93 +294,93 @@ k2_minus[5*N_S+5] = k2_minus_ref*pow(pow(mu_M,2),r-1);
 //---------------------------------------------------
 // Step 5: Build the k4_plus [ns*N_S+ns] matrix
 //---------------------------------------------------
-k4_plus_ATP[0*N_S+0] = k4_plus_ref_ATP*pow(pow(mu_B,-2),(r-1));
-k4_plus_ATP[0*N_S+1] = k4_plus_ref_ATP*pow(1/mu_B,(r-1));
-k4_plus_ATP[0*N_S+2] = k4_plus_ref_ATP*pow(pow(mu_B,-2),(r-1));
-k4_plus_ATP[0*N_S+3] = k4_plus_ref_ATP*pow(1/mu_B,(r-1));
-k4_plus_ATP[0*N_S+4] = k4_plus_ref_ATP*pow(mu_M/mu_B,(r-1));
-k4_plus_ATP[0*N_S+5] = k4_plus_ref_ATP*pow(mu_M/mu_B,(r-1));
+k4_plus_baseline[0*N_S+0] = k4_plus_ref_baseline*pow(pow(mu_B,-2),(r-1));
+k4_plus_baseline[0*N_S+1] = k4_plus_ref_baseline*pow(1/mu_B,(r-1));
+k4_plus_baseline[0*N_S+2] = k4_plus_ref_baseline*pow(pow(mu_B,-2),(r-1));
+k4_plus_baseline[0*N_S+3] = k4_plus_ref_baseline*pow(1/mu_B,(r-1));
+k4_plus_baseline[0*N_S+4] = k4_plus_ref_baseline*pow(mu_M/mu_B,(r-1));
+k4_plus_baseline[0*N_S+5] = k4_plus_ref_baseline*pow(mu_M/mu_B,(r-1));
 //-------
-k4_plus_ATP[1*N_S+0] = k4_plus_ref_ATP*pow(1/mu_B,(r-1));
-k4_plus_ATP[1*N_S+1] = k4_plus_ref_ATP;
-k4_plus_ATP[1*N_S+2] = k4_plus_ref_ATP*pow(1/mu_B,(r-1));
-k4_plus_ATP[1*N_S+3] = k4_plus_ref_ATP;
-k4_plus_ATP[1*N_S+4] = k4_plus_ref_ATP*pow(mu_M,(r-1));
-k4_plus_ATP[1*N_S+5] = k4_plus_ref_ATP*pow(mu_M,(r-1));
+k4_plus_baseline[1*N_S+0] = k4_plus_ref_baseline*pow(1/mu_B,(r-1));
+k4_plus_baseline[1*N_S+1] = k4_plus_ref_baseline;
+k4_plus_baseline[1*N_S+2] = k4_plus_ref_baseline*pow(1/mu_B,(r-1));
+k4_plus_baseline[1*N_S+3] = k4_plus_ref_baseline;
+k4_plus_baseline[1*N_S+4] = k4_plus_ref_baseline*pow(mu_M,(r-1));
+k4_plus_baseline[1*N_S+5] = k4_plus_ref_baseline*pow(mu_M,(r-1));
 //-------
-k4_plus_ATP[2*N_S+0] = k4_plus_ref_ATP*pow(pow(mu_B,-2),(r-1));
-k4_plus_ATP[2*N_S+1] = k4_plus_ref_ATP*pow(1/mu_B,(r-1));
-k4_plus_ATP[2*N_S+2] = k4_plus_ref_ATP*pow(pow(mu_B,-2),(r-1));
-k4_plus_ATP[2*N_S+3] = k4_plus_ref_ATP*pow(1/mu_B,(r-1));
-k4_plus_ATP[2*N_S+4] = k4_plus_ref_ATP*pow(mu_M/mu_B,(r-1));
-k4_plus_ATP[2*N_S+5] = k4_plus_ref_ATP*pow(mu_M/mu_B,(r-1));
+k4_plus_baseline[2*N_S+0] = k4_plus_ref_baseline*pow(pow(mu_B,-2),(r-1));
+k4_plus_baseline[2*N_S+1] = k4_plus_ref_baseline*pow(1/mu_B,(r-1));
+k4_plus_baseline[2*N_S+2] = k4_plus_ref_baseline*pow(pow(mu_B,-2),(r-1));
+k4_plus_baseline[2*N_S+3] = k4_plus_ref_baseline*pow(1/mu_B,(r-1));
+k4_plus_baseline[2*N_S+4] = k4_plus_ref_baseline*pow(mu_M/mu_B,(r-1));
+k4_plus_baseline[2*N_S+5] = k4_plus_ref_baseline*pow(mu_M/mu_B,(r-1));
 //-------
-k4_plus_ATP[3*N_S+0] = k4_plus_ref_ATP*pow(1/mu_B,(r-1));
-k4_plus_ATP[3*N_S+1] = k4_plus_ref_ATP;
-k4_plus_ATP[3*N_S+2] = k4_plus_ref_ATP*pow(1/mu_B,(r-1));
-k4_plus_ATP[3*N_S+3] = k4_plus_ref_ATP;
-k4_plus_ATP[3*N_S+4] = k4_plus_ref_ATP*pow(mu_M,(r-1));
-k4_plus_ATP[3*N_S+5] = k4_plus_ref_ATP*pow(mu_M,(r-1));
+k4_plus_baseline[3*N_S+0] = k4_plus_ref_baseline*pow(1/mu_B,(r-1));
+k4_plus_baseline[3*N_S+1] = k4_plus_ref_baseline;
+k4_plus_baseline[3*N_S+2] = k4_plus_ref_baseline*pow(1/mu_B,(r-1));
+k4_plus_baseline[3*N_S+3] = k4_plus_ref_baseline;
+k4_plus_baseline[3*N_S+4] = k4_plus_ref_baseline*pow(mu_M,(r-1));
+k4_plus_baseline[3*N_S+5] = k4_plus_ref_baseline*pow(mu_M,(r-1));
 //-------
-k4_plus_ATP[4*N_S+0] = k4_plus_ref_ATP*pow(mu_M/mu_B,(r-1));
-k4_plus_ATP[4*N_S+1] = k4_plus_ref_ATP*pow(mu_M,(r-1));
-k4_plus_ATP[4*N_S+2] = k4_plus_ref_ATP*pow(mu_M/mu_B,(r-1));
-k4_plus_ATP[4*N_S+3] = k4_plus_ref_ATP*pow(mu_M,(r-1));
-k4_plus_ATP[4*N_S+4] = k4_plus_ref_ATP*pow(pow(mu_M,2),(r-1));
-k4_plus_ATP[4*N_S+5] = k4_plus_ref_ATP*pow(pow(mu_M,2),(r-1));
+k4_plus_baseline[4*N_S+0] = k4_plus_ref_baseline*pow(mu_M/mu_B,(r-1));
+k4_plus_baseline[4*N_S+1] = k4_plus_ref_baseline*pow(mu_M,(r-1));
+k4_plus_baseline[4*N_S+2] = k4_plus_ref_baseline*pow(mu_M/mu_B,(r-1));
+k4_plus_baseline[4*N_S+3] = k4_plus_ref_baseline*pow(mu_M,(r-1));
+k4_plus_baseline[4*N_S+4] = k4_plus_ref_baseline*pow(pow(mu_M,2),(r-1));
+k4_plus_baseline[4*N_S+5] = k4_plus_ref_baseline*pow(pow(mu_M,2),(r-1));
 //-------
-k4_plus_ATP[5*N_S+0] = k4_plus_ref_ATP*pow(mu_M/mu_B,(r-1));
-k4_plus_ATP[5*N_S+1] = k4_plus_ref_ATP*pow(mu_M,(r-1));
-k4_plus_ATP[5*N_S+2] = k4_plus_ref_ATP*pow(mu_M/mu_B,(r-1));
-k4_plus_ATP[5*N_S+3] = k4_plus_ref_ATP*pow(mu_M,(r-1));
-k4_plus_ATP[5*N_S+4] = k4_plus_ref_ATP*pow(pow(mu_M,2),(r-1));
-k4_plus_ATP[5*N_S+5] = k4_plus_ref_ATP*pow(pow(mu_M,2),(r-1));
+k4_plus_baseline[5*N_S+0] = k4_plus_ref_baseline*pow(mu_M/mu_B,(r-1));
+k4_plus_baseline[5*N_S+1] = k4_plus_ref_baseline*pow(mu_M,(r-1));
+k4_plus_baseline[5*N_S+2] = k4_plus_ref_baseline*pow(mu_M/mu_B,(r-1));
+k4_plus_baseline[5*N_S+3] = k4_plus_ref_baseline*pow(mu_M,(r-1));
+k4_plus_baseline[5*N_S+4] = k4_plus_ref_baseline*pow(pow(mu_M,2),(r-1));
+k4_plus_baseline[5*N_S+5] = k4_plus_ref_baseline*pow(pow(mu_M,2),(r-1));
 //-------
 
 
 
 
-k4_plus_dATP[0*N_S+0] = k4_plus_ref_dATP*pow(pow(mu_B,-2),(r-1));
-k4_plus_dATP[0*N_S+1] = k4_plus_ref_dATP*pow(1/mu_B,(r-1));
-k4_plus_dATP[0*N_S+2] = k4_plus_ref_dATP*pow(pow(mu_B,-2),(r-1));
-k4_plus_dATP[0*N_S+3] = k4_plus_ref_dATP*pow(1/mu_B,(r-1));
-k4_plus_dATP[0*N_S+4] = k4_plus_ref_dATP*pow(mu_M/mu_B,(r-1));
-k4_plus_dATP[0*N_S+5] = k4_plus_ref_dATP*pow(mu_M/mu_B,(r-1));
+k4_plus_drug[0*N_S+0] = k4_plus_ref_drug*pow(pow(mu_B,-2),(r-1));
+k4_plus_drug[0*N_S+1] = k4_plus_ref_drug*pow(1/mu_B,(r-1));
+k4_plus_drug[0*N_S+2] = k4_plus_ref_drug*pow(pow(mu_B,-2),(r-1));
+k4_plus_drug[0*N_S+3] = k4_plus_ref_drug*pow(1/mu_B,(r-1));
+k4_plus_drug[0*N_S+4] = k4_plus_ref_drug*pow(mu_M/mu_B,(r-1));
+k4_plus_drug[0*N_S+5] = k4_plus_ref_drug*pow(mu_M/mu_B,(r-1));
 //-------
-k4_plus_dATP[1*N_S+0] = k4_plus_ref_dATP*pow(1/mu_B,(r-1));
-k4_plus_dATP[1*N_S+1] = k4_plus_ref_dATP;
-k4_plus_dATP[1*N_S+2] = k4_plus_ref_dATP*pow(1/mu_B,(r-1));
-k4_plus_dATP[1*N_S+3] = k4_plus_ref_dATP;
-k4_plus_dATP[1*N_S+4] = k4_plus_ref_dATP*pow(mu_M,(r-1));
-k4_plus_dATP[1*N_S+5] = k4_plus_ref_dATP*pow(mu_M,(r-1));
+k4_plus_drug[1*N_S+0] = k4_plus_ref_drug*pow(1/mu_B,(r-1));
+k4_plus_drug[1*N_S+1] = k4_plus_ref_drug;
+k4_plus_drug[1*N_S+2] = k4_plus_ref_drug*pow(1/mu_B,(r-1));
+k4_plus_drug[1*N_S+3] = k4_plus_ref_drug;
+k4_plus_drug[1*N_S+4] = k4_plus_ref_drug*pow(mu_M,(r-1));
+k4_plus_drug[1*N_S+5] = k4_plus_ref_drug*pow(mu_M,(r-1));
 //-------
-k4_plus_dATP[2*N_S+0] = k4_plus_ref_dATP*pow(pow(mu_B,-2),(r-1));
-k4_plus_dATP[2*N_S+1] = k4_plus_ref_dATP*pow(1/mu_B,(r-1));
-k4_plus_dATP[2*N_S+2] = k4_plus_ref_dATP*pow(pow(mu_B,-2),(r-1));
-k4_plus_dATP[2*N_S+3] = k4_plus_ref_dATP*pow(1/mu_B,(r-1));
-k4_plus_dATP[2*N_S+4] = k4_plus_ref_dATP*pow(mu_M/mu_B,(r-1));
-k4_plus_dATP[2*N_S+5] = k4_plus_ref_dATP*pow(mu_M/mu_B,(r-1));
+k4_plus_drug[2*N_S+0] = k4_plus_ref_drug*pow(pow(mu_B,-2),(r-1));
+k4_plus_drug[2*N_S+1] = k4_plus_ref_drug*pow(1/mu_B,(r-1));
+k4_plus_drug[2*N_S+2] = k4_plus_ref_drug*pow(pow(mu_B,-2),(r-1));
+k4_plus_drug[2*N_S+3] = k4_plus_ref_drug*pow(1/mu_B,(r-1));
+k4_plus_drug[2*N_S+4] = k4_plus_ref_drug*pow(mu_M/mu_B,(r-1));
+k4_plus_drug[2*N_S+5] = k4_plus_ref_drug*pow(mu_M/mu_B,(r-1));
 //-------
-k4_plus_dATP[3*N_S+0] = k4_plus_ref_dATP*pow(1/mu_B,(r-1));
-k4_plus_dATP[3*N_S+1] = k4_plus_ref_dATP;
-k4_plus_dATP[3*N_S+2] = k4_plus_ref_dATP*pow(1/mu_B,(r-1));
-k4_plus_dATP[3*N_S+3] = k4_plus_ref_dATP;
-k4_plus_dATP[3*N_S+4] = k4_plus_ref_dATP*pow(mu_M,(r-1));
-k4_plus_dATP[3*N_S+5] = k4_plus_ref_dATP*pow(mu_M,(r-1));
+k4_plus_drug[3*N_S+0] = k4_plus_ref_drug*pow(1/mu_B,(r-1));
+k4_plus_drug[3*N_S+1] = k4_plus_ref_drug;
+k4_plus_drug[3*N_S+2] = k4_plus_ref_drug*pow(1/mu_B,(r-1));
+k4_plus_drug[3*N_S+3] = k4_plus_ref_drug;
+k4_plus_drug[3*N_S+4] = k4_plus_ref_drug*pow(mu_M,(r-1));
+k4_plus_drug[3*N_S+5] = k4_plus_ref_drug*pow(mu_M,(r-1));
 //-------
-k4_plus_dATP[4*N_S+0] = k4_plus_ref_dATP*pow(mu_M/mu_B,(r-1));
-k4_plus_dATP[4*N_S+1] = k4_plus_ref_dATP*pow(mu_M,(r-1));
-k4_plus_dATP[4*N_S+2] = k4_plus_ref_dATP*pow(mu_M/mu_B,(r-1));
-k4_plus_dATP[4*N_S+3] = k4_plus_ref_dATP*pow(mu_M,(r-1));
-k4_plus_dATP[4*N_S+4] = k4_plus_ref_dATP*pow(pow(mu_M,2),(r-1));
-k4_plus_dATP[4*N_S+5] = k4_plus_ref_dATP*pow(pow(mu_M,2),(r-1));
+k4_plus_drug[4*N_S+0] = k4_plus_ref_drug*pow(mu_M/mu_B,(r-1));
+k4_plus_drug[4*N_S+1] = k4_plus_ref_drug*pow(mu_M,(r-1));
+k4_plus_drug[4*N_S+2] = k4_plus_ref_drug*pow(mu_M/mu_B,(r-1));
+k4_plus_drug[4*N_S+3] = k4_plus_ref_drug*pow(mu_M,(r-1));
+k4_plus_drug[4*N_S+4] = k4_plus_ref_drug*pow(pow(mu_M,2),(r-1));
+k4_plus_drug[4*N_S+5] = k4_plus_ref_drug*pow(pow(mu_M,2),(r-1));
 //-------
-k4_plus_dATP[5*N_S+0] = k4_plus_ref_dATP*pow(mu_M/mu_B,(r-1));
-k4_plus_dATP[5*N_S+1] = k4_plus_ref_dATP*pow(mu_M,(r-1));
-k4_plus_dATP[5*N_S+2] = k4_plus_ref_dATP*pow(mu_M/mu_B,(r-1));
-k4_plus_dATP[5*N_S+3] = k4_plus_ref_dATP*pow(mu_M,(r-1));
-k4_plus_dATP[5*N_S+4] = k4_plus_ref_dATP*pow(pow(mu_M,2),(r-1));
-k4_plus_dATP[5*N_S+5] = k4_plus_ref_dATP*pow(pow(mu_M,2),(r-1));
+k4_plus_drug[5*N_S+0] = k4_plus_ref_drug*pow(mu_M/mu_B,(r-1));
+k4_plus_drug[5*N_S+1] = k4_plus_ref_drug*pow(mu_M,(r-1));
+k4_plus_drug[5*N_S+2] = k4_plus_ref_drug*pow(mu_M/mu_B,(r-1));
+k4_plus_drug[5*N_S+3] = k4_plus_ref_drug*pow(mu_M,(r-1));
+k4_plus_drug[5*N_S+4] = k4_plus_ref_drug*pow(pow(mu_M,2),(r-1));
+k4_plus_drug[5*N_S+5] = k4_plus_ref_drug*pow(pow(mu_M,2),(r-1));
 //-----------------------------------
 
 //--------------------------------------------------

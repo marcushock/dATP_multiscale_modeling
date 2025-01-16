@@ -149,7 +149,7 @@ x_xb        = args.x_xb;        // 0.075; nm, XB distortion
 
 
 g_Cb    =  args.g_Cb                                    ;//free energy of XB state Cb
-g_Mc    = alpha * delta_G + k_xb * (x_preR)     ;//free energy of XB state Mc
+g_Mc    = alpha * delta_G + k_xb * pow(x_preR,2 )     ;//free energy of XB state Mc
 g_Md    = eta* delta_G + k_xb*pow(x_xb,2)       ;//free energy of XB state Md
 g_Ca    =   args.g_Ca;                                ;//free energy of XB state Ca
 

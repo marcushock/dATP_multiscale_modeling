@@ -225,9 +225,9 @@ float Calc_conc_exp
         //     flag = 0;
         // }
 
-        if ( n % 10000 == 0){
-            printf("current ca = %f, %f\n",calcium, current_time);
-        }
+        // if ( n % 10000 == 0){
+        //     printf("current ca = %f, %f\n",calcium, current_time);
+        // }
 
         
 

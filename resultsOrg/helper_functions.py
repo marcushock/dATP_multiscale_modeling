@@ -1,5 +1,6 @@
 import numpy as np 
 import pandas as pd
+import matplotlib.pyplot as plt
 
 class states_structure:
     def __init__(self, input_filename:'CSV', OFFState = True) -> None: # type: ignore
@@ -47,6 +48,14 @@ class states_structure:
         print('Read in parameters', self.parameters)
         return 
 
+    def get_twitch(self):
+        '''
+        This function returns the temporal force states from the simulation and does not 
+        average them across the replciaets. 
+        '''
+        force_cols = [col for col in self.states_df.columns if 'M2' in col]
+        self.twitch_states = self.states_df[force_cols]
+        return self.states_df[force_cols]
 
     def states_steadystate(self, end_time_amount= 500): 
         temp_series = self.states_df[self.states_df.Time>end_time_amount].mean()
@@ -134,6 +143,26 @@ def extract_parameters(file_name, custom_sep = None, verbose = False):
         i += 2
     print('Read in parameters', parameters) if verbose else None
     return parameters
+
+def plot_twitch_from_sim(input_states_structure, shading = False):
+    force_cols = [col for col in input_states_structure.states_df.columns if 'M2' in col]
+
+    plt.plot(input_states_structure.states_df.Time, input_states_structure.states_df[force_cols].mean(axis  = 1), 'C0', alpha = 1, label = 'Old')
+    if shading: 
+        plt.plot(input_states_structure.states_df.Time, input_states_structure.states_df[force_cols], 'C0', alpha = 0.05)
+
+def get_twitch_from_sim(input_states_structure, mean = True, time = False):
+    force_cols = [col for col in input_states_structure.states_df.columns if 'M2' in col]
+    if time == False:    
+        if mean:
+            return input_states_structure.states_df[force_cols].mean(axis  = 1)
+        else:
+            return input_states_structure.states_df[force_cols]
+    else:
+        if mean:
+            return input_states_structure.states_df.Time, input_states_structure.states_df[force_cols].mean(axis  = 1)
+        else:
+            return input_states_structure.states_df.Time, input_states_structure.states_df[force_cols]
 
 # my_var = states_instance('/crucial/temp_MCMC/dATP_multiscale_modeling/MCMC_simulation_results/241004-1555_MR_640_States_out k2_plus_ref 0.002500 k3_plus 0.050000 k4_plus_ref 0.135000 kB_plus_ref 13.000000 kB_minus_ref 0.100000 kCa_plus_ref 0.090000 dATP 0.250000 k_force 0.000200 k_plus_SR_ref 16.000000 k_minus_SR_ref 15.000000.csv')
 

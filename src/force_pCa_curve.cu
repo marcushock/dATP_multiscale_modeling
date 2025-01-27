@@ -140,8 +140,7 @@ float eta = args.eta; // parameter defined here
 k_xb = args.k_xb; // parameter defined here
 
 delta_G_ATP = args.delta_G_ATP; // units = RT
-delta_G = delta_G_ATP - log(conc_ATP/(conc_ADP*conc_Pi)); // units = RT
-
+delta_G = delta_G_ATP + log(conc_ATP/(conc_ADP*conc_Pi)); // units = RT (Changing to be +, based on delta_G as an input being negative)
 x_preR      = args.x_preR; // 0; XB distortion when pre-rotated.
 x_xb        = args.x_xb;        // 0.075; nm, XB distortion
 //x_b0        = eta * delta_G / k_xb; // xb distortion due to ATP hydrolysis
@@ -165,7 +164,7 @@ k2_minus_ref    = k2_plus_ref_baseline/ exp(g_Cb - g_Mc);//0.5 / exp(g_Cb - g_Mc
 //k3_plus         = (B/pow(k_xb,.5))*(1-tanh(C*pow(k_xb,.5)*(x_xb-x_b0)))+D;        //X_k3_plus_PSO[i];
 k3_minus        = k3_plus_baseline / exp(g_Mc - g_Md) ;//0.3 / exp(g_Mc - g_Md);  //
 //k4_plus_ref     = pow(k_xb,0.5)*(pow(M*pow(x_xb,2),0.5)-N*x_xb)+ P;                 //X_k4_plus_PSO[i];
-k4_minus_ref    = k4_plus_ref_baseline * exp(g_Ca - g_Md - delta_G);
+k4_minus_ref    = k4_plus_ref_baseline / exp(g_Md - delta_G); // Changing terms based on the fact that delta_G is negative
 
 //-------------------------------------
 // Call the transition rates function:

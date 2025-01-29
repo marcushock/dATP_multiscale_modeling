@@ -41,9 +41,9 @@ __device__ void update_RUs(float lambda,
                             bool caRU[N_RU],
                             float * kB_plus,
                             float * kB_minus,
-                            float * k2_plus_drug,
-                            float * k2_plus_baseline,
-                            float * k2_minus,
+                            float * k1_plus_drug,
+                            float * k1_plus_baseline,
+                            float * k1_minus,
                             float k3_plus_drug,
                             float k3_plus_baseline,
                             float k3_minus,
@@ -316,11 +316,11 @@ __device__ void update_RUs(float lambda,
 	        p3 = p2 + k_minus_SR*dt;
 	        if (rand_drug[i] <= percent_drug)
             {
-                p4 = p3 + k2_plus_drug[x*N_S+y]*dt;
+                p4 = p3 + k1_plus_drug[x*N_S+y]*dt;
             }
             else
             {
-                p4 = p3 + k2_plus_baseline[x*N_S+y]*dt;
+                p4 = p3 + k1_plus_baseline[x*N_S+y]*dt;
             }
             p5 = p4 + k4_minus[x*N_S+y]*dt;
 
@@ -361,11 +361,11 @@ __device__ void update_RUs(float lambda,
 	        p3 = p2 + k_minus_SR*dt;
 	        if (rand_drug[i] <= percent_drug)
             {
-                p4 = p3 + k2_plus_drug[x*N_S+y]*dt;
+                p4 = p3 + k1_plus_drug[x*N_S+y]*dt;
             }
             else
             {
-                p4 = p3 + k2_plus_baseline[x*N_S+y]*dt;
+                p4 = p3 + k1_plus_baseline[x*N_S+y]*dt;
             }
             p5 = p4 + k4_minus[x*N_S+y]*dt;
   
@@ -413,7 +413,7 @@ __device__ void update_RUs(float lambda,
             {
                 p2 = p3 + k3_plus_baseline*dt;
             }
-            p3 = p2 + k2_minus[x*N_S+y]*dt;
+            p3 = p2 + k1_minus[x*N_S+y]*dt;
 
             if  (randNum[i] < p1)
             {
@@ -447,7 +447,7 @@ __device__ void update_RUs(float lambda,
             {
                 p2 = p1 + k3_plus_baseline*dt;
             }
-            p3 = p2 + k2_minus[x*N_S+y]*dt;
+            p3 = p2 + k1_minus[x*N_S+y]*dt;
 
             if  (randNum[i] < p1)
             {

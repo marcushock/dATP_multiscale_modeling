@@ -100,7 +100,7 @@ void init_particle(initParticleArgs & args, int replicate_number)
         //" gammaB " + std::to_string(args.gamma_B) +
         //" gammaM " + std::to_string(args.gamma_M) +
         //" mu_M " + std::to_string(args.mu_M) +
-        " k2_plus_ref " + std::to_string(args.k2_plus_ref_drug) +
+        " k1_plus_ref " + std::to_string(args.k1_plus_ref_drug) +
         " k3_plus " + std::to_string(args.k3_plus_drug) +
         " k4_plus_ref " + std::to_string(args.k4_plus_ref_drug) +
         " kB_plus_ref " + std::to_string(args.kB_plus_ref) +

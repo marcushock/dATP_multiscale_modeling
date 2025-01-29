@@ -76,7 +76,7 @@ for(int i = 0; i < argsArray.size(); ++i){
 // float gamma_B = atof(argv[2]); // [unitless] - RU-RU cooperative coefficient
 // float gamma_M = atof(argv[3]); // [unitless] - XB-RU/RU-XB coopcoefficient (Note: gamma_M = mu_B)
 // float mu_M = atof(argv[4]); // [unitless] - Inter-RU XB-XB cooperative coefficient
-// float k2_plus_ref = atof(argv[5]);
+// float k1_plus_ref = atof(argv[5]);
 // float k3_plus = atof(argv[6]);
 // float k4_plus_ref = atof(argv[7]);
 // float kB_plus_ref = atof(argv[8]); //               - (p = plus)
@@ -95,7 +95,7 @@ for(int i = 0; i < argsArray.size(); ++i){
 // gamma_B,
 // gamma_M,
 // mu_M,
-// k2_plus_ref,
+// k1_plus_ref,
 // k3_plus,
 // k4_plus_ref,
 // kB_plus_ref,

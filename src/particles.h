@@ -18,8 +18,8 @@ public:
     float k_plus_SR_drug;
     float k_minus_SR;
     float k_xb;
-    float k2_plus_ref_baseline;
-    float k2_plus_ref_drug;
+    float k1_plus_ref_baseline;
+    float k1_plus_ref_drug;
     float k3_plus_baseline;
     float k3_plus_drug;
     float k4_plus_ref_baseline;
@@ -43,6 +43,7 @@ public:
     float conc_Pi;
     float delta_G_ATP;
     float alpha;
+    float beta;
     float eta;
     float g_Cb;
     float g_Ca;
@@ -50,7 +51,7 @@ public:
     // float gamma_B; // [unitless] - RU-RU cooperative coefficient
     // float gamma_M; // [unitless] - XB-RU/RU-XB coopcoefficient (Note: gamma_M = mu_B)
     // float mu_M; // [unitless] - Inter-RU XB-XB cooperative coefficient
-    // float k2_plus_ref;
+    // float k1_plus_ref;
     // float k3_plus;
     // float k4_plus_ref;
     // float kB_plus_ref; //               - (p = plus)
@@ -72,8 +73,8 @@ public:
         k_plus_SR_drug(argsVector[4]),
         k_minus_SR(argsVector[5]),
         k_xb(argsVector[6]),
-        k2_plus_ref_baseline(argsVector[7]),
-        k2_plus_ref_drug(argsVector[8]),
+        k1_plus_ref_baseline(argsVector[7]),
+        k1_plus_ref_drug(argsVector[8]),
         k3_plus_baseline(argsVector[9]),
         k3_plus_drug(argsVector[10]),
         k4_plus_ref_baseline(argsVector[11]),
@@ -97,9 +98,10 @@ public:
         conc_Pi(argsVector[29]),
         delta_G_ATP(argsVector[30]),
         alpha(argsVector[31]),
-        eta(argsVector[32]),
-        g_Cb(argsVector[33]),
-        g_Ca(argsVector[34])
+        beta(argsVector[32]),
+        eta(argsVector[33]),
+        g_Cb(argsVector[34]),
+        g_Ca(argsVector[35])
        {}
 
 

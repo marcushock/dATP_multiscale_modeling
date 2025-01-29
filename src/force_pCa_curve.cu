@@ -55,15 +55,15 @@ gpuErrchk(cudaMemset(kB_plus, 0, sizeof(float)*N_S*N_S));
 float * kB_minus;
 gpuErrchk(cudaMallocManaged(&kB_minus, sizeof(float)*N_S*N_S));
 gpuErrchk(cudaMemset(kB_minus, 0, sizeof(float)*N_S*N_S));
-float * k2_plus_drug;
-gpuErrchk(cudaMallocManaged(&k2_plus_drug, sizeof(float)*N_S*N_S));
-gpuErrchk(cudaMemset(k2_plus_drug, 0, sizeof(float)*N_S*N_S));
-float * k2_plus_baseline;
-gpuErrchk(cudaMallocManaged(&k2_plus_baseline, sizeof(float)*N_S*N_S));
-gpuErrchk(cudaMemset(k2_plus_baseline, 0, sizeof(float)*N_S*N_S));
-float * k2_minus;
-gpuErrchk(cudaMallocManaged(&k2_minus, sizeof(float)*N_S*N_S));
-gpuErrchk(cudaMemset(k2_minus, 0, sizeof(float)*N_S*N_S));
+float * k1_plus_drug;
+gpuErrchk(cudaMallocManaged(&k1_plus_drug, sizeof(float)*N_S*N_S));
+gpuErrchk(cudaMemset(k1_plus_drug, 0, sizeof(float)*N_S*N_S));
+float * k1_plus_baseline;
+gpuErrchk(cudaMallocManaged(&k1_plus_baseline, sizeof(float)*N_S*N_S));
+gpuErrchk(cudaMemset(k1_plus_baseline, 0, sizeof(float)*N_S*N_S));
+float * k1_minus;
+gpuErrchk(cudaMallocManaged(&k1_minus, sizeof(float)*N_S*N_S));
+gpuErrchk(cudaMemset(k1_minus, 0, sizeof(float)*N_S*N_S));
 float * k4_plus_drug;
 gpuErrchk(cudaMallocManaged(&k4_plus_drug, sizeof(float)*N_S*N_S));
 gpuErrchk(cudaMemset(k4_plus_drug, 0, sizeof(float)*N_S*N_S));
@@ -81,8 +81,8 @@ float mu_M = args.mu_M;
 float kB_plus_ref = args.kB_plus_ref;
 float kB_minus_ref = args.kB_minus_ref;
 
-float k2_plus_ref_baseline = args.k2_plus_ref_baseline;
-float k2_plus_ref_drug = args.k2_plus_ref_drug;
+float k1_plus_ref_baseline = args.k1_plus_ref_baseline;
+float k1_plus_ref_drug = args.k1_plus_ref_drug;
 
 float k3_plus_baseline = args.k3_plus_baseline; 
 float k3_plus_drug   = args.k3_plus_drug;
@@ -113,7 +113,7 @@ float q = args.q; // parameter defined here
 // float lambda = 0;
 float lambda = args.lambda; 
 // calculating rates for XB cycling - use Tanner 2007/ Daniel 1998/ Pate & Cooke 1989
-float k2_minus_ref, k3_minus, k4_minus_ref;
+float k1_minus_ref, k3_minus, k4_minus_ref;
 float conc_ADP,conc_Pi, conc_ATP, x_preR, g_Ca, g_Cb, g_Mc, g_Md, delta_G_ATP, delta_G, k_xb, x_xb;
 //float  A, B, C, D, M, N, P, x_b0;
 //metabolite concentrations in cytosol
@@ -159,8 +159,8 @@ g_Ca    =   args.g_Ca;                                ;//free energy of XB state
 //kCa_plus_ref    = 0.09;
 //kCa_minus_ref   = 0.113;                    //X_kCa_minus_ref_PSO[i];
 //kB_minus_ref    = 0.327;                    //X_kB_minus_ref_PSO[i];
-//k2_plus_ref     = A * pow(k_xb/2*M_PI,0.5)*exp(-k_xb*pow(x_preR-x_b0,2)/2); // from tanner 2007
-k2_minus_ref    = k2_plus_ref_baseline/ exp(g_Cb - g_Mc);//0.5 / exp(g_Cb - g_Mc);    //using vals from optimization_0227 (k2_plus = 0.615440)
+//k1_plus_ref     = A * pow(k_xb/2*M_PI,0.5)*exp(-k_xb*pow(x_preR-x_b0,2)/2); // from tanner 2007
+k1_minus_ref    = k1_plus_ref_baseline/ exp(g_Cb - g_Mc);//0.5 / exp(g_Cb - g_Mc);    //using vals from optimization_0227 (k1_plus = 0.615440)
 //k3_plus         = (B/pow(k_xb,.5))*(1-tanh(C*pow(k_xb,.5)*(x_xb-x_b0)))+D;        //X_k3_plus_PSO[i];
 k3_minus        = k3_plus_baseline / exp(g_Mc - g_Md) ;//0.3 / exp(g_Mc - g_Md);  //
 //k4_plus_ref     = pow(k_xb,0.5)*(pow(M*pow(x_xb,2),0.5)-N*x_xb)+ P;                 //X_k4_plus_PSO[i];
@@ -173,9 +173,9 @@ k4_minus_ref    = k4_plus_ref_baseline / exp(g_Md - delta_G); // Changing terms 
 rates_trans_matrix(N_S,
 kB_plus_ref,
 kB_minus_ref,
-k2_plus_ref_drug,
-k2_plus_ref_baseline,
-k2_minus_ref,
+k1_plus_ref_drug,
+k1_plus_ref_baseline,
+k1_minus_ref,
 k4_plus_ref_drug,
 k4_plus_ref_baseline,
 k4_minus_ref,
@@ -187,9 +187,9 @@ r,
 q,
 kB_plus,
 kB_minus,
-k2_plus_drug,
-k2_plus_baseline,
-k2_minus,
+k1_plus_drug,
+k1_plus_baseline,
+k1_minus,
 k4_plus_drug,
 k4_plus_baseline,
 k4_minus
@@ -224,9 +224,9 @@ repeat_simul<<<MAX_REPS/32, 32, 0, s>>>(lambda,
                                         k3_plus_drug,
                                         k3_plus_baseline,
                                         k3_minus,
-                                        k2_plus_drug,
-                                        k2_plus_baseline,
-                                        k2_minus,
+                                        k1_plus_drug,
+                                        k1_plus_baseline,
+                                        k1_minus,
                                         kB_plus,
                                         kB_minus,
                                         kCa_plus_ref,
@@ -266,9 +266,9 @@ repeat_simul<<<MAX_REPS/32, 32, 0, s>>>(lambda,
     // free allocated memory
 gpuErrchk(cudaFree(kB_plus));
 gpuErrchk(cudaFree(kB_minus));
-gpuErrchk(cudaFree(k2_plus_drug));
-gpuErrchk(cudaFree(k2_plus_baseline));
-gpuErrchk(cudaFree(k2_minus));
+gpuErrchk(cudaFree(k1_plus_drug));
+gpuErrchk(cudaFree(k1_plus_baseline));
+gpuErrchk(cudaFree(k1_minus));
 gpuErrchk(cudaFree(k4_plus_drug));
 gpuErrchk(cudaFree(k4_plus_baseline));
 gpuErrchk(cudaFree(k4_minus));

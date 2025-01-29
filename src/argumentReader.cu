@@ -5,7 +5,7 @@
 #include <string>
 #include <cuda_runtime.h>
 
-#define NUM_COLUMNS 35
+#define NUM_COLUMNS 36
 
 // Define the kernel function to process the parameters with the data type given first (unlike void)
 std::vector< std::vector<float> > argumentReader(const char * name)
@@ -40,7 +40,7 @@ std::vector< std::vector<float> > argumentReader(const char * name)
             }
         }
         else {
-            cout<< "Error: The number of columns in the file is not equal to 35" << endl;
+            cout<< "Error: The number of columns in the file is not equal to: " << NUM_COLUMNS<< endl;
             cout<< "Number of columns in the file: " << lineVector.size() << endl;
         }
 

@@ -37,9 +37,9 @@ float * k4_minus,
 float k3_plus_drug,
 float k3_plus_baseline,
 float k3_minus,
-float * k2_plus_drug,
-float * k2_plus_baseline,
-float * k2_minus,
+float * k1_plus_drug,
+float * k1_plus_baseline,
+float * k1_minus,
 float * kB_plus,
 float * kB_minus,
 float kCa_plus_ref,
@@ -164,7 +164,7 @@ float Calc_conc_exp
         //printf("%f\n",k_plus_SR);
         //printf("%f\n",k_minus_SR);
 
-       update_RUs(lambda, DT, kCa_plus, kCa_minus, randNum, rand_drug, RU, caRU, kB_plus, kB_minus, k2_plus_drug, k2_plus_baseline, k2_minus, k3_plus_drug, k3_plus_baseline, k3_minus, k4_plus_drug, k4_plus_baseline, k4_minus, percent_drug, k_force_drug, k_force_baseline, k_plus_SR_drug, k_plus_SR_baseline, k_minus_SR,f);
+       update_RUs(lambda, DT, kCa_plus, kCa_minus, randNum, rand_drug, RU, caRU, kB_plus, kB_minus, k1_plus_drug, k1_plus_baseline, k1_minus, k3_plus_drug, k3_plus_baseline, k3_minus, k4_plus_drug, k4_plus_baseline, k4_minus, percent_drug, k_force_drug, k_force_baseline, k_plus_SR_drug, k_plus_SR_baseline, k_minus_SR,f);
 
         //--------------------------------------------
         // Obtain Force estimate based on the M-state

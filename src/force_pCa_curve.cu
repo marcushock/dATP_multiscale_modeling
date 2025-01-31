@@ -134,6 +134,7 @@ conc_Pi     = args.conc_Pi;         //uM
 
 // other constants
 float alpha = args.alpha; // parameter defined here
+float beta = args.beta; // parameter defined here
 float eta = args.eta; // parameter defined here
 //A = 2000; 
 //B = 100; // all from Tanner et al, 2007.
@@ -153,8 +154,12 @@ x_xb        = args.x_xb;        // 0.075; nm, XB distortion
 
 
 g_Cb    =  args.g_Cb                                    ;//free energy of XB state Cb
-g_M1    = alpha * delta_G + k_xb * pow(x_preR,2 )     ;//free energy of XB state Mc
-g_M2    = eta* delta_G + k_xb*pow(x_xb,2)       ;//free energy of XB state Md
+g_M1    = alpha * delta_G + k_xb * pow(x_preR,2 )     ;//free energy of XB state M1
+
+// Note that this term could be manipulated further and a new term for k could be defined as well 
+g_M2    = beta * delta_G + k_xb*pow(x_xb,2)       ;//free energy of XB state M2
+
+g_M3    = eta* delta_G + k_xb*pow(x_xb,2)       ;//free energy of XB state M3
 g_Ca    =   args.g_Ca;                                ;//free energy of XB state Ca
 
 
@@ -230,18 +235,18 @@ k4_minus
     }
 repeat_simul<<<MAX_REPS/32, 32, 0, s>>>(lambda,
                                         randSeed,
-                                        k4_plus_drug,
-                                        k4_plus_baseline,
-                                        k4_minus,
+                                        k1_plus_drug,
+                                        k1_plus_baseline,
+                                        k1_minus,
                                         k2_plus_drug,
                                         k2_plus_baseline,
                                         k2_minus,
                                         k3_plus_drug,
                                         k3_plus_baseline,
                                         k3_minus,
-                                        k1_plus_drug,
-                                        k1_plus_baseline,
-                                        k1_minus,
+                                        k4_plus_drug,
+                                        k4_plus_baseline,
+                                        k4_minus,
                                         kB_plus,
                                         kB_minus,
                                         kCa_plus_ref,

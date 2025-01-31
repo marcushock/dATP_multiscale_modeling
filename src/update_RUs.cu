@@ -24,6 +24,7 @@
 // C  - 3 Good 
 // M1 - 4 
 // M2 - 5
+// M3 - 6
 //--------------------------------------------------------------------------%
 #include "update_RUs.h"
 #include <stdio.h>
@@ -77,6 +78,7 @@ __device__ void update_RUs(float lambda,
         y     = RU[i+1];
 
         // printf("%d %f %f\n", i, rand_drug[i], randNum[i]);
+        // CHECKED [X] 
         //-----------------------------------------------------------------
         // if (state = [B* = 0]): Then   [B1*]           else stay as [B0*]
         //     & caState = 0             ^  
@@ -129,6 +131,7 @@ __device__ void update_RUs(float lambda,
             	RU[i] = 2; //switch [B0*---->B0]
             }
         }
+        // CHECKED [X] 
         //-----------------------------------------------------------------
         // if (state = [B* = 0]): Then	  ---->[B1]      else stay as [B1*]
         //     & caState = 1	          |	
@@ -165,6 +168,7 @@ __device__ void update_RUs(float lambda,
             }
 
         }
+        // CHECKED [X] 
         //-----------------------------------------------------------------
         // if (state = [C* = 1]): Then  [C1*]            else stay as [C0*]
         //     & caState = 0             ^  
@@ -200,6 +204,7 @@ __device__ void update_RUs(float lambda,
                 RU[i] = 3; // switch [C0*---->C0]
             }
         }
+        // CHECKED [X] 
         //-----------------------------------------------------------------
         // if (state = [C* = 1]):  Then     ---->[C1]   else stay as [C1*]
         //     & caState = 1               /
@@ -239,6 +244,7 @@ __device__ void update_RUs(float lambda,
                 RU[i] = 3; // switch [C1*---->C1]
             }
         }
+        // CHECKED [X] 
         //-----------------------------------------------------------------
         // if (state = [B = 2]):  Then    [B1]            else stay as [B0]
         //     & caState = 0               ^  
@@ -269,6 +275,7 @@ __device__ void update_RUs(float lambda,
             	RU[i] = 0; //switch [B0---->B0*]
             }
         }
+        // CHECKED [X] 
         //-----------------------------------------------------------------
         // if (state = [B = 2]): Then  [B1*]<----	  else stay as [B1]
         //     & caState = 1		            |	
@@ -298,13 +305,14 @@ __device__ void update_RUs(float lambda,
             }
 
         }
+        // CHECKED [X] 
         //-----------------------------------------------------------------
         // if (state = [C = 3]):  Then     [C1]           else stay as [C0]
         //     & caState = 0                ^  ---->[M1,0]
         //			                        | /
-        //	                               [B0]<----[C0]
+        //	                               [C0]--->[B0]
         //			                       / \
-        //	                     [C0*]<----   ---->[M2,0]
+        //	                     [C0*]<----   ---->[M3,0]
         //-----------------------------------------------------------------
         // With Lambda set to 0, I don't beleive that we can ever get to this state
         // Closed state of myosin, but without calcium bound... 
@@ -345,16 +353,17 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p5)
             {
-                RU[i] = 6; // switch [C0---->M2,0]
+                RU[i] = 6; // switch [C0---->M3,0]
             }
         }
+        // CHECKED [X] 
         //-----------------------------------------------------------------
         // if (state = [C = 3]):   Then                   else stay as [C1]
         //     & caState = 1	         [C1*]<----    ---->[M1,1]
         //                                         \  /  
         //                               [B1]<----[C1]          
         //                                         | \
-        //				                           v  ---->[M2,1]
+        //				                           v  ---->[M3,1]
         //                                       [C0]
         //-----------------------------------------------------------------
         else if ((state == 3) && (caState ==1))
@@ -371,7 +380,6 @@ __device__ void update_RUs(float lambda,
                 p4 = p3 + k1_plus_baseline[x*N_S+y]*dt;
             }
             p5 = p4 + k4_minus[x*N_S+y]*dt;
-  
 
             if  (randNum[i] < p1)
             {
@@ -391,9 +399,10 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p5)
             {
-                RU[i] = 6; // switch [C1---->M2,1]
+                RU[i] = 6; // switch [C1---->M3,1]
             }
         }
+        // CHECKED [X] 
         //-----------------------------------------------------------------
         // if (state = [M1 = 4]): Then     [M1,1]       else stay as [M1,0]
         //     & caState = 0		       ^
@@ -410,11 +419,11 @@ __device__ void update_RUs(float lambda,
             p1 = kCa_plus*dt;
             if (rand_drug[i] <= percent_drug)
             {
-                p2 = p3 + k3_plus_drug*dt;
+                p2 = p3 + k2_plus_drug*dt;
             }
             else
             {
-                p2 = p3 + k3_plus_baseline*dt;
+                p2 = p3 + k2_plus_baseline*dt;
             }
             p3 = p2 + k1_minus[x*N_S+y]*dt;
 
@@ -424,18 +433,94 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p2)
             {
-                RU[i] = 6; // switch [M1,0---->M2,0]
+                RU[i] = 5; // switch [M1,0---->M2,0]
             }
             else if (randNum[i] < p3)
             {
                 caRU[i] = 3; // switch [M1,0---->C0]
             }
         }
+        // CHECKED [X] 
         //-----------------------------------------------------------------
         // if (state = [M1 = 4]): Then     [M1,1]       else stay as [M1,1]
         //     & caState = 1	           / |   \
         // 		                  [C1]<----  v    ---->[M1,0]  
         //     			                   [M2,1]          
+        //-----------------------------------------------------------------
+        // This is in state M1, which is the weakly bound state. 
+        // Now we do have calcium bound, so it's more likely that we do visit this state. 
+        else if ((state == 4) && (caState == 1))
+        {
+            p1 = lambda*kCa_minus*dt;
+            if (rand_drug[i] <= percent_drug)
+            {
+                p2 = p1 + k2_plus_drug*dt;
+            }
+            else
+            {
+                p2 = p1 + k2_plus_baseline*dt;
+            }
+            p3 = p2 + k1_minus[x*N_S+y]*dt;
+
+            if  (randNum[i] < p1)
+            {
+                caRU[i] = 0;   // switch [M1,1---->M1,0]
+            }
+            else if (randNum[i] < p2)
+            {
+                RU[i] = 5; // switch [M1,1---->M2,1]
+            }
+            else if (randNum[i] < p3)
+            {
+                caRU[i] = 3; // switch [M1,1---->C1]
+            }
+        }
+        //New State M2 No Calcium
+        // CHECKED [X]
+        //-----------------------------------------------------------------
+        // if (state = [M2 = 5]): Then     [M2,1]       else stay as [M2,0]
+        //     & caState = 0		       ^
+        //     		                       |	
+        // 		                        [M2,0]
+        //     			                 / |
+        //		              [M1,0]<----  v
+        //			                     [M3,0]
+        //-----------------------------------------------------------------
+        // This is in state M1, which is the weakly bound state. 
+        // There is no calcium bound, so it's still surprising to be in this state to be honest. 
+        else if ((state == 4) && (caState == 0))
+        {
+            p1 = kCa_plus*dt;
+            if (rand_drug[i] <= percent_drug)
+            {
+                p2 = p3 + k3_plus_drug*dt;
+            }
+            else
+            {
+                p2 = p3 + k3_plus_baseline*dt;
+            }
+            p3 = p2 + k2_minus*dt;
+
+            if  (randNum[i] < p1)
+            {
+                caRU[i] = 1;   // switch [M2,0---->M2,1]
+            }
+            else if (randNum[i] < p2)
+            {
+                RU[i] = 6; // switch [M2,0---->M3,0]
+            }
+            else if (randNum[i] < p3)
+            {
+                caRU[i] = 4; // switch [M2,0---->M1,0]
+            }
+        }
+        //New State M2,1 Calcium 
+        // CHECKED [X]
+        //-----------------------------------------------------------------
+        // if (state = [M2 = 5]): Then     [M2,1]       else stay as [M2,1]
+        //     & caState = 1	           / |   \
+        // 		                [M1,1]<----  v    ---->[M2,0]  
+        //     			                   [M3,1]          
         //-----------------------------------------------------------------
         // This is in state M1, which is the weakly bound state. 
         // Now we do have calcium bound, so it's more likely that we do visit this state. 
@@ -450,26 +535,28 @@ __device__ void update_RUs(float lambda,
             {
                 p2 = p1 + k3_plus_baseline*dt;
             }
-            p3 = p2 + k1_minus[x*N_S+y]*dt;
+            p3 = p2 + k2_minus*dt;
 
             if  (randNum[i] < p1)
             {
-                caRU[i] = 0;   // switch [M1,1---->M1,0]
+                caRU[i] = 0;   // switch [M2,1---->M2,0]
             }
             else if (randNum[i] < p2)
             {
-                RU[i] = 6; // switch [M1,1---->M2,1]
+                RU[i] = 6; // switch [M2,1---->M3,1]
             }
             else if (randNum[i] < p3)
             {
-                caRU[i] = 3; // switch [M1,1---->C1]
+                caRU[i] = 4; // switch [M2,1---->M1,1]
             }
         }
+
+        // CHECKED [ ]
         //-----------------------------------------------------------------
-        // if (state = [M2 = 5]): Then     [M1,0]    	else stay as [M2,0]
-        //     & caState = 0      [C0]<----   ^   ---->[M2,1]       	
-        // 		                   \  |  / 
-        //			           [M2,0]
+        // if (state = [M3 = 6]): Then     [M1,0]    	else stay as [M3,0]
+        //     & caState = 0      [C0]<----   ^   ---->[M3,1]       	
+        // 		                           \  |  / 
+        //			                        [M3,0]
         //-----------------------------------------------------------------
         // Now in the strongly bound state. 
         // Again no calcium is bound. Not sure how we could ever visit this state. 
@@ -488,27 +575,28 @@ __device__ void update_RUs(float lambda,
 
             if  (randNum[i] < p1)
             {
-                caRU[i] = 1;   // switch [M2,0---->M2,1]
+                caRU[i] = 1;   // switch [M3,0---->M3,1]
             }
             else if (randNum[i] < p2)
             {
-                RU[i] = 3; // switch [M2,0---->C0]
+                RU[i] = 3; // switch [M3,0---->C0]
             }
             else if (randNum[i] < p3)
             {
-                caRU[i] = 4; // switch [M2,0---->M1,0]
+                caRU[i] = 5; // switch [M3,0---->M2,0]
             }
         }
+        // CHECKED [ ]
         //-----------------------------------------------------------------
-        // if (state = [M2 = 5]): Then    [M1,1]  	else stay as [M2,1]
+        // if (state = [M3 = 6]): Then    [M2,1]  	else stay as [M3,1]
         //     & caState = 1     [C1]<----   ^       	
-        // 		                  \  |      
-        //			          [M2,1]
-        //     			             \  
-        //			             v
-        //			          [M2,0]
+        // 		                          \  |      
+        //			                      [M3,1]
+        //     			                     |  
+        //			                         v
+        //			                      [M3,0]
         //-----------------------------------------------------------------
-        // In the M2 force producing state. 
+        // In the M3 force producing state. 
         // Calcium is actually bound, but is not able to unbind. 
         else if ((state == 6) && (caState == 1))
         {
@@ -525,15 +613,15 @@ __device__ void update_RUs(float lambda,
 
             if  (randNum[i] < p1)
             {
-                caRU[i] = 0;   // [M2,1---->M2,0]
+                caRU[i] = 0;   // [M3,1---->M3,0]
             }
             else if (randNum[i] < p2)
             {
-                RU[i] = 3; // switch [M2,1---->C1]
+                RU[i] = 3; // switch [M3,1---->C1]
             }
             else if (randNum[i] < p3)
             {
-                caRU[i] = 4; // switch [M2,1---->M1,1]
+                caRU[i] = 5; // switch [M3,1---->M1,1]
             }
         }
         ///-----------------------------------------------------------------

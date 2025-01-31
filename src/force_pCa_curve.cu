@@ -30,9 +30,10 @@ static boost::mutex lock;
 
 void force_pCa_curve(initParticleArgs & args,
                      unsigned long randSeed,
-                     float * M3Arrays,
                      float * Fss,
                      float * M1Arrays,
+                     float * M2Arrays,
+                     float * M3Arrays,
                      float * CArrays,
                      float * BArrays,
                      float * SRArrays,
@@ -44,8 +45,9 @@ void force_pCa_curve(initParticleArgs & args,
 int GPUid = getGPU();
 setGPU(GPUid);
 // select beginning of this loop's Force array
-float * M3 = &(M3Arrays[cc * MAX_TSTEPS]);
 float * M1 = &(M1Arrays[cc * MAX_TSTEPS]);
+float * M2 = &(M2Arrays[cc * MAX_TSTEPS]);
+float * M3 = &(M3Arrays[cc * MAX_TSTEPS]);
 float * C = &(CArrays[cc * MAX_TSTEPS]);
 float * B  = &(BArrays[cc * MAX_TSTEPS]);
 float * SR  = &(SRArrays[cc * MAX_TSTEPS]);
@@ -84,6 +86,9 @@ float kB_minus_ref = args.kB_minus_ref;
 float k1_plus_ref_baseline = args.k1_plus_ref_baseline;
 float k1_plus_ref_drug = args.k1_plus_ref_drug;
 
+float k2_plus_baseline = args.k2_plus_baseline; 
+float k2_plus_drug   = args.k2_plus_drug;
+
 float k3_plus_baseline = args.k3_plus_baseline; 
 float k3_plus_drug   = args.k3_plus_drug;
 
@@ -113,8 +118,8 @@ float q = args.q; // parameter defined here
 // float lambda = 0;
 float lambda = args.lambda; 
 // calculating rates for XB cycling - use Tanner 2007/ Daniel 1998/ Pate & Cooke 1989
-float k1_minus_ref, k3_minus, k4_minus_ref;
-float conc_ADP,conc_Pi, conc_ATP, x_preR, g_Ca, g_Cb, g_Mc, g_Md, delta_G_ATP, delta_G, k_xb, x_xb;
+float k1_minus_ref, k2_minus, k3_minus, k4_minus_ref;
+float conc_ADP,conc_Pi, conc_ATP, x_preR, g_Ca, g_Cb, g_M1, g_M2, g_M3, delta_G_ATP, delta_G, k_xb, x_xb;
 //float  A, B, C, D, M, N, P, x_b0;
 //metabolite concentrations in cytosol
 conc_ADP    = args.conc_ADP;        //uM, Dawson et al 1978/ Kushmerick et al 1969 (frog)
@@ -148,8 +153,8 @@ x_xb        = args.x_xb;        // 0.075; nm, XB distortion
 
 
 g_Cb    =  args.g_Cb                                    ;//free energy of XB state Cb
-g_Mc    = alpha * delta_G + k_xb * pow(x_preR,2 )     ;//free energy of XB state Mc
-g_Md    = eta* delta_G + k_xb*pow(x_xb,2)       ;//free energy of XB state Md
+g_M1    = alpha * delta_G + k_xb * pow(x_preR,2 )     ;//free energy of XB state Mc
+g_M2    = eta* delta_G + k_xb*pow(x_xb,2)       ;//free energy of XB state Md
 g_Ca    =   args.g_Ca;                                ;//free energy of XB state Ca
 
 
@@ -160,11 +165,18 @@ g_Ca    =   args.g_Ca;                                ;//free energy of XB state
 //kCa_minus_ref   = 0.113;                    //X_kCa_minus_ref_PSO[i];
 //kB_minus_ref    = 0.327;                    //X_kB_minus_ref_PSO[i];
 //k1_plus_ref     = A * pow(k_xb/2*M_PI,0.5)*exp(-k_xb*pow(x_preR-x_b0,2)/2); // from tanner 2007
-k1_minus_ref    = k1_plus_ref_baseline/ exp(g_Cb - g_Mc);//0.5 / exp(g_Cb - g_Mc);    //using vals from optimization_0227 (k1_plus = 0.615440)
+
+// Mc = M2, 
+
+k1_minus_ref    = k1_plus_ref_baseline/ exp(g_Cb - g_M1);//0.5 / exp(g_Cb - g_Mc);    //using vals from optimization_0227 (k1_plus = 0.615440)
+
+// NEED TO DEFINE K2_MINUS!!! 
+k2_minus        = k2_plus_baseline / exp(g_M1 - g_M2); //0.5 / exp(g_Mc - g_Md);    //using vals from optimization_0227 (k1_plus = 0.615440)
+
 //k3_plus         = (B/pow(k_xb,.5))*(1-tanh(C*pow(k_xb,.5)*(x_xb-x_b0)))+D;        //X_k3_plus_PSO[i];
-k3_minus        = k3_plus_baseline / exp(g_Mc - g_Md) ;//0.3 / exp(g_Mc - g_Md);  //
+k3_minus        = k3_plus_baseline / exp(g_M2 - g_M3) ;//0.3 / exp(g_Mc - g_Md);  //
 //k4_plus_ref     = pow(k_xb,0.5)*(pow(M*pow(x_xb,2),0.5)-N*x_xb)+ P;                 //X_k4_plus_PSO[i];
-k4_minus_ref    = k4_plus_ref_baseline / exp(g_Md - delta_G); // Changing terms based on the fact that delta_G is negative
+k4_minus_ref    = k4_plus_ref_baseline / exp(g_M3 - delta_G); // Changing terms based on the fact that delta_G is negative
 
 //-------------------------------------
 // Call the transition rates function:
@@ -221,6 +233,9 @@ repeat_simul<<<MAX_REPS/32, 32, 0, s>>>(lambda,
                                         k4_plus_drug,
                                         k4_plus_baseline,
                                         k4_minus,
+                                        k2_plus_drug,
+                                        k2_plus_baseline,
+                                        k2_minus,
                                         k3_plus_drug,
                                         k3_plus_baseline,
                                         k3_minus,
@@ -237,8 +252,9 @@ repeat_simul<<<MAX_REPS/32, 32, 0, s>>>(lambda,
                                         k_plus_SR_drug,
                                         k_plus_SR_baseline,
                                         k_minus_SR,
-                                        M3,
                                         M1,
+                                        M2,
+                                        M3,
                                         C,
                                         B,
                                         SR,

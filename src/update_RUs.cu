@@ -44,6 +44,9 @@ __device__ void update_RUs(float lambda,
                             float * k1_plus_drug,
                             float * k1_plus_baseline,
                             float * k1_minus,
+                            float k2_plus_drug,
+                            float k2_plus_baseline,
+                            float k2_minus,
                             float k3_plus_drug,
                             float k3_plus_baseline,
                             float k3_minus,
@@ -342,7 +345,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p5)
             {
-                RU[i] = 5; // switch [C0---->M2,0]
+                RU[i] = 6; // switch [C0---->M2,0]
             }
         }
         //-----------------------------------------------------------------
@@ -388,7 +391,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p5)
             {
-                RU[i] = 5; // switch [C1---->M2,1]
+                RU[i] = 6; // switch [C1---->M2,1]
             }
         }
         //-----------------------------------------------------------------
@@ -421,7 +424,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p2)
             {
-                RU[i] = 5; // switch [M1,0---->M2,0]
+                RU[i] = 6; // switch [M1,0---->M2,0]
             }
             else if (randNum[i] < p3)
             {
@@ -455,7 +458,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p2)
             {
-                RU[i] = 5; // switch [M1,1---->M2,1]
+                RU[i] = 6; // switch [M1,1---->M2,1]
             }
             else if (randNum[i] < p3)
             {
@@ -470,7 +473,7 @@ __device__ void update_RUs(float lambda,
         //-----------------------------------------------------------------
         // Now in the strongly bound state. 
         // Again no calcium is bound. Not sure how we could ever visit this state. 
-        else if ((state == 5) && (caState == 0))
+        else if ((state == 6) && (caState == 0))
         {
             p1 = kCa_plus*dt;
             if (rand_drug[i] <= percent_drug)
@@ -507,7 +510,7 @@ __device__ void update_RUs(float lambda,
         //-----------------------------------------------------------------
         // In the M2 force producing state. 
         // Calcium is actually bound, but is not able to unbind. 
-        else if ((state == 5) && (caState == 1))
+        else if ((state == 6) && (caState == 1))
         {
             p1 = lambda*kCa_minus*dt;
             if (rand_drug[i] <= percent_drug)

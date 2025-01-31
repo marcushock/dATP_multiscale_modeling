@@ -20,6 +20,8 @@ public:
     float k_xb;
     float k1_plus_ref_baseline;
     float k1_plus_ref_drug;
+    float k2_plus_baseline;
+    float k2_plus_drug;
     float k3_plus_baseline;
     float k3_plus_drug;
     float k4_plus_ref_baseline;
@@ -75,33 +77,35 @@ public:
         k_xb(argsVector[6]),
         k1_plus_ref_baseline(argsVector[7]),
         k1_plus_ref_drug(argsVector[8]),
-        k3_plus_baseline(argsVector[9]),
-        k3_plus_drug(argsVector[10]),
-        k4_plus_ref_baseline(argsVector[11]),
-        k4_plus_ref_drug(argsVector[12]),
-        kB_plus_ref(argsVector[13]),
-        kB_minus_ref(argsVector[14]),
-        kCa_plus_ref(argsVector[15]),
-        kCa_minus_ref(argsVector[16]),
-        percent_drug(argsVector[17]),
-        lambda(argsVector[18]),
-        gamma_B(argsVector[19]),
-        gamma_M(argsVector[20]),
-        mu_B(argsVector[21]),
-        mu_M(argsVector[22]),
-        q(argsVector[23]),
-        r(argsVector[24]),
-        x_preR(argsVector[25]),
-        x_xb(argsVector[26]),
-        conc_ADP(argsVector[27]),
-        conc_ATP(argsVector[28]),
-        conc_Pi(argsVector[29]),
-        delta_G_ATP(argsVector[30]),
-        alpha(argsVector[31]),
-        beta(argsVector[32]),
-        eta(argsVector[33]),
-        g_Cb(argsVector[34]),
-        g_Ca(argsVector[35])
+        k2_plus_baseline(argsVector[9]),
+        k2_plus_drug(argsVector[10]),
+        k3_plus_baseline(argsVector[11]),
+        k3_plus_drug(argsVector[12]),
+        k4_plus_ref_baseline(argsVector[13]),
+        k4_plus_ref_drug(argsVector[14]),
+        kB_plus_ref(argsVector[15]),
+        kB_minus_ref(argsVector[16]),
+        kCa_plus_ref(argsVector[17]),
+        kCa_minus_ref(argsVector[18]),
+        percent_drug(argsVector[19]),
+        lambda(argsVector[20]),
+        gamma_B(argsVector[21]),
+        gamma_M(argsVector[22]),
+        mu_B(argsVector[23]),
+        mu_M(argsVector[24]),
+        q(argsVector[25]),
+        r(argsVector[26]),
+        x_preR(argsVector[27]),
+        x_xb(argsVector[28]),
+        conc_ADP(argsVector[29]),
+        conc_ATP(argsVector[30]),
+        conc_Pi(argsVector[31]),
+        delta_G_ATP(argsVector[32]),
+        alpha(argsVector[33]),
+        beta(argsVector[34]),
+        eta(argsVector[35]),
+        g_Cb(argsVector[36]),
+        g_Ca(argsVector[37])
        {}
 
 

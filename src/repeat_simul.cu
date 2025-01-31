@@ -34,6 +34,9 @@ const unsigned long randSeed,
 float * k4_plus_drug,
 float * k4_plus_baseline,
 float * k4_minus,
+float k2_plus_drug,
+float k2_plus_baseline,
+float k2_minus,
 float k3_plus_drug,
 float k3_plus_baseline,
 float k3_minus,
@@ -50,8 +53,9 @@ float k_force_baseline,
 float k_plus_SR_drug,
 float k_plus_SR_baseline,
 float k_minus_SR,
-float * M3,
 float * M1,
+float * M2,
+float * M3,
 float * C,
 float * B,
 float * SR,
@@ -99,8 +103,9 @@ float Calc_conc_exp
     for (int n = 0; n < MAX_TSTEPS; ++n)  // time marching
     {
         // begin n-loop for time marching
-        int count_M3_state  = 0;                // used to find how many M3-state in each iteration
         int count_M1_state  = 0;
+        int count_M2_state  = 0;
+        int count_M3_state  = 0;                // used to find how many M3-state in each iteration
         int count_C_state  = 0;
         int count_B_state   = 0;
         int count_SR_state = 0;
@@ -164,45 +169,49 @@ float Calc_conc_exp
         //printf("%f\n",k_plus_SR);
         //printf("%f\n",k_minus_SR);
 
-       update_RUs(lambda, DT, kCa_plus, kCa_minus, randNum, rand_drug, RU, caRU, kB_plus, kB_minus, k1_plus_drug, k1_plus_baseline, k1_minus, k3_plus_drug, k3_plus_baseline, k3_minus, k4_plus_drug, k4_plus_baseline, k4_minus, percent_drug, k_force_drug, k_force_baseline, k_plus_SR_drug, k_plus_SR_baseline, k_minus_SR,f);
+       update_RUs(lambda, DT, kCa_plus, kCa_minus, randNum, rand_drug, RU, caRU, kB_plus, kB_minus, k1_plus_drug, k1_plus_baseline, k1_minus, k2_plus_drug, k2_plus_baseline, k2_minus, k3_plus_drug, k3_plus_baseline, k3_minus, k4_plus_drug, k4_plus_baseline, k4_minus, percent_drug, k_force_drug, k_force_baseline, k_plus_SR_drug, k_plus_SR_baseline, k_minus_SR,f);
 
         //--------------------------------------------
         // Obtain Force estimate based on the M-state
         //--------------------------------------------
         for(int i = 0; i < N_RU; ++i)
         {
-            if(RU[i]==5) // this represents M2
+            if (RU[i]==0) // this represents B* (SRX)
             {
-                ++count_M3_state;
-            }
-            else if(RU[i]==4) // this represents M1
-            {
-                ++count_M1_state;
-            }
-            else if(RU[i]==3) // this represents C
-            {
-                ++count_C_state;
-            }
-            else if (RU[i]==2) // this represents B
-            {
-                ++count_B_state;
+                ++count_SR_state;
             }
             else if (RU[i]==1) // this represents C* (SRX)
             {
                 ++count_SR_state;
             }
-            else if (RU[i]==0) // this represents B* (SRX)
+            else if (RU[i]==2) // this represents B
             {
-                ++count_SR_state;
+                ++count_B_state;
+            }
+            else if(RU[i]==3) // this represents C
+            {
+                ++count_C_state;
+            }
+            else if(RU[i]==4) // this represents M1
+            {
+                ++count_M1_state;
+            }
+            else if (RU[i]==5){ // this represents M2
+                ++count_M2_state;
+            }   
+            else if(RU[i]==6) // this represents M3
+            {
+                ++count_M3_state;
             }
         }
         float forceValue = (float)count_M3_state / (N_RU); // Type casting because count_M3_state is defined as an int 
         float M1Value = (float)count_M1_state / (N_RU);
+        float M2Value = (float)count_M2_state / (N_RU);
         float CValue = (float)count_C_state / (N_RU);
         float BValue = (float)count_B_state / (N_RU);
         float SRValue = (float)count_SR_state / (N_RU);
         
-        f = forceValue;
+        f = forceValue; // Could also include some function of the M2 value here 
         // float current_max = 0;
         // // This is to look at what happens after the there is an instance where there is at least one state in the force producing state 
         // // It also looks at the following state to see if everything transitions out. 
@@ -232,8 +241,9 @@ float Calc_conc_exp
         
 
 
-        atomicAdd(&(M3[n]), forceValue); // add results every repeat
         atomicAdd(&(M1[n]), M1Value); // add results every repeat
+        atomicAdd(&(M2[n]), M2Value); // add results every repeat
+        atomicAdd(&(M3[n]), forceValue); // add results every repeat
         atomicAdd(&(C[n]), CValue); // add results every repeat
         atomicAdd(&(B[n]), BValue); // add results every repeat
         atomicAdd(&(SR[n]), SRValue); // add results every repeat

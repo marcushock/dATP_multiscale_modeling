@@ -41,6 +41,9 @@ void init_particle(initParticleArgs & args, int replicate_number)
     float * M1Arrays_return;
     gpuErrchk(cudaMallocManaged(&M1Arrays_return, sizeof(float)*n_pCa*MAX_TSTEPS));
     gpuErrchk(cudaMemset(M1Arrays_return, 0, sizeof(float)*n_pCa*MAX_TSTEPS));
+    float * M2Arrays_return;
+    gpuErrchk(cudaMallocManaged(&M2Arrays_return, sizeof(float)*n_pCa*MAX_TSTEPS));
+    gpuErrchk(cudaMemset(M2Arrays_return, 0, sizeof(float)*n_pCa*MAX_TSTEPS));
     float * CArrays_return;
     gpuErrchk(cudaMallocManaged(&CArrays_return, sizeof(float)*n_pCa*MAX_TSTEPS));
     gpuErrchk(cudaMemset(CArrays_return, 0, sizeof(float)*n_pCa*MAX_TSTEPS));
@@ -55,16 +58,19 @@ void init_particle(initParticleArgs & args, int replicate_number)
     boost::thread_group pcaThreadGroup;
     for(int cc = 0; cc < n_pCa; ++cc)
     {
-        pcaThreadGroup.add_thread(new boost::thread(force_pCa_curve,
+        pcaThreadGroup.add_thread(new boost::thread([&, cc]() {
+            force_pCa_curve(
             args,
             RANDVAL,
-            M3Arrays_return,
             Fss_return,
             M1Arrays_return,
+            M2Arrays_return,
+            M3Arrays_return,
             CArrays_return,
             BArrays_return,
             SRArrays_return,
-            cc));
+            cc);
+        }));
     }
     pcaThreadGroup.join_all();
 
@@ -169,9 +175,10 @@ void init_particle(initParticleArgs & args, int replicate_number)
         std::cout << " data successfully saved into the file name: " << Force_pCa_normalized_out_Filename << std::endl;
         /* end pca + pca normalized out */
 
-    gpuErrchk(cudaFree(M3Arrays_return));
     gpuErrchk(cudaFree(Fss_return));
     gpuErrchk(cudaFree(M1Arrays_return));
+    gpuErrchk(cudaFree(M2Arrays_return));
+    gpuErrchk(cudaFree(M3Arrays_return));
     gpuErrchk(cudaFree(CArrays_return));
     gpuErrchk(cudaFree(BArrays_return));
     gpuErrchk(cudaFree(SRArrays_return));

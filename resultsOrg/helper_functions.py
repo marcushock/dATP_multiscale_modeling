@@ -2,11 +2,27 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+### TODO #### 
+# 1. Fix the other auxillary functions to work with 5 or 4 states rather than just 1 
+#    [ ] Get twitch 
+#    [ ] Get steady statep
+#    [ ] Get plot_twitch_from_sim
+#    [ ] Get get_twitch_from_sim
+
+
 class states_structure:
-    def __init__(self, input_filename:'CSV', OFFState = True) -> None: # type: ignore
+    def __init__(self, input_filename:'CSV', num_states = 6) -> None: # type: ignore
+        '''
+        By default this code will assume we are using the updated 6 state model that 
+        has 3 intermediates for the XB (M1, M2, M3). Use num_states = 5 for the 5
+        state model or numstates = 4 for the 4 state model.
+        '''
+
         print('The filename is: ', input_filename)
         self.file_name = input_filename
-        if OFFState:
+        if num_states == 6:
+            self.state_list = ['M3','M2','M1','C','B','OFF']
+        elif num_states == 5:
             self.state_list = ['M2','M1','C','B','OFF']
         else:
             self.state_list = ['M2','M1','C','B']
@@ -53,7 +69,7 @@ class states_structure:
         This function returns the temporal force states from the simulation and does not 
         average them across the replciaets. 
         '''
-        force_cols = [col for col in self.states_df.columns if 'M2' in col]
+        force_cols = [col for col in self.states_df.columns if 'M3' in col]
         self.twitch_states = self.states_df[force_cols]
         return self.states_df[force_cols]
 
@@ -63,13 +79,13 @@ class states_structure:
         # Define new steady state DF with each column a different state
         # And each row a different pCa (7,4,0.1 steap)
         # Also creating a place for the pCa first, then renaming 
-        df = pd.DataFrame(np.zeros((31,6)), columns = ['pCa','M2','M1','C','B','OFF'])
+        df = pd.DataFrame(np.zeros((31,7)), columns = ['pCa','M3','M2','M1','C','B','OFF'])
         df.pCa = np.arange(7,3.9,-0.1)
         for i in range(len(df.pCa)):
             df.pCa[i] = round(df.pCa[i],1)
         df = df.set_index('pCa')
 
-        df_std = pd.DataFrame(np.zeros((31,6)), columns = ['pCa','M2','M1','C','B','OFF'])
+        df_std = pd.DataFrame(np.zeros((31,7)), columns = ['pCa','M3','M2','M1','C','B','OFF'])
         df_std.pCa = np.arange(7,3.9,-0.1)
         for i in range(len(df_std.pCa)):
             df_std.pCa[i] = round(df_std.pCa[i],1)
@@ -86,24 +102,30 @@ class states_structure:
                 df_std.at[round(pca,2), state] = value 
             pca -= 0.1
         
-        max_force = df['M2'].max()
-        min_force = df['M2'].min()
+        max_force = df['M3'].max()
+        min_force = df['M3'].min()
         half_force = (max_force + min_force) / 2
-        self.pCa_50 = np.interp(half_force, df['M2'].values, df.index)
+        self.pCa_50 = np.interp(half_force, df['M3'].values, df.index)
 
         self.steady_states_all  = df
         self.steady_states_all_std  = df_std
-        self.force_pCa = self.steady_states_all['M2']
-        df_std['M2'].index, df_std['M2'].values
+        self.force_pCa = self.steady_states_all['M3']
+        df_std['M3'].index, df_std['M3'].values
 
-        upper_curve = self.force_pCa + self.steady_states_all_std['M2']
+        upper_curve = self.force_pCa + self.steady_states_all_std['M3']
         upper_half = (upper_curve.max() + upper_curve.min())/2
         self.upper_pCa_50  = np.interp(upper_half, upper_curve.values, upper_curve.index)
         
 
-        lower_curve = self.force_pCa - self.steady_states_all_std['M2']
+        lower_curve = self.force_pCa - self.steady_states_all_std['M3']
         lower_half = (lower_curve.max() + lower_curve.min())/2
         self.lower_pCa_50 = np.interp(lower_half, lower_curve.values, lower_curve.index)
+
+    def twitch_tension_integral(self, reference_integral = 1):
+        force_cols = [col for col in self.states_df.columns if 'M3' in col]
+        integral = np.trapz(self.states_df[force_cols].mean(axis  = 1), self.states_df.Time)
+        return integral / reference_integral
+    
 
 
 
@@ -145,14 +167,14 @@ def extract_parameters(file_name, custom_sep = None, verbose = False):
     return parameters
 
 def plot_twitch_from_sim(input_states_structure, shading = False):
-    force_cols = [col for col in input_states_structure.states_df.columns if 'M2' in col]
+    force_cols = [col for col in input_states_structure.states_df.columns if 'M3' in col]
 
     plt.plot(input_states_structure.states_df.Time, input_states_structure.states_df[force_cols].mean(axis  = 1), 'C0', alpha = 1, label = 'Old')
     if shading: 
         plt.plot(input_states_structure.states_df.Time, input_states_structure.states_df[force_cols], 'C0', alpha = 0.05)
 
 def get_twitch_from_sim(input_states_structure, mean = True, time = False):
-    force_cols = [col for col in input_states_structure.states_df.columns if 'M2' in col]
+    force_cols = [col for col in input_states_structure.states_df.columns if 'M3' in col]
     if time == False:    
         if mean:
             return input_states_structure.states_df[force_cols].mean(axis  = 1)

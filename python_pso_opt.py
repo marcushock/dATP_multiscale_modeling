@@ -3,14 +3,16 @@
 
 
 # TODO
-# [ ] - Create a funciton to write csv file that has all the simulations that we want to run 
+# [ ] - Create a funciton to write csv file that has all the simulations that we want to run (not sure actually about this...)
 # [X] - Readin in the some starting values as a base location for the PSO algorithm 
 # [ ] - Create a function to run the PSO algorithm 
 # [ ] - Calculate the error that can be used when returning from the PSO function and have a minimzation target 
-# [ ] - Load in the ATPase data 
 # [ ] - Maybe have a temp csv file that gets overwritten every PSO run and then also have a master CSV that shows all the particle runs 
 # [ ] - Select whether to use the ATPase data or the force-pCa data 
 # [ ] - Decide on how the drug amount will be estimated in the simulations (probably start with )
+# [ ] - Made a changable normalization. Or normalization using multiple data sets. 
+# [ ] - Load in the ATPase data 
+
 
 # Import libraries
 import numpy as np 
@@ -21,51 +23,17 @@ import subprocess
 import time
 import numpy as np 
 import datetime
+from resultsOrg import helper_functions as hf
+import yaml 
+import sys 
+from pyswarms.single.local_best import LocalBestPSO
 
 
 
 
-# Original dict - uncomment to use [starting value, lower bound upper bound]
-optimization_dict = {
-#  'protocol': [1.0, 0.5, 1.5], # Should not ever be optimized. Either can be 0 (twich) or 1 (force pCa)
-#  'k_force_baseline': [0.2, 0.1, 0.3], 
-#  'k_force_drug': [779.0, 0, 10000], 
-#  'k_plus_SR_baseline': [16.0, 5.0, 20.0], 
-#  'k_plus_SR_drug': [16.0, 10.0, 20.0], 
-#  'k_minus_SR': [15.0, 10.0, 20.0], 
-#  'k_xb': [5.0, 1.0, 10.0], 
-#  'k1_plus_ref_baseline': [0.0025, 0.001, 0.005], 
-#  'k1_plus_ref_drug': [0.00478, 0.002, 0.01], 
-#  'k2_plus_ref_baseline': [0.0015, 0.001, 0.005], 
-#  'k2_plus_ref_drug': [0.0015, 0.001, 0.005], 
-#  'k3_plus_baseline': [0.05, 0.01, 0.1], 
-#  'k3_plus_drug': [0.08, 0.01, 0.1], 
-#  'k4_plus_ref_baseline': [0.135, 0.1, 0.2], 
-#  'k4_plus_ref_drug': [0.23, 0.1, 0.3], 
-#  'kB_plus_ref': [13.0, 10.0, 20.0], 
-#  'kB_minus_ref': [0.1, 0.05, 0.2], 
-#  'kCa_plus_ref': [0.09, 0.05, 0.2], 
-#  'kCa_minus_ref': [0.57, 0.5, 1.0], 
-#  'percent_drug': [0.0, 0.0, 1.0], 
-#  'lambda': [0.0, 0.0, 1.0], 
-#  'gamma_B': [45.0, 30.0, 60.0], 
-#  'gamma_M': [21.0, 10.0, 30.0], 
-#  'mu_B': [21.0, 10.0, 30.0], 
-#  'mu_M': [2.0, 1.0, 5.0], 
-#  'q': [1.0, 0.5, 1.5], 
-#  'r': [1.0, 0.5, 1.5], 
-#  'x_preR': [0.0, -0.1, 0.1], 
-#  'x_xb': [0.075, 0.05, 0.1], 
-#  'conc_ADP': [30.0, 10.0, 50.0], 
-#  'conc_ATP': [3000.0, 1000.0, 5000.0], 
-#  'conc_Pi': [3000.0, 1000.0, 5000.0], 
-#  'delta_G_ATP': [-13.0, -20.0, -5.0], 
-#  'alpha': [0.28, 0.1, 0.5], 
-#  'beta': [0.35, 0.1, 0.5], 
-#  'eta': [0.68,]
-#  'g_Cb': [0.0, 0, 0], 
-#  'g_Ca': [0.0, 0, 0]
-}
+
+
+
 
 
 '''
@@ -83,53 +51,72 @@ from the ATPase data.
  - Read in the ATP
 '''
 
-def run_MCMC(input_dict, exp_data = "ATPase"):
-    '''
-    This function takes in a dictionary which is used to specify the input parameters that are going to be optimized. 
-    The rest of the input arguments will be left untouched. 
 
-    '''
-    write_csv_file(input_dict, filename = "MCMC_temp_input.csv")
-    # Run the MCMC simulation 
-    # Copied below from other file 
-    '''
-    args = [
-		"bin/" + str(binName),
-		"expData/Force_pCa_Optmz_morePts.csv", #Force_pCa_3pts_2 #Force_pCa_Optmz_morePts
-		str(parameters["gamma_B"]),
-		str(parameters["gamma_M"]),
-		str(parameters["mu_M"]),
-		str(parameters["k2_plus_ref"]),
-		str(parameters["k3_plus"]),
-		str(parameters["k4_plus_ref"]),
-		str(parameters["kB_plus_ref"]),
-		str(parameters["kB_minus_ref"]),
-		str(parameters["lambda"]),
-		str(parameters["kCa_plus_ref"]),
-		str(parameters["kCa_minus_ref"]),
-		str(parameters["percent_drug"]),
-		str(parameters["k_force"]),
-		str(parameters["k_plus_SR_ref"]),
-		str(parameters["k_minus_SR_ref"]),
-		str(parameters["protocol"]),
-		 ]
-	try:
-		os.makedirs(folder)
-	except OSError:
-		pass
-	fname = folder+"/"
-	for key, value in parameters.items():
-		fname += str(key) + " " + str(value) + " "
-	fname = fname.strip()
-	with open(fname+".out", 'w') as out:
-		with open(fname+".err", 'w') as err:
-			print("Running " + str(args))
-			time_start = time.time()
-			subprocess.call(args, stdout=out, stderr=err, shell=False)
-			print("Time (seconds): ", time.time() - time_start)
-    '''
+# Define function to read in the yaml from the input line argument 
+def read_yaml_file():
+    if len(sys.argv) < 2:
+        raise ValueError("No command line YML file path provided")
 
-    return 
+    file_path = sys.argv[1]
+    # file_path = "/crucial/modified_MCMC/dATP_multiscale_modeling/resultsOrg/optiziation_dir/example_yaml_in.yml"
+    """
+    Load PSO configuration from a YAML file with compact [baseline, min, max] format
+    Returns:
+        dict: Dictionary with processed PSO configuration
+        
+    Raises:
+        FileNotFoundError: If the specified file does not exist
+        yaml.YAMLError: If there is an error parsing the YAML file
+    """
+    try:
+        with open(file_path, 'r') as file:
+            config = yaml.safe_load(file)
+        
+        if config['search_space'] is None: 
+            config['search_space'] = {}
+        else:
+            for param_name, param_values in config['search_space'].items():
+                if len(param_values) != 3:
+                    raise ValueError(f"Parameter {param_name} should have exactly 3 values [baseline, min, max]")
+                        
+
+        return config
+        
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Configuration file not found: {file_path}")
+    except yaml.YAMLError as e:
+        raise yaml.YAMLError(f"Error parsing YAML file: {e}")
+
+
+def rename_undated(results_directory, extra_append = ""):
+	file_names = os.listdir(results_directory)
+	time_str = time.strftime("%y%m%d-%H%M_")+extra_append
+	for name in file_names:
+		if "States_" == name[0:7] or "Force_" == name[0:6]:
+			new_filename = time_str+fix_trailing_zeros(name)
+			print("Renaming '{}' \nto \n'{}'\n".format(name, new_filename))
+			original_path = results_directory+'/'+name
+			new_path = results_directory + '/' + new_filename
+			try:
+				os.rename(original_path, new_path)
+			except:
+				print('Could not rename. ')
+	return 
+
+def fix_trailing_zeros(filename_string):
+    new_name = ''
+    for filename_piece in filename_string.strip('.csv').split(' '):
+        try:
+            new_value = float(filename_piece)
+            new_name += str(new_value)
+            new_name += ' '
+        except:
+            new_name += filename_piece
+            new_name += ' '
+    if new_name[-1] == ' ':
+        new_name = new_name[0:-1]
+    new_name += '.csv'
+    return new_name
 
 
 def write_csv_file(input_dict, filename = "MCMC_temp_input.csv"):
@@ -138,10 +125,25 @@ def write_csv_file(input_dict, filename = "MCMC_temp_input.csv"):
     The rest of the values will be the same as the default values. 
 
     '''
+    f = open(filename, "w")
+    count = 0
+    new_line = ""
+    for key in input_dict.keys():
+        new_line += str(key)
+        new_line += ","
+    new_line = new_line[:-1] + "\n"
+    f.write(new_line)
+    new_line = ""
+    for key in input_dict.keys():
+        new_line += str(input_dict[key])
+        new_line += ","
+    new_line = new_line[:-1] + "\n"
+    f.write(new_line)
+    f.close()
+    print("Wrote temporary input file to: ", filename)
+    return filename
 
-    return
-
-def read_default_params(filename = "/crucial/modified_MCMC/dATP_multiscale_modeling/parameters/parameter_input.csv"):
+def read_default_params(filename):
     '''
     This function will read in the default parameters that are going to be used in the simulations. 
     The user can specify the default parameters in a CSV file that is read in by this function. 
@@ -164,23 +166,202 @@ def make_exp_dir(custom_name = "", storing_directory = "/crucial/modified_MCMC/d
     The directory will be created in the storing_directory that is specified by the user. 
     The name of the directory will be the current time that the function is called. 
     '''
-    
-    current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
     new_directory = storing_directory + current_time + custom_name
-    os.mkdir(new_directory)
+    try: 
+        os.mkdir(new_directory)
+    except:
+        print("Directory already exists... given timestamp. ")
+        print("Data may be overwritten. ")
     return new_directory
 
 
+def run_MCMC_bin(input_dict, output_dir, bin_namepath, exp_data_file):
+    '''
+    This function takes in a dictionary which is used to specify the input parameters that are going to be optimized. 
+    The rest of the input arguments will be left untouched. 
+    '''
+    temp_running_file = write_csv_file(input_dict, filename = output_dir+"/PSO_temp_input.csv")
+    # Run the MCMC simulation 
+    # Copied below from other file 
+    
+    # Exp Data path: 
+    # Should be fixed to be more easily modified later rather than hard coded
+    # exp_data_path = "/crucial/modified_MCMC/dATP_multiscale_modeling/expData/4.csv"
+    ### FIX LATER ### 
+    # This file path should be changed thoughtfully 
+    args = [
+        bin_namepath,
+        exp_data_file,
+        temp_running_file]
+
+    os.chdir(output_dir)
+
+    try:
+        os.makedirs("PSO_results")
+    except OSError:
+        pass
+    results_path = output_dir + "/PSO_results"
+
+
+    with open("stdout.out", 'w') as out:
+        with open("stderr.err", 'w') as err:
+            print("Running " + str(args))
+            time_start = time.time()
+            subprocess.call(args, stdout=out, stderr=err, shell=False, cwd=output_dir)
+            print("Time (seconds): ", time.time() - time_start)
+    return results_path
+
+
+
+def run_and_evalutate(new_full_parameter_set, config_dirs):
+    output_directory = config_dirs['output_directory']
+    binary_name = config_dirs['bin_name']
+    exp_data_type = config_dirs['exp_data_type']
+    exp_data_file = config_dirs['exp_data_file']
+
+
+    # Run the binary
+    results_dir = run_MCMC_bin(new_full_parameter_set, output_directory, binary_name, exp_data_file)
+    # results_dir = '/crucial/modified_MCMC/dATP_multiscale_modeling/MCMC_simulation_results/PSO_optimizations/2025-02-25_06-22'+"/PSO_results"
+    # Load in the exp data 
+    exp_data = pd.read_csv(exp_data_file, names = ['pCa','Normalized_data'])
+    
+    # Load in the simulation data 
+    if exp_data_type == "ATPase":
+    #     # Load in the ATPase data 
+        for f in os.listdir(results_dir):
+            if "ATP_out" in f:
+                simulation_data = pd.read_csv(results_dir+'/'+f, names = ['Timestep']+list(exp_data.pCa))
+                break
+    
+    if exp_data_type == "Force_pCa":
+        for f in os.listdir(results_dir):
+            if "Force_out" in f:
+                simulation_data = pd.read_csv(results_dir+'/'+f, names = ['Timestep']+list(exp_data.pCa))
+                break 
+
+    selected_times = simulation_data.Timestep>simulation_data.Timestep.max()*1/3
+    sim_steady_states_values = simulation_data[selected_times][list(exp_data.pCa)].mean()
+    # Define new steady state DF with each column a different state
+    # And each row a different pCa (7,4,0.1 steap)
+    # Also creating a place for the pCa first, then renaming 
+
+        
+    # Calculate the error between the two 
+    sim_normalized = normalize_array(sim_steady_states_values.values)
+    print("Sim normalized: ", sim_normalized)
+    exp_normalized = normalize_array(exp_data.Normalized_data.values)
+    print("Exp normalized: ", exp_normalized)
+    errors = sim_normalized - exp_normalized
+    rmse = np.sum((errors)**2)
+    print("RMSE is: ", rmse)
+    rename_files(results_dir)
+    # Rename any file in the directory with the start of the file of "Rep0" to Particle_N_ where N starts 
+    # at one and increases by one if that file exists already
+
+    return rmse
+    # Return the error 
+
+def rename_files(directory):
+    files = [f for f in os.listdir(directory) if f.startswith("Rep0")]
+    files.sort()
+    
+    existing_files = set(os.listdir(directory))
+    counter = 1
+    
+    for file in files:
+        while f"particle_{counter}" in existing_files:
+            counter += 1
+        
+        old_path = os.path.join(directory, file)
+        new_name = f"particle_{counter}"
+        new_path = os.path.join(directory, new_name)
+        
+        os.rename(old_path, new_path)
+        existing_files.add(new_name)
+        
+        print(f"Renamed {file} -> {new_name}")
+
+def normalize_array(input_array):
+    '''
+    This function will normalize the input array to have a max of 1, and min of 0 '''
+    data_min = np.min(input_array)
+    data_max = np.max(input_array)
+    normalized_array = (input_array - data_min) / (data_max - data_min)
+    return normalized_array
+
+def pyswarm_run(X, yaml_config):
+    default_parameters = read_default_params(yaml_config['files_and_directories']['default_param_file'])
+    results_array = np.zeros(X.shape[0]) # .reshape(-1,len(yaml_config['search_space']))
+
+    # X has the shape (n_particles, n_features/parameters)
+    for i in range(X.shape[0]):
+        parameters = X[i]
+        optimization_range_dict = yaml_config['search_space']
+        if optimization_range_dict is None:
+            optimization_range_dict = {}
+
+        optimization_values = {}
+        k = 0
+        for key, value in optimization_range_dict.items():
+            optimization_values[key] = parameters[k]
+            k+=1
+        # Optimization values is going to be a small dict
+        new_full_parameter_set = default_parameters.copy()
+        new_full_parameter_set.update(optimization_values)
+        results_array[i] = run_and_evalutate(new_full_parameter_set, yaml_config['files_and_directories'])
+    return results_array
+
 
 def main():
-
-    default_parameters = read_default_params()
-    print("Read in default parameters are: \n", default_parameters)
-    output_direcoty = make_exp_dir()
-    print("Output directory is: ", output_direcoty)
+    # Read in yaml file 
+    yaml_config = (read_yaml_file())
     
-    # This will eventually need to be inside of the PSO alogirthm 
-    run_MCMC(default_parameters)
+    # Read in the default parameters CSV file 
+    default_parameters = read_default_params(yaml_config['files_and_directories']['default_param_file'])
+    print("Read in default parameters are: \n", default_parameters)
+
+    # Make new directory for the simulation to occur 
+    output_directory = make_exp_dir()
+    print("Output directory is: ", output_directory)
+    yaml_config['files_and_directories']['output_directory'] = output_directory 
+
+
+    #### This chunk of code can probably go into a different function later ### 
+    # Take the small dict of values that have been chosen to be optimized, and just get the first value in 
+    # the list which is the starting value 
+    # Read in the yaml search space 
+    # optimization_range_dict = yaml_config['search_space']
+    # if optimization_range_dict is None:
+    #     optimization_range_dict = {}
+
+    n_dim = len(yaml_config['search_space'])
+    x_max = np.zeros(n_dim)
+    x_min = np.zeros(n_dim)
+    i = 0
+    for key in yaml_config['search_space']:
+        print("Key: ", key)
+        print("Value: ", yaml_config['search_space'][key])
+        x_max[i] = yaml_config['search_space'][key][2]
+        x_min[i] = yaml_config['search_space'][key][1]
+        i+=1
+    bounds = (x_min, x_max)
+    # Instantiate the optimizer for a 1D problem
+    options = yaml_config['pso_algorithm']['swarm_options']
+
+    optimizer = ps.single.LocalBestPSO(n_particles=yaml_config['pso_algorithm']['n_particles'],
+                                        dimensions=n_dim,
+                                        options = options,
+                                        bounds = bounds)
+
+    # now run the optimization, pass a=1 and b=100 as a tuple assigned to args
+
+    cost, pos = optimizer.optimize(pyswarm_run, 
+                                iters = yaml_config['pso_algorithm']['n_iterations'],
+                                yaml_config = yaml_config)
+    
 
     return 
 

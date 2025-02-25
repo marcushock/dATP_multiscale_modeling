@@ -10,6 +10,7 @@ void force_pCa_curve(initParticleArgs & args,
                      float * CArrays,
                      float * BArrays,
                      float * SRArrays,
+                     float * ATPaseArrays,
                      int cc
                     );
 #endif // FORCE_PCA_CURVE_H

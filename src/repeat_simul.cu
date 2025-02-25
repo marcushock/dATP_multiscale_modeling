@@ -59,6 +59,7 @@ float * M3,
 float * C,
 float * B,
 float * SR,
+float * ATPase,
 int cc,
 float protocol, 
 float Calc_conc_exp
@@ -100,6 +101,7 @@ float Calc_conc_exp
     //------------------------------------
     // start time loop i.e., using n-index
     //------------------------------------
+    float ATPcounter;
     for (int n = 0; n < MAX_TSTEPS; ++n)  // time marching
     {
         // begin n-loop for time marching
@@ -109,6 +111,7 @@ float Calc_conc_exp
         int count_C_state  = 0;
         int count_B_state   = 0;
         int count_SR_state = 0;
+        ATPcounter = 0;
         genrand(randNum, N_RU, &state); // fills array with random numbers
         genrand(rand_drug, N_RU, &state); // fills array with random numbers
 
@@ -168,8 +171,22 @@ float Calc_conc_exp
         // float k_minus_SR = k_minus_SR_ref; // DELETE THIS LINE 
         //printf("%f\n",k_plus_SR);
         //printf("%f\n",k_minus_SR);
+        update_RUs(lambda, DT, kCa_plus, kCa_minus, randNum, rand_drug, RU, caRU, kB_plus, kB_minus, k1_plus_drug, k1_plus_baseline, k1_minus, k2_plus_drug, k2_plus_baseline, k2_minus, k3_plus_drug, k3_plus_baseline, k3_minus, k4_plus_drug, k4_plus_baseline, k4_minus, percent_drug, k_force_drug, k_force_baseline, k_plus_SR_drug, k_plus_SR_baseline, k_minus_SR,f, &ATPcounter);
+        // Print out all the kinetic variables that start with the letter k 
+        // printf("k1_plus_drug = %f\n", k1_plus_drug[0]);
+        // printf("k1_plus_baseline = %f\n", k1_plus_baseline[0]);
+        // printf("k1_minus = %f\n", k1_minus[0]);
+        // printf("k2_plus_drug = %f\n", k2_plus_drug);
+        // printf("k2_plus_baseline = %f\n", k2_plus_baseline);
+        // printf("k2_minus = %f\n", k2_minus);
+        // printf("k3_plus_drug = %f\n", k3_plus_drug);
+        // printf("k3_plus_baseline = %f\n", k3_plus_baseline);
+        // printf("k3_minus = %f\n", k3_minus);
+        // printf("k4_plus_drug = %f\n", k4_plus_drug[0]);
+        // printf("k4_plus_baseline = %f\n", k4_plus_baseline[0]);
+        // printf("k4_minus = %f\n", k4_minus[0]);
+        // printf("kB_plus = %f\n", kB_plus[0]);
 
-       update_RUs(lambda, DT, kCa_plus, kCa_minus, randNum, rand_drug, RU, caRU, kB_plus, kB_minus, k1_plus_drug, k1_plus_baseline, k1_minus, k2_plus_drug, k2_plus_baseline, k2_minus, k3_plus_drug, k3_plus_baseline, k3_minus, k4_plus_drug, k4_plus_baseline, k4_minus, percent_drug, k_force_drug, k_force_baseline, k_plus_SR_drug, k_plus_SR_baseline, k_minus_SR,f);
 
         //--------------------------------------------
         // Obtain Force estimate based on the M-state
@@ -247,5 +264,6 @@ float Calc_conc_exp
         atomicAdd(&(C[n]), CValue); // add results every repeat
         atomicAdd(&(B[n]), BValue); // add results every repeat
         atomicAdd(&(SR[n]), SRValue); // add results every repeat
+        atomicAdd(&(ATPase[n]), ATPcounter); // add results every repeat
     } // end the (n-loop) of the time marching
 }

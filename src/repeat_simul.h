@@ -31,6 +31,7 @@ __global__ void repeat_simul(float lambda,
                              float * C,
                              float * B,
                              float * SR,
+                             float * ATPase, 
                              int cc, 
                              float protocol, 
                              float Calc_conc_exp 

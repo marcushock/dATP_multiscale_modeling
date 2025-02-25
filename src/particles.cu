@@ -53,6 +53,10 @@ void init_particle(initParticleArgs & args, int replicate_number)
     float * SRArrays_return;
     gpuErrchk(cudaMallocManaged(&SRArrays_return, sizeof(float)*n_pCa*MAX_TSTEPS));
     gpuErrchk(cudaMemset(SRArrays_return, 0, sizeof(float)*n_pCa*MAX_TSTEPS));
+    
+    float * ATPaseArrays_return;
+    gpuErrchk(cudaMallocManaged(&ATPaseArrays_return, sizeof(float)*n_pCa*MAX_TSTEPS));
+    gpuErrchk(cudaMemset(ATPaseArrays_return, 0, sizeof(float)*n_pCa*MAX_TSTEPS));
 
     std::cout << "Running force_pCa_curve" << std::endl;
     boost::thread_group pcaThreadGroup;
@@ -69,6 +73,7 @@ void init_particle(initParticleArgs & args, int replicate_number)
             CArrays_return,
             BArrays_return,
             SRArrays_return,
+            ATPaseArrays_return,
             cc);
         }));
     }
@@ -95,7 +100,6 @@ void init_particle(initParticleArgs & args, int replicate_number)
         // experimentalData[j].second == F_exp[j]
         residual_temp += pow((args.experimentalData[j].second - Fss_return[j] / Fss_max_temp),2); // normalized force
     }
-
     // set return residual
     float force_pCa_residual = pow(residual_temp,0.5f);
     // Note: All of these are looking at the drug parameter changes in the printed file name. 
@@ -117,10 +121,11 @@ void init_particle(initParticleArgs & args, int replicate_number)
         " k_force " + std::to_string(args.k_force_drug) +
         " k_plus_SR_ref " + std::to_string(args.k_plus_SR_drug) +
         " k_minus_SR_ref " + std::to_string(args.k_minus_SR);
-        std::string Force_out_Filename = ("MCMC_simulation_results/Rep_" + std::to_string(replicate_number) + "Force_out"+dataAppend+".csv");
-        std::string States_out_Filename = ("MCMC_simulation_results/Rep_" + std::to_string(replicate_number) + "States_out"+dataAppend+".csv");
-        std::string Force_pCa_out_Filename = ("MCMC_simulation_results/Rep_" + std::to_string(replicate_number) + "Force_pCa_Optmz"+dataAppend+".csv");
-        std::string Force_pCa_normalized_out_Filename = ("MCMC_simulation_results/Rep_" + std::to_string(replicate_number) + "Force_pCa_Optmz_Normalized"+dataAppend+".csv");
+        std::string Force_out_Filename = ("PSO_results/Rep_" + std::to_string(replicate_number) + "Force_out"+dataAppend+".csv");
+        std::string ATP_out_Filename = ("PSO_results/Rep_" + std::to_string(replicate_number) + "ATP_out"+dataAppend+".csv");
+        std::string States_out_Filename = ("PSO_results/Rep_" + std::to_string(replicate_number) + "States_out"+dataAppend+".csv");
+        std::string Force_pCa_out_Filename = ("PSO_results/Rep_" + std::to_string(replicate_number) + "Force_pCa_Optmz"+dataAppend+".csv");
+        std::string Force_pCa_normalized_out_Filename = ("PSO_results/Rep_" + std::to_string(replicate_number) + "Force_pCa_Optmz_Normalized"+dataAppend+".csv");
 
         /* raw force out */
         const int skipFactor = 1000;
@@ -138,7 +143,45 @@ void init_particle(initParticleArgs & args, int replicate_number)
         Force_out.close();
         std::cout << "data successfully saved into the file name: " << Force_out_Filename << std::endl;
 
+        /* raw ATP out */
+        float ATPcumulative = 0.0;
+        std::ofstream ATP_out(ATP_out_Filename); //opening an output stream for file *.csv
+        // First timestep out will have 0 ATPase 
+        ATP_out << 0;
+        for (int cc = 0; cc < n_pCa; cc++){  // Ca-loop{ of all 0s to start
+            ATP_out << "," << 0;
+        }
+        ATP_out << std::endl;
+        // Then loop through the rest of the array to get the cumulative ATPases
 
+        // Iteative through the ATPaseArray_return and print out the ATPaseArrays if it is not 0
+        for (int x = 0; x < n_pCa*MAX_REPS; x++)
+        {
+            if (ATPaseArrays_return[x] != 0.0)
+            {
+                std::cout << "ATPaseArrays_return[" << x << "] = " << ATPaseArrays_return[x] << std::endl;
+            }
+        }
+
+
+        for(int j = skipFactor; j < MAX_TSTEPS; j+=skipFactor)
+        {
+            ATP_out << DT*j;
+            for (int cc = 0; cc < n_pCa; cc++)  // Ca-loop
+            {
+                // ATP_out << "," << ATPaseArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS;
+                ATPcumulative = 0.0;
+                for (int k = 0; k < skipFactor; k+=1)
+                {
+                    ATPcumulative += (float) ATPaseArrays_return[cc * MAX_TSTEPS + j - k];
+                    // printf("Test");
+                }
+                ATP_out << "," << ATPcumulative/MAX_REPS;
+            }
+            ATP_out << std::endl;
+        }
+        ATP_out.close();
+        std::cout << "ATP data successfully saved into the file name: " << ATP_out_Filename << std::endl;
 
         std::ofstream States_out(States_out_Filename); //opening an output stream for file *.csv
         for(int j = 0; j < MAX_TSTEPS; j+=skipFactor)
@@ -146,7 +189,7 @@ void init_particle(initParticleArgs & args, int replicate_number)
             States_out << DT*j;
             for (int cc = 0; cc < n_pCa; cc++)  // Ca-loop
             {
-                States_out << "," << M3Arrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << M1Arrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << CArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << BArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << SRArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS;
+                States_out << "," << M3Arrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << M2Arrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << M1Arrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << CArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << BArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << SRArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS;
 
             }
             States_out << std::endl;

@@ -60,7 +60,8 @@ __device__ void update_RUs(float lambda,
                             float k_plus_SR_drug,
                             float k_plus_SR_baseline, 
                             float k_minus_SR,
-                            float f
+                            float f,
+                            float * ATPcounter
                             )
 
 {
@@ -354,6 +355,8 @@ __device__ void update_RUs(float lambda,
             else if (randNum[i] < p5)
             {
                 RU[i] = 6; // switch [C0---->M3,0]
+                *ATPcounter -= 1;
+                // printf("Decrease ATPcounter: %f\n", *ATPcounter);
             }
         }
         // CHECKED [X] 
@@ -400,6 +403,8 @@ __device__ void update_RUs(float lambda,
             else if (randNum[i] < p5)
             {
                 RU[i] = 6; // switch [C1---->M3,1]
+                *ATPcounter -= 1;
+                // printf("Decrease ATPcounter: %f\n", *ATPcounter);
             }
         }
         // CHECKED [X] 
@@ -493,11 +498,11 @@ __device__ void update_RUs(float lambda,
             p1 = kCa_plus*dt;
             if (rand_drug[i] <= percent_drug)
             {
-                p2 = p3 + k3_plus_drug*dt;
+                p2 = p1 + k3_plus_drug*dt;
             }
             else
             {
-                p2 = p3 + k3_plus_baseline*dt;
+                p2 = p1 + k3_plus_baseline*dt;
             }
             p3 = p2 + k2_minus*dt;
 
@@ -524,7 +529,7 @@ __device__ void update_RUs(float lambda,
         //-----------------------------------------------------------------
         // This is in state M1, which is the weakly bound state. 
         // Now we do have calcium bound, so it's more likely that we do visit this state. 
-        else if ((state == 4) && (caState == 1))
+        else if ((state == 5) && (caState == 1))
         {
             p1 = lambda*kCa_minus*dt;
             if (rand_drug[i] <= percent_drug)
@@ -580,6 +585,8 @@ __device__ void update_RUs(float lambda,
             else if (randNum[i] < p2)
             {
                 RU[i] = 3; // switch [M3,0---->C0]
+                *ATPcounter += 1;
+                // printf("Increase ATPcounter: %f\n", *ATPcounter);
             }
             else if (randNum[i] < p3)
             {
@@ -618,6 +625,8 @@ __device__ void update_RUs(float lambda,
             else if (randNum[i] < p2)
             {
                 RU[i] = 3; // switch [M3,1---->C1]
+                *ATPcounter += 1;
+                // printf("Increase ATPcounter: %f\n", *ATPcounter);
             }
             else if (randNum[i] < p3)
             {

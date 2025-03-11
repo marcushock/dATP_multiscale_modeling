@@ -119,28 +119,54 @@ def fix_trailing_zeros(filename_string):
     return new_name
 
 
-def write_csv_file(input_dict, filename = "MCMC_temp_input.csv"):
+def write_csv_file(input_dict, filename = "MCMC_temp_input.csv", append = False):
     '''
     This function will write a CSV file that has the input parameters that are going to be optimized. 
     The rest of the values will be the same as the default values. 
 
     '''
-    f = open(filename, "w")
-    count = 0
-    new_line = ""
-    for key in input_dict.keys():
-        new_line += str(key)
-        new_line += ","
-    new_line = new_line[:-1] + "\n"
-    f.write(new_line)
-    new_line = ""
-    for key in input_dict.keys():
-        new_line += str(input_dict[key])
-        new_line += ","
-    new_line = new_line[:-1] + "\n"
-    f.write(new_line)
-    f.close()
-    print("Wrote temporary input file to: ", filename)
+    if append == False:
+        f = open(filename, "w")
+        count = 0
+        new_line = ""
+        for key in input_dict.keys():
+            new_line += str(key)
+            new_line += ","
+        new_line = new_line[:-1] + "\n"
+        f.write(new_line)
+        new_line = ""
+        for key in input_dict.keys():
+            new_line += str(input_dict[key])
+            new_line += ","
+        new_line = new_line[:-1] + "\n"
+        f.write(new_line)
+        f.close()
+        print("Wrote temporary input file to: ", filename)
+
+    elif append == True:
+        try:
+            f = open(filename, "r")
+            f.close()
+            write_header = False
+        except:
+            print("File does not exist, creating new file. ")
+            write_header = True
+        f = open(filename, "a")
+        if write_header == True:
+            new_line = ""
+            for key in input_dict.keys():
+                new_line += str(key)
+                new_line += ","
+            new_line = new_line[:-1] + "\n"
+            f.write(new_line)
+        new_line = ""
+        for key in input_dict.keys():
+            new_line += str(input_dict[key])
+            new_line += ","
+        new_line = new_line[:-1] + "\n"
+        f.write(new_line)
+        f.close()
+        print("Appended input file to: ", filename)
     return filename
 
 def read_default_params(filename):
@@ -183,6 +209,7 @@ def run_MCMC_bin(input_dict, output_dir, bin_namepath, exp_data_file):
     The rest of the input arguments will be left untouched. 
     '''
     temp_running_file = write_csv_file(input_dict, filename = output_dir+"/PSO_temp_input.csv")
+    log_all_runs = write_csv_file(input_dict, filename = output_dir+"/PSO_all_runs.csv", append = True)
     # Run the MCMC simulation 
     # Copied below from other file 
     
@@ -232,13 +259,13 @@ def run_and_evalutate(new_full_parameter_set, config_dirs):
     if exp_data_type == "ATPase":
     #     # Load in the ATPase data 
         for f in os.listdir(results_dir):
-            if "ATP_out" in f:
+            if "Rep_0ATP_out" in f:
                 simulation_data = pd.read_csv(results_dir+'/'+f, names = ['Timestep']+list(exp_data.pCa))
                 break
     
     if exp_data_type == "Force_pCa":
         for f in os.listdir(results_dir):
-            if "Force_out" in f:
+            if "Rep_0Force_out" in f:
                 simulation_data = pd.read_csv(results_dir+'/'+f, names = ['Timestep']+list(exp_data.pCa))
                 break 
 
@@ -257,6 +284,7 @@ def run_and_evalutate(new_full_parameter_set, config_dirs):
     errors = sim_normalized - exp_normalized
     rmse = np.sum((errors)**2)
     print("RMSE is: ", rmse)
+    print("For the parameters: ", new_full_parameter_set)
     rename_files(results_dir)
     # Rename any file in the directory with the start of the file of "Rep0" to Particle_N_ where N starts 
     # at one and increases by one if that file exists already
@@ -265,18 +293,21 @@ def run_and_evalutate(new_full_parameter_set, config_dirs):
     # Return the error 
 
 def rename_files(directory):
-    files = [f for f in os.listdir(directory) if f.startswith("Rep0")]
+    files = [f for f in os.listdir(directory) if "Rep_0" in f]
     files.sort()
     
     existing_files = set(os.listdir(directory))
-    counter = 1
+    
+    particles = [int(f.split("particle_")[1].split("_")[0]) for f in os.listdir(directory) if "particle_" in f]
+    try:
+        counter = max(particles)+1
+    except:
+        counter = 1
     
     for file in files:
-        while f"particle_{counter}" in existing_files:
-            counter += 1
-        
+
         old_path = os.path.join(directory, file)
-        new_name = f"particle_{counter}"
+        new_name = fix_trailing_zeros(f"particle_{counter:04d}_"+file.strip("Rep_0"))
         new_path = os.path.join(directory, new_name)
         
         os.rename(old_path, new_path)
@@ -292,8 +323,18 @@ def normalize_array(input_array):
     normalized_array = (input_array - data_min) / (data_max - data_min)
     return normalized_array
 
-def pyswarm_run(X, yaml_config):
+def pyswarm_run(X_scaled, yaml_config):
     default_parameters = read_default_params(yaml_config['files_and_directories']['default_param_file'])
+
+
+    parameter_space_bounds = np.zeros((len(yaml_config['search_space']), 2))
+    i = 0
+    for key in yaml_config['search_space']:
+        parameter_space_bounds[i] = yaml_config['search_space'][key][1:3]
+        i+=1
+
+    X = log_denormalize(X_scaled, parameter_space_bounds)
+    
     results_array = np.zeros(X.shape[0]) # .reshape(-1,len(yaml_config['search_space']))
 
     # X has the shape (n_particles, n_features/parameters)
@@ -313,6 +354,58 @@ def pyswarm_run(X, yaml_config):
         new_full_parameter_set.update(optimization_values)
         results_array[i] = run_and_evalutate(new_full_parameter_set, yaml_config['files_and_directories'])
     return results_array
+
+
+def write_best_params_to_csv(position, cost, yaml_config):
+    default_parameters = read_default_params(yaml_config['files_and_directories']['default_param_file'])
+    new_full_parameter_set = default_parameters.copy()
+
+    for param, key in zip(position, yaml_config['search_space'].keys()):
+        new_full_parameter_set[key] = param 
+        
+    write_csv_file(new_full_parameter_set, filename = yaml_config['files_and_directories']['output_directory']+"/PSO_best_params.csv")
+
+
+def log_normalize(x, orig_bounds):
+    """ 
+    Convert parameters to log-space and normalize to [0,1].
+    
+    Parameters:
+        x (array): Original parameter values.
+        orig_bounds (array): 2D array of min/max bounds for each parameter. Shape (n_params, 2)
+    
+    Returns:
+        array: Normalized log-space values in [0,1].
+    """
+    log_bounds = np.log10(orig_bounds)  # Convert bounds to log-space
+    log_x = np.log10(x)  # Convert values to log-space
+    return (log_x - log_bounds[:, 0]) / (log_bounds[:, 1] - log_bounds[:, 0])  # Normalize to [0,1]
+
+def log_denormalize(x_norm, orig_bounds):
+    """ 
+    Convert normalized parameters [0,1] back to original scale.
+    
+    Parameters:
+        x_norm (array): Normalized parameter values in [0,1].
+        orig_bounds (array): 2D array of min/max bounds for each parameter. Shape (n_params, 2)
+    
+    Returns:
+        array: Parameters converted back to original scale.
+    """
+    log_bounds = np.log10(orig_bounds)  # Convert bounds to log-space
+    log_x = x_norm * (log_bounds[:, 1] - log_bounds[:, 0]) + log_bounds[:, 0]  # Denormalize from [0,1] to log-space
+    return 10**log_x  # Convert back to original scale
+
+def set_particle_1(x_init_array, yaml_config):
+    '''
+    This function will set the first particle to be the starting values that are specified in the yaml file. 
+    '''
+    x_init = x_init_array.copy()
+    i = 0
+    for key in yaml_config['search_space']:
+        x_init[0][i] = yaml_config['search_space'][key][0]
+        i+=1
+    return x_init
 
 
 def main():
@@ -338,23 +431,40 @@ def main():
     #     optimization_range_dict = {}
 
     n_dim = len(yaml_config['search_space'])
-    x_max = np.zeros(n_dim)
+    n_particles = yaml_config['pso_algorithm']['n_particles']
+
     x_min = np.zeros(n_dim)
+    x_max = np.ones(n_dim)
+    x_init = np.zeros((n_particles, n_dim))
+    x_init_0 = np.zeros(n_dim)
     i = 0
     for key in yaml_config['search_space']:
         print("Key: ", key)
         print("Value: ", yaml_config['search_space'][key])
+        x_init_0[i] = yaml_config['search_space'][key][0]
+        # x_init_0[i] = log_normalize(yaml_config['search_space'][key][0], yaml_config['search_space'][key][1:3])
         x_max[i] = yaml_config['search_space'][key][2]
         x_min[i] = yaml_config['search_space'][key][1]
+        x_init[:,i] = np.random.uniform(x_min[i], x_max[i], size = yaml_config['pso_algorithm']['n_particles']) 
         i+=1
-    bounds = (x_min, x_max)
+
+    x_init[0] = x_init_0
+    x_init_normalized = log_normalize(x_init, np.array([x_min, x_max]).T)
+    assert x_init_normalized.shape == x_init.shape
+
+    bounds = (np.zeros(n_dim), np.ones(n_dim))
+    bounds_working = (x_min, x_max)
+
     # Instantiate the optimizer for a 1D problem
     options = yaml_config['pso_algorithm']['swarm_options']
 
-    optimizer = ps.single.LocalBestPSO(n_particles=yaml_config['pso_algorithm']['n_particles'],
+
+    # optimizer = ps.single.LocalBestPSO(n_particles=yaml_config['pso_algorithm']['n_particles'],
+    optimizer = ps.single.GlobalBestPSO(n_particles=yaml_config['pso_algorithm']['n_particles'],
                                         dimensions=n_dim,
                                         options = options,
-                                        bounds = bounds)
+                                        bounds = bounds, 
+                                        init_pos = x_init_normalized)
 
     # now run the optimization, pass a=1 and b=100 as a tuple assigned to args
 
@@ -362,7 +472,11 @@ def main():
                                 iters = yaml_config['pso_algorithm']['n_iterations'],
                                 yaml_config = yaml_config)
     
-
+    print("Cost: ", cost)
+    pos = log_denormalize(pos, np.array([x_min, x_max]).T)
+    print("Position: ", pos)
+    write_best_params_to_csv(pos, cost, yaml_config)
+    np.save("position_history.npy", optimizer.pos_history)  
     return 
 
 

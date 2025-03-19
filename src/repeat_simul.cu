@@ -228,7 +228,7 @@ float Calc_conc_exp
         float BValue = (float)count_B_state / (N_RU);
         float SRValue = (float)count_SR_state / (N_RU);
         
-        f = forceValue; // Could also include some function of the M2 value here 
+        f =  (float)count_M3_state + (float)count_M2_state; // Could also include some function of the M2 value here 
         // float current_max = 0;
         // // This is to look at what happens after the there is an instance where there is at least one state in the force producing state 
         // // It also looks at the following state to see if everything transitions out. 

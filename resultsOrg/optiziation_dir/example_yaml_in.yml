@@ -4,8 +4,8 @@
 
 
 pso_algorithm:
-  n_particles: 400
-  n_iterations: 25
+  n_particles: 25
+  n_iterations: 5
   swarm_options: 
     c1: 0.5
     c2: 0.5
@@ -21,7 +21,8 @@ files_and_directories:
   exp_data_type: 'ATPase' # Options: 'ATPase', 'Force_pCa'
   # exp_data_file: '/crucial/modified_MCMC/dATP_multiscale_modeling/expData/4_7.csv' 
   # exp_data_file: '/crucial/modified_MCMC/dATP_multiscale_modeling/expData/4.csv' 
-  exp_data_file: '/crucial/modified_MCMC/dATP_multiscale_modeling/expData/aficamten_normalized_vehicle.csv'
+  # exp_data_file: '/crucial/modified_MCMC/dATP_multiscale_modeling/expData/aficamten_normalized_vehicle.csv'
+  exp_data_file: '/crucial/modified_MCMC/dATP_multiscale_modeling/expData/ATP_data_force_pCa.csv'
   default_param_file: '/crucial/modified_MCMC/dATP_multiscale_modeling/parameters/parameter_input.csv'
 
   
@@ -42,14 +43,14 @@ search_space:
   # k4_plus_ref_drug: [0.23, 0.1, 0.3]
   # kB_plus_ref: [13.0, 10.0, 20.0]
   # kB_minus_ref: [0.1, 0.05, 0.2]
-  # kCa_plus_ref: [0.09, 0.05, 0.2]
+  kCa_plus_ref: [0.09, 0.05, 0.2]
   # kCa_minus_ref: [0.57, 0.5, 1.0]
   # percent_drug: [0.0, 0.0, 1.0]
   # lambda: [0.0, 0.0, 1.0]
   gamma_B: [45.0, 30.0, 60.0]
-  gamma_M: [21.0, 10.0, 30.0]
+  # gamma_M: [21.0, 10.0, 30.0]
   # mu_B: [21.0, 10.0, 30.0]
-  mu_M: [2.0, 1.0, 5.0]
+  # mu_M: [2.0, 1.0, 5.0]
   # q: [1.0, 0.5, 1.5]
   # r: [1.0, 0.5, 1.5]
   # x_preR: [0.0, -0.1, 0.1]

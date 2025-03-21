@@ -420,6 +420,12 @@ def main():
     output_directory = make_exp_dir()
     print("Output directory is: ", output_directory)
     yaml_config['files_and_directories']['output_directory'] = output_directory 
+    # Copy the yaml file into the output directory 
+    os.system("cp "+sys.argv[1]+" "+output_directory+"/PSO_config.yml")
+
+    # Copy the src directory into the output directory 
+    os.system("cp -r /crucial/modified_MCMC/dATP_multiscale_modeling/src "+output_directory+"/src")
+
 
 
     #### This chunk of code can probably go into a different function later ### 

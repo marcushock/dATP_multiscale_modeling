@@ -1,4 +1,4 @@
-protocol,k_force_baseline,k_force_drug,k_plus_SR_baseline,k_plus_SR_drug,k_minus_SR,k_xb,k1_plus_ref_baseline,k1_plus_ref_drug,k2_plus_ref_baseline,k2_plus_ref_drug,k3_plus_baseline,k3_plus_drug,k4_plus_ref_baseline,k4_plus_ref_drug,kB_plus_ref,kB_minus_ref,kCa_plus_ref,kCa_minus_ref,percent_drug,lambda,gamma_B,gamma_M,mu_B,mu_M,q,r,x_preR,x_xb,conc_ADP,conc_ATP,conc_Pi,delta_G_ATP,alpha,beta,eta,g_Cb,g_Ca
+protocol,k_force_baseline,k_force_drug,k_plus_SR_baseline,k_plus_SR_drug,k_minus_SR,k_xb,k1_plus_ref_baseline,k1_plus_ref_drug,k2_plus_baseline,k2_plus_drug,k3_plus_baseline,k3_plus_drug,k4_plus_ref_baseline,k4_plus_ref_drug,kB_plus_ref,kB_minus_ref,kCa_plus_ref,kCa_minus_ref,percent_drug,lambda,gamma_B,gamma_M,mu_B,mu_M,q,r,x_preR,x_xb,conc_ADP,conc_ATP,conc_Pi,delta_G_ATP,alpha,beta,eta,g_Cb,g_Ca
 # 50% drug force pCa
 1,0.2,779,16,16,15,5,0.0025,0.00478,0.0015,0.0015,0.05,0.08,0.135,0.23,13,0.1,0.09,0.57,0.0,0,45,21,21,2,1,1,0,0.075,30,3000,3000,-13,0.28,0.35,0.68,0,0
 # 50% drug Twitch 

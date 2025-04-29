@@ -91,7 +91,7 @@ public:
         lambda(argsVector[20]),
         gamma_B(argsVector[21]),
         gamma_M(argsVector[22]),
-        mu_B(argsVector[23]),
+        mu_B(argsVector[22]),
         mu_M(argsVector[24]),
         q(argsVector[25]),
         r(argsVector[26]),

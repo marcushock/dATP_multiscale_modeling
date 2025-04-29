@@ -175,15 +175,17 @@ g_Ca    =   args.g_Ca;                                ;//free energy of XB state
 
 // Mc = M2, 
 
-k1_minus_ref    = 1; //  k1_plus_ref_baseline/ exp(g_Cb - g_M1);//0.5 / exp(g_Cb - g_Mc);    //using vals from optimization_0227 (k1_plus = 0.615440)
+k1_minus_ref    = k1_plus_ref_baseline/ exp(g_Cb - g_M1);//0.5 / exp(g_Cb - g_Mc);    //using vals from optimization_0227 (k1_plus = 0.615440)
 
 // NEED TO DEFINE K2_MINUS!!! 
-k2_minus        =  0.000477; // k2_plus_baseline / exp(g_M1 - g_M2); //0.5 / exp(g_Mc - g_Md);    //using vals from optimization_0227 (k1_plus = 0.615440)
+k2_minus        = k2_plus_baseline / exp(g_M1 - g_M2); //0.5 / exp(g_Mc - g_Md);    //using vals from optimization_0227 (k1_plus = 0.615440)
 
 //k3_plus         = (B/pow(k_xb,.5))*(1-tanh(C*pow(k_xb,.5)*(x_xb-x_b0)))+D;        //X_k3_plus_PSO[i];
-k3_minus        = 0.834; // k3_plus_baseline / exp(g_M2 - g_M3) ;//0.3 / exp(g_Mc - g_Md);  //
+k3_minus        = k3_plus_baseline / exp(g_M2 - g_M3) ;//0.3 / exp(g_Mc - g_Md);  //
+
 //k4_plus_ref     = pow(k_xb,0.5)*(pow(M*pow(x_xb,2),0.5)-N*x_xb)+ P;                 //X_k4_plus_PSO[i];
-k4_minus_ref    = 3.349; // k4_plus_ref_baseline / exp(g_M3 - delta_G); // Changing terms based on the fact that delta_G is negative
+k4_minus_ref    = k4_plus_ref_baseline / exp(g_M3 - delta_G); // Changing terms based on the fact that delta_G is negative
+
 
 //-------------------------------------
 // Call the transition rates function:

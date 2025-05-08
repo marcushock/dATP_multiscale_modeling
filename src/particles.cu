@@ -105,27 +105,27 @@ void init_particle(initParticleArgs & args, int replicate_number)
     // Note: All of these are looking at the drug parameter changes in the printed file name. 
     std::cout << "Residual: " << force_pCa_residual << std::endl;
 
-        std::string dataAppend =
-        //" percent " + std::to_string(args.percent_drug) +
-        //" gammaB " + std::to_string(args.gamma_B) +
-        //" gammaM " + std::to_string(args.gamma_M) +
-        //" mu_M " + std::to_string(args.mu_M) +
-        " k1_plus_ref " + std::to_string(args.k1_plus_ref_drug) +
-        " k3_plus " + std::to_string(args.k3_plus_drug) +
-        " k4_plus_ref " + std::to_string(args.k4_plus_ref_drug) +
-        " kB_plus_ref " + std::to_string(args.kB_plus_ref) +
-        " kB_minus_ref " + std::to_string(args.kB_minus_ref) +
-        //" lambda " + std::to_string(args.lambda) +
-        " kCa_plus_ref " + std::to_string(args.kCa_plus_ref) +
-        " drug " + std::to_string(args.percent_drug) +
-        " k_force " + std::to_string(args.k_force_drug) +
-        " k_plus_SR_ref " + std::to_string(args.k_plus_SR_drug) +
-        " k_minus_SR_ref " + std::to_string(args.k_minus_SR);
-        std::string Force_out_Filename = ("PSO_results/Rep_" + std::to_string(replicate_number) + "Force_out"+dataAppend+".csv");
-        std::string ATP_out_Filename = ("PSO_results/Rep_" + std::to_string(replicate_number) + "ATP_out"+dataAppend+".csv");
-        std::string States_out_Filename = ("PSO_results/Rep_" + std::to_string(replicate_number) + "States_out"+dataAppend+".csv");
-        std::string Force_pCa_out_Filename = ("PSO_results/Rep_" + std::to_string(replicate_number) + "Force_pCa_Optmz"+dataAppend+".csv");
-        std::string Force_pCa_normalized_out_Filename = ("PSO_results/Rep_" + std::to_string(replicate_number) + "Force_pCa_Optmz_Normalized"+dataAppend+".csv");
+        // std::string dataAppend =
+        // //" percent " + std::to_string(args.percent_drug) +
+        // //" gammaB " + std::to_string(args.gamma_B) +
+        // //" gammaM " + std::to_string(args.gamma_M) +
+        // //" mu_M " + std::to_string(args.mu_M) +
+        // " k1_plus_ref " + std::to_string(args.k1_plus_ref_drug) +
+        // " k3_plus " + std::to_string(args.k3_plus_drug) +
+        // " k4_plus_ref " + std::to_string(args.k4_plus_ref_drug) +
+        // " kB_plus_ref " + std::to_string(args.kB_plus_ref) +
+        // " kB_minus_ref " + std::to_string(args.kB_minus_ref) +
+        // //" lambda " + std::to_string(args.lambda) +
+        // " kCa_plus_ref " + std::to_string(args.kCa_plus_ref) +
+        // " drug " + std::to_string(args.percent_drug) +
+        // " k_force " + std::to_string(args.k_force_drug) +
+        // " k_plus_SR_ref " + std::to_string(args.k_plus_SR_drug) +
+        // " k_minus_SR_ref " + std::to_string(args.k_minus_SR);
+        std::string Force_out_Filename = ("MCMC_simulation_results/General_results/Rep_" + std::to_string(replicate_number) + "Force_out"+".csv");
+        std::string ATP_out_Filename = ("MCMC_simulation_results/General_results/Rep_" + std::to_string(replicate_number) + "ATP_out"+".csv");
+        std::string States_out_Filename = ("MCMC_simulation_results/General_results/Rep_" + std::to_string(replicate_number) + "States_out"+".csv");
+        std::string Force_pCa_out_Filename = ("MCMC_simulation_results/General_results/Rep_" + std::to_string(replicate_number) + "Force_pCa_Optmz"+".csv");
+        std::string Force_pCa_normalized_out_Filename = ("MCMC_simulation_results/General_results/Rep_" + std::to_string(replicate_number) + "Force_pCa_Optmz_Normalized"+".csv");
 
         /* raw force out */
         const int skipFactor = 1000;

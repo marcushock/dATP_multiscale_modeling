@@ -225,5 +225,6 @@ void init_particle(initParticleArgs & args, int replicate_number)
     gpuErrchk(cudaFree(CArrays_return));
     gpuErrchk(cudaFree(BArrays_return));
     gpuErrchk(cudaFree(SRArrays_return));
+    gpuErrchk(cudaFree(ATPaseArrays_return));
 
 }

@@ -11,14 +11,14 @@ import matplotlib.pyplot as plt
 
 
 class states_structure:
-    def __init__(self, input_filename:'CSV', num_states = 6) -> None: # type: ignore
+    def __init__(self, input_filename:'CSV', num_states = 6, skip_params = False) -> None: # type: ignore
         '''
         By default this code will assume we are using the updated 6 state model that 
         has 3 intermediates for the XB (M1, M2, M3). Use num_states = 5 for the 5
         state model or numstates = 4 for the 4 state model.
         '''
 
-        print('The filename is: ', input_filename)
+        # print('The filename is: ', input_filename)
         self.file_name = input_filename
         if num_states == 6:
             self.state_list = ['M3','M2','M1','C','B','OFF']
@@ -27,7 +27,14 @@ class states_structure:
         else:
             self.state_list = ['M2','M1','C','B']
         self.read_states()
-        self.extract_parameters()
+        if not skip_params:
+            try:
+                self.extract_parameters()
+            except Exception as e:
+                print('Failed to extract parameters from the file name')
+                print('Try running with the skip_params = True option')
+                print(f'Error: {e}')
+
         self.states_steadystate()
 
         return 
@@ -61,7 +68,7 @@ class states_structure:
                     i +=1
                     next 
             i += 2
-        print('Read in parameters', self.parameters)
+        # print('Read in parameters', self.parameters)
         return 
 
     def get_twitch(self):
@@ -69,7 +76,7 @@ class states_structure:
         This function returns the temporal force states from the simulation and does not 
         average them across the replciaets. 
         '''
-        force_cols = [col for col in self.states_df.columns if 'M3' in col]
+        force_cols = [col for col in self.states_df.columns if 'M3' in col or 'M2' in col]
         self.twitch_states = self.states_df[force_cols]
         return self.states_df[force_cols]
 
@@ -82,13 +89,13 @@ class states_structure:
         df = pd.DataFrame(np.zeros((31,7)), columns = ['pCa','M3','M2','M1','C','B','OFF'])
         df.pCa = np.arange(7,3.9,-0.1)
         for i in range(len(df.pCa)):
-            df.pCa[i] = round(df.pCa[i],1)
+            df.loc['pCa',i] = round(df.pCa[i],1)
         df = df.set_index('pCa')
 
         df_std = pd.DataFrame(np.zeros((31,7)), columns = ['pCa','M3','M2','M1','C','B','OFF'])
         df_std.pCa = np.arange(7,3.9,-0.1)
         for i in range(len(df_std.pCa)):
-            df_std.pCa[i] = round(df_std.pCa[i],1)
+            df_std.loc["pCa",i] = round(df_std.pCa[i],1)
         df_std = df_std.set_index('pCa')
 
         # Annoying rounding necessary for the python decimal storage necessity

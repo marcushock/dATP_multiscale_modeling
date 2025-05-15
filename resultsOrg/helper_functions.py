@@ -76,9 +76,16 @@ class states_structure:
         This function returns the temporal force states from the simulation and does not 
         average them across the replciaets. 
         '''
-        force_cols = [col for col in self.states_df.columns if 'M3' in col or 'M2' in col]
-        self.twitch_states = self.states_df[force_cols]
-        return self.states_df[force_cols]
+        force_cols = [col for col in self.states_df.columns if 'M3' in col or 'M2' in col] # 'M3 7.0 and M2 7.0'
+        list_of_nums = np.unique([element[1] for element in self.states_df.columns[1:].str.split(' ')]) # self.states_df.columns.str(lambda x: x.split(' ')[1])
+        new_twitch_df = pd.DataFrame(np.zeros((len(self.states_df.index), len(list_of_nums))), 
+                                                    index = self.states_df.index,
+                                                    columns = list_of_nums)
+
+        for number in list_of_nums: 
+            specific_cols = [col for col in force_cols if number in col]
+            new_twitch_df[number] = self.states_df[specific_cols].sum(axis = 1)
+        return new_twitch_df
 
     def states_steadystate(self, end_time_amount= 500): 
         temp_series = self.states_df[self.states_df.Time>end_time_amount].mean()

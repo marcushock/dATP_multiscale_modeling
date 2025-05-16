@@ -11,13 +11,14 @@ import matplotlib.pyplot as plt
 
 
 class states_structure:
-    def __init__(self, input_filename:'CSV', num_states = 6, skip_params = False) -> None: # type: ignore
+    def __init__(self, input_filename:'CSV', num_states = 6, skip_params = False, exp_file = '/crucial/modified_MCMC/dATP_multiscale_modeling/expData/Force_pCa_Optmz_morePts.csv') -> None: # type: ignore
         '''
         By default this code will assume we are using the updated 6 state model that 
         has 3 intermediates for the XB (M1, M2, M3). Use num_states = 5 for the 5
         state model or numstates = 4 for the 4 state model.
         '''
-
+        self.exp_file = exp_file
+        self.exp_data = pd.read_csv(self.exp_file, names = ['pCa', 'Measurement'], header = None)
         # print('The filename is: ', input_filename)
         self.file_name = input_filename
         if num_states == 6:
@@ -42,9 +43,9 @@ class states_structure:
     def read_states(self):
         pd.read_csv(self.file_name, header = None)
         columns_list = ['Time'] # unit unknown 
-        for i in np.arange(7,3.9,-0.1):
-            for j in self.state_list:
-                new_item = ('{} {}'.format(j,round(i,1)))
+        for pCa in self.exp_data.pCa:
+            for state in self.state_list:
+                new_item = ('{} {}'.format(state,pCa))
                 columns_list.append(new_item)
 
         self.states_df = pd.read_csv(self.file_name, names = columns_list)
@@ -88,33 +89,29 @@ class states_structure:
         return new_twitch_df
 
     def states_steadystate(self, end_time_amount= 500): 
-        temp_series = self.states_df[self.states_df.Time>end_time_amount].mean()
-        std_series = self.states_df[self.states_df.Time>end_time_amount].std()
+        temp_series = self.states_df[self.states_df.Time>end_time_amount].mean(axis = 0)
+        std_series = self.states_df[self.states_df.Time>end_time_amount].std(axis = 0)
         # Define new steady state DF with each column a different state
         # And each row a different pCa (7,4,0.1 steap)
         # Also creating a place for the pCa first, then renaming 
-        df = pd.DataFrame(np.zeros((31,7)), columns = ['pCa','M3','M2','M1','C','B','OFF'])
-        df.pCa = np.arange(7,3.9,-0.1)
-        for i in range(len(df.pCa)):
-            df.loc['pCa',i] = round(df.pCa[i],1)
+        num_rows = len(self.exp_data.pCa)
+        num_cols = len(self.state_list) + 1
+        df = pd.DataFrame(np.zeros((num_rows,num_cols)), columns = ['pCa','M3','M2','M1','C','B','OFF'])
+        df.pCa = self.exp_data.pCa
         df = df.set_index('pCa')
 
-        df_std = pd.DataFrame(np.zeros((31,7)), columns = ['pCa','M3','M2','M1','C','B','OFF'])
-        df_std.pCa = np.arange(7,3.9,-0.1)
-        for i in range(len(df_std.pCa)):
-            df_std.loc["pCa",i] = round(df_std.pCa[i],1)
+        df_std = pd.DataFrame(np.zeros((num_rows,num_cols)), columns = ['pCa','M3','M2','M1','C','B','OFF'])
+        df_std.pCa = self.exp_data.pCa
         df_std = df_std.set_index('pCa')
 
         # Annoying rounding necessary for the python decimal storage necessity
-        pca = 7
-        while pca >= 4:
+        for pCa in self.exp_data.pCa:
             for state in self.state_list:
-                value = temp_series.get(f'{state} {pca:.1f}')
-                df.at[round(pca,2), state] = value 
+                value = temp_series.get(f'{state} {pCa}')
+                df.loc[pCa, state] = value 
 
-                value = std_series.get(f'{state} {pca:.1f}')
-                df_std.at[round(pca,2), state] = value 
-            pca -= 0.1
+                value = std_series.get(f'{state} {pCa}')
+                df_std.at[round(pCa,2), state] = value 
         
         max_force = df['M3'].max()
         min_force = df['M3'].min()
@@ -123,9 +120,10 @@ class states_structure:
 
         self.steady_states_all  = df
         self.steady_states_all_std  = df_std
-        self.force_pCa = self.steady_states_all['M3']
+        self.force_pCa = self.steady_states_all['M3'] + self.steady_states_all['M2']
         df_std['M3'].index, df_std['M3'].values
 
+        # Note, this curve is likely going to be off because M2 + M3 issue now. 
         upper_curve = self.force_pCa + self.steady_states_all_std['M3']
         upper_half = (upper_curve.max() + upper_curve.min())/2
         self.upper_pCa_50  = np.interp(upper_half, upper_curve.values, upper_curve.index)

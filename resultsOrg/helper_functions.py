@@ -1,6 +1,7 @@
 import numpy as np 
 import pandas as pd
 import matplotlib.pyplot as plt
+from scipy import optimize as opt
 
 ### TODO #### 
 # 1. Fix the other auxillary functions to work with 5 or 4 states rather than just 1 
@@ -18,6 +19,7 @@ class states_structure:
         state model or numstates = 4 for the 4 state model.
         '''
         self.exp_file = exp_file
+        self.twitches = None
         self.exp_data = pd.read_csv(self.exp_file, names = ['pCa', 'Measurement'], header = None)
         # print('The filename is: ', input_filename)
         self.file_name = input_filename
@@ -86,6 +88,7 @@ class states_structure:
         for number in list_of_nums: 
             specific_cols = [col for col in force_cols if number in col]
             new_twitch_df[number] = self.states_df[specific_cols].sum(axis = 1)
+        self.twitches = new_twitch_df
         return new_twitch_df
 
     def states_steadystate(self, end_time_amount= 500): 
@@ -113,15 +116,15 @@ class states_structure:
                 value = std_series.get(f'{state} {pCa}')
                 df_std.at[round(pCa,2), state] = value 
         
-        max_force = df['M3'].max()
-        min_force = df['M3'].min()
-        half_force = (max_force + min_force) / 2
-        self.pCa_50 = np.interp(half_force, df['M3'].values, df.index)
-
         self.steady_states_all  = df
         self.steady_states_all_std  = df_std
         self.force_pCa = self.steady_states_all['M3'] + self.steady_states_all['M2']
-        df_std['M3'].index, df_std['M3'].values
+        max_force = self.force_pCa.max()
+        min_force = self.force_pCa.min()
+        half_force = (max_force + min_force) / 2
+        self.pCa_50 = np.interp(half_force, self.force_pCa.values, df.index)
+
+
 
         # Note, this curve is likely going to be off because M2 + M3 issue now. 
         upper_curve = self.force_pCa + self.steady_states_all_std['M3']
@@ -134,9 +137,61 @@ class states_structure:
         self.lower_pCa_50 = np.interp(lower_half, lower_curve.values, lower_curve.index)
 
     def twitch_tension_integral(self, reference_integral = 1):
-        force_cols = [col for col in self.states_df.columns if 'M3' in col]
-        integral = np.trapz(self.states_df[force_cols].mean(axis  = 1), self.states_df.Time)
+        if self.twitches is None:
+            self.get_twitch()
+        integral = np.trapz(self.twitches.mean(axis  = 1), self.states_df.Time)
         return integral / reference_integral
+
+    def time_to_peak(self):
+        '''Note that this will also call some other function to set variables with regards to the twitch'''
+        if self.twitches is None:
+            self.get_twitch()
+
+        smooth_twitch = self.twitches.mean(axis = 1).rolling(50, center = True).mean()    
+        index_max = smooth_twitch.idxmax()
+        time_to_peak = self.states_df.Time[index_max]
+        self.TTP = time_to_peak
+
+        self.relaxation_time_50()
+
+        self.max_twitch_force = smooth_twitch.max()
+
+
+        return time_to_peak
+
+    def relaxation_time_50(self):
+        if self.twitches is None:
+            self.get_twitch()
+
+
+        smooth_twitch = self.twitches.mean(axis = 1).rolling(50, center = True).mean()
+        index_max = smooth_twitch.idxmax()
+        max_peak = smooth_twitch.max()
+        # Find the first time point after the peak where the force is less than 50% of the peak
+        half_peak = max_peak / 2
+        relaxation_index = smooth_twitch.loc[index_max:].lt(half_peak).idxmax()
+        if relaxation_index == index_max: 
+            self.RT50 = np.nan
+            return np.nan
+        else:
+            time_to_peak = self.states_df.Time[index_max]
+            relaxation_time = self.states_df.Time[relaxation_index]
+            self.RT50 = relaxation_time - time_to_peak
+            return relaxation_time - time_to_peak
+    
+    def calculate_nH(self):
+        """
+        Calculate Hill coefficient (nH) fitting the Hill equation.
+        """
+        # Extract parameters
+        nparams, options = opt.curve_fit(normalized_force,
+                                self.force_pCa.index,
+                                self.force_pCa.values/np.max(self.force_pCa.values),
+                                p0=[1, 6.5])
+        n_H = nparams[0]
+        # pCa_50 = nparams[1]
+        self.n_H = n_H
+        return
     
 
 
@@ -200,4 +255,24 @@ def get_twitch_from_sim(input_states_structure, mean = True, time = False):
 
 # my_var = states_instance('/crucial/temp_MCMC/dATP_multiscale_modeling/MCMC_simulation_results/241004-1555_MR_640_States_out k2_plus_ref 0.002500 k3_plus 0.050000 k4_plus_ref 0.135000 kB_plus_ref 13.000000 kB_minus_ref 0.100000 kCa_plus_ref 0.090000 dATP 0.250000 k_force 0.000200 k_plus_SR_ref 16.000000 k_minus_SR_ref 15.000000.csv')
 
-    
+def normalized_force(pca: np.ndarray, n_H: float, pCa_50: float) -> np.ndarray:
+    return 1 / (1 + 10**(n_H * (pca - pCa_50)))
+
+
+
+
+
+
+
+def get_nH(state_structure: states_structure):
+    """
+    Calculate Hill coefficient (nH) fitting the Hill equation.
+    """
+    # Extract parameters
+    nparams, options = opt.curve_fit(normalized_force,
+                                state_structure.force_pCa.index,
+                                state_structure.force_pCa.values/np.max(state_structure.force_pCa.values),
+                                p0=[1, 6.5])
+    n_H = nparams[0]
+    pCa_50 = nparams[1]
+    return n_H, pCa_50

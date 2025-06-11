@@ -69,7 +69,7 @@ __device__ void update_RUs(float lambda,
     int state, x, y;
     bool caState;
     float p1, p2, p3, p4, p5;
-
+    float p_afi_bound = 1 - 1 / (1 + pow((percent_drug / 0.5934), 1.1687));
     for (int i=1; i < N_RU-1; i++)   // only the interior RUs
     //for (int i = 0; i < N_RU; ++i) 
     {
@@ -100,7 +100,7 @@ __device__ void update_RUs(float lambda,
             // Here, it appears that you cannot move into a C0 state ever... 
 
             // This chunk of code is used to calculate kinetics based on either ATP parameters or drug parameters 
-            if (rand_drug[i] <= percent_drug) // percent drug is somewhere between 0 and 1, which then helps to identify if we have baseline kinetics or drug kinetics 
+            if (0) // (rand_drug[i] <= percent_drug) // percent drug is somewhere between 0 and 1, which then helps to identify if we have baseline kinetics or drug kinetics 
             {
                 p3 = p2 + k_plus_SR_drug*(1+k_force_drug*f)*dt; // We calculate a new probability p3 using drug kinetic parameters 
             }
@@ -145,7 +145,7 @@ __device__ void update_RUs(float lambda,
         {
             p1 = kCa_minus*dt; // Calculate unbinding probability of calcium 
             p2 = p1 + kB_plus[x*N_S+y]*dt; // Calculate the transition probability from B1* to C1* which is the unblocking of the thin filament. 
-            if (rand_drug[i] <= percent_drug)
+            if (0) // (rand_drug[i] <= percent_drug)
             {
                 p3 = p2 + k_plus_SR_drug*(1+k_force_drug*f)*dt; // Calculate the probability of transitioning out of the SRX/OFF state
             }
@@ -183,7 +183,7 @@ __device__ void update_RUs(float lambda,
         {
             p1 = kCa_plus*dt; // Calculate the probability for calcium binding. 
             p2 = p1 + kB_minus[x*N_S+y]*dt; // Calculate probability of moving back into the blocked state 
-            if (rand_drug[i] <= percent_drug)
+            if (0) // (rand_drug[i] <= percent_drug)
             {
                 p3 = p2 + k_plus_SR_drug*(1+k_force_drug*f)*dt; // Calcualte probability out of the SRX/OFF state (drug)
             }
@@ -222,7 +222,7 @@ __device__ void update_RUs(float lambda,
         {
             p1 = lambda*kCa_minus*dt; // Once again Lambda is included and still set to 0. 
             p2 = p1 + kB_minus[x*N_S+y]*dt; // Calculate prob of going back to the blocked state 
-            if (rand_drug[i] <= percent_drug) // Calculate prob of going out of the SRX (again drug dependent)
+            if (0) // (rand_drug[i] <= percent_drug) // Calculate prob of going out of the SRX (again drug dependent)
             {
                 p3 = p2 + k_plus_SR_drug*(1+k_force_drug*f)*dt;
             }
@@ -326,7 +326,7 @@ __device__ void update_RUs(float lambda,
             p1 = kCa_plus*dt; // Calculate probability of calcium binding. 
             p2 = p1 + kB_minus[x*N_S+y]*dt;
 	        p3 = p2 + k_minus_SR*dt;
-	        if (rand_drug[i] <= percent_drug)
+	        if (0) // (rand_drug[i] <= percent_drug)
             {
                 p4 = p3 + k1_plus_drug[x*N_S+y]*dt;
             }
@@ -350,13 +350,23 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p4)
             {
-                RU[i] = 4; // switch [C0---->M1,0]
+                if (rand_drug[i] >= p_afi_bound) // Check to see if we assume aficamten is interacting with this myosin head 
+                // If rand_drug (just a random number between 0 and 1) is greater than p_afi_bound, we assume that the drug is not interacting with this myosin head. 
+                // If rand_drug is less than p_afi_bound, we assume that the drug is interacting with this myosin head, and we don't allow the transition to M1, 0
+                {
+                    RU[i] = 5; // switch [C0---->M2,0]
+                }
             }
             else if (randNum[i] < p5)
             {
-                RU[i] = 6; // switch [C0---->M3,0]
-                *ATPcounter -= 1;
-                // printf("Decrease ATPcounter: %f\n", *ATPcounter);
+                if (rand_drug[i] >= p_afi_bound) // Check to see if we assume aficamten is interacting with this myosin head
+                // If rand_drug (just a random number between 0 and 1) is greater than p_afi_bound, we assume that the drug is not interacting with this myosin head.
+                // If rand_drug is less than p_afi_bound, we assume that the drug is interacting with this myosin head, and we don't allow the transition to M3, 0
+                {
+                    RU[i] = 6; // switch [C0---->M3,0]
+                    // printf("Decrease ATPcounter: %f\n", *ATPcounter);
+                    *ATPcounter -= 1;
+                }
             }
         }
         // CHECKED [X] 
@@ -374,7 +384,7 @@ __device__ void update_RUs(float lambda,
             p1 = lambda*kCa_minus*dt;
             p2 = p1 + kB_minus[x*N_S+y]*dt;
 	        p3 = p2 + k_minus_SR*dt;
-	        if (rand_drug[i] <= percent_drug)
+	        if (0) // (rand_drug[i] <= percent_drug)
             {
                 p4 = p3 + k1_plus_drug[x*N_S+y]*dt;
             }
@@ -398,13 +408,23 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p4)
             {
-                RU[i] = 4; // switch [C1---->M1,1]
+                if (rand_drug[i] >= p_afi_bound) // Check to see if we assume aficamten is interacting with this myosin head 
+                // If rand_drug (just a random number between 0 and 1) is greater than p_afi_bound, we assume that the drug is not interacting with this myosin head. 
+                // If rand_drug is less than p_afi_bound, we assume that the drug is interacting with this myosin head, and we don't allow the transition to M1, 0
+                {
+                    RU[i] = 5; // switch [C0---->M2,0]
+                }
             }
             else if (randNum[i] < p5)
             {
-                RU[i] = 6; // switch [C1---->M3,1]
-                *ATPcounter -= 1;
-                // printf("Decrease ATPcounter: %f\n", *ATPcounter);
+                if (rand_drug[i] >= p_afi_bound) // Check to see if we assume aficamten is interacting with this myosin head
+                // If rand_drug (just a random number between 0 and 1) is greater than p_afi_bound, we assume that the drug is not interacting with this myosin head.
+                // If rand_drug is less than p_afi_bound, we assume that the drug is interacting with this myosin head, and we don't allow the transition to M3, 0
+                {
+                    RU[i] = 6; // switch [C0---->M3,0]
+                    // printf("Decrease ATPcounter: %f\n", *ATPcounter);
+                    *ATPcounter -= 1;
+                }
             }
         }
         // CHECKED [X] 
@@ -422,7 +442,7 @@ __device__ void update_RUs(float lambda,
         else if ((state == 4) && (caState == 0))
         {
             p1 = kCa_plus*dt;
-            if (rand_drug[i] <= percent_drug)
+            if (0) // (rand_drug[i] <= percent_drug)
             {
                 p2 = p3 + k2_plus_drug*dt;
             }
@@ -457,7 +477,7 @@ __device__ void update_RUs(float lambda,
         else if ((state == 4) && (caState == 1))
         {
             p1 = lambda*kCa_minus*dt;
-            if (rand_drug[i] <= percent_drug)
+            if (0) // (rand_drug[i] <= percent_drug)
             {
                 p2 = p1 + k2_plus_drug*dt;
             }
@@ -496,7 +516,7 @@ __device__ void update_RUs(float lambda,
         else if ((state == 4) && (caState == 0))
         {
             p1 = kCa_plus*dt;
-            if (rand_drug[i] <= percent_drug)
+            if (0) // (rand_drug[i] <= percent_drug)
             {
                 p2 = p1 + k3_plus_drug*dt;
             }
@@ -532,7 +552,7 @@ __device__ void update_RUs(float lambda,
         else if ((state == 5) && (caState == 1))
         {
             p1 = lambda*kCa_minus*dt;
-            if (rand_drug[i] <= percent_drug)
+            if (0) // (rand_drug[i] <= percent_drug)
             {
                 p2 = p1 + k3_plus_drug*dt;
             }
@@ -568,7 +588,7 @@ __device__ void update_RUs(float lambda,
         else if ((state == 6) && (caState == 0))
         {
             p1 = kCa_plus*dt;
-            if (rand_drug[i] <= percent_drug)
+            if (0) // (rand_drug[i] <= percent_drug)
             {
                 p2 = p1 + k4_plus_drug[x*N_S+y]*dt;
             }
@@ -608,7 +628,7 @@ __device__ void update_RUs(float lambda,
         else if ((state == 6) && (caState == 1))
         {
             p1 = lambda*kCa_minus*dt;
-            if (rand_drug[i] <= percent_drug)
+            if (0) // (rand_drug[i] <= percent_drug)
             {
                 p2 = p1 + k4_plus_drug[x*N_S+y]*dt;
             }

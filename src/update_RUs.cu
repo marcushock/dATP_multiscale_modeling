@@ -536,7 +536,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p3)
             {
-                caRU[i] = 4; // switch [M2,0---->M1,0]
+                RU[i] = 4; // switch [M2,0---->M1,0]
             }
         }
         //New State M2,1 Calcium 
@@ -572,7 +572,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p3)
             {
-                caRU[i] = 4; // switch [M2,1---->M1,1]
+                RU[i] = 4; // switch [M2,1---->M1,1]
             }
         }
 

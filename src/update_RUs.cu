@@ -354,7 +354,7 @@ __device__ void update_RUs(float lambda,
                 // If rand_drug (just a random number between 0 and 1) is greater than p_afi_bound, we assume that the drug is not interacting with this myosin head. 
                 // If rand_drug is less than p_afi_bound, we assume that the drug is interacting with this myosin head, and we don't allow the transition to M1, 0
                 {
-                    RU[i] = 5; // switch [C0---->M2,0]
+                    RU[i] = 4; // switch [C0---->M1,0]
                 }
             }
             else if (randNum[i] < p5)
@@ -412,7 +412,7 @@ __device__ void update_RUs(float lambda,
                 // If rand_drug (just a random number between 0 and 1) is greater than p_afi_bound, we assume that the drug is not interacting with this myosin head. 
                 // If rand_drug is less than p_afi_bound, we assume that the drug is interacting with this myosin head, and we don't allow the transition to M1, 0
                 {
-                    RU[i] = 5; // switch [C0---->M2,0]
+                    RU[i] = 4; // switch [C1---->M1,1]
                 }
             }
             else if (randNum[i] < p5)
@@ -421,7 +421,7 @@ __device__ void update_RUs(float lambda,
                 // If rand_drug (just a random number between 0 and 1) is greater than p_afi_bound, we assume that the drug is not interacting with this myosin head.
                 // If rand_drug is less than p_afi_bound, we assume that the drug is interacting with this myosin head, and we don't allow the transition to M3, 0
                 {
-                    RU[i] = 6; // switch [C0---->M3,0]
+                    RU[i] = 6; // switch [C1---->M3,1]
                     // printf("Decrease ATPcounter: %f\n", *ATPcounter);
                     *ATPcounter -= 1;
                 }
@@ -444,11 +444,11 @@ __device__ void update_RUs(float lambda,
             p1 = kCa_plus*dt;
             if (0) // (rand_drug[i] <= percent_drug)
             {
-                p2 = p3 + k2_plus_drug*dt;
+                p2 = p1 + k2_plus_drug*dt;
             }
             else
             {
-                p2 = p3 + k2_plus_baseline*dt;
+                p2 = p1 + k2_plus_baseline*dt;
             }
             p3 = p2 + k1_minus[x*N_S+y]*dt;
 
@@ -462,7 +462,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p3)
             {
-                caRU[i] = 3; // switch [M1,0---->C0]
+                RU[i] = 3; // switch [M1,0---->C0]
             }
         }
         // CHECKED [X] 
@@ -497,7 +497,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p3)
             {
-                caRU[i] = 3; // switch [M1,1---->C1]
+                RU[i] = 3; // switch [M1,1---->C1]
             }
         }
         //New State M2 No Calcium
@@ -513,7 +513,7 @@ __device__ void update_RUs(float lambda,
         //-----------------------------------------------------------------
         // This is in state M1, which is the weakly bound state. 
         // There is no calcium bound, so it's still surprising to be in this state to be honest. 
-        else if ((state == 4) && (caState == 0))
+        else if ((state == 5) && (caState == 0))
         {
             p1 = kCa_plus*dt;
             if (0) // (rand_drug[i] <= percent_drug)
@@ -576,7 +576,7 @@ __device__ void update_RUs(float lambda,
             }
         }
 
-        // CHECKED [ ]
+        // CHECKED [X]
         //-----------------------------------------------------------------
         // if (state = [M3 = 6]): Then     [M1,0]    	else stay as [M3,0]
         //     & caState = 0      [C0]<----   ^   ---->[M3,1]       	
@@ -610,7 +610,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p3)
             {
-                caRU[i] = 5; // switch [M3,0---->M2,0]
+                RU[i] = 5; // switch [M3,0---->M2,0]
             }
         }
         // CHECKED [ ]
@@ -650,7 +650,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p3)
             {
-                caRU[i] = 5; // switch [M3,1---->M1,1]
+                RU[i] = 5; // switch [M3,1---->M1,1]
             }
         }
         ///-----------------------------------------------------------------

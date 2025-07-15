@@ -33,3 +33,4 @@ variables_ready_for_input.csv
 expData/Force_pCa_Optmz_morePts copy.csv
 parameters/k3_reduct_k_recruit_reduct_sweep.csv
 *.log
+src/variables_of_interest.csv

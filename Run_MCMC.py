@@ -76,17 +76,9 @@ def main():
     os.makedirs(raw_data_dir, exist_ok=True)
     print(f"Created raw_data directory at {raw_data_dir}")
 
-    print("Runnign the binary at " + BINARY)
+    print("Running the binary at " + BINARY)
     args = [BINARY, exp_data_input, parameter_filename]
     subprocess.run([BINARY, exp_data_input, parameter_filename], check=True)
-    # with open("stdout.out", 'w') as out:
-    #         with open("stderr.err", 'w') as err:
-    #             print("Running " + str(args))
-    #             time_start = time.time()
-    #             subprocess.call(args, stdout=out, stderr=err, shell=False, 
-    #                             # cwd=output_dir
-    #                             )
-    #             print("Time (seconds): ", time.time() - time_start)
     print("Binary run completed.")
 
     # Move all the files from the general results directory to the raw_data directory

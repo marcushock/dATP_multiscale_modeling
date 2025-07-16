@@ -18,10 +18,13 @@ import time
 
 
 def main():
-    if len(sys.argv) != 3:
+    if len(sys.argv) == 3:
+         exp_data_input, parameter_filename = sys.argv[1], sys.argv[2]
+    elif len(sys.argv) == 4:
+        exp_data_input, parameter_filename, inputyaml = sys.argv[1], sys.argv[2], sys.argv[3]
+    else:
         print("ERROR. Incorrect number of argument. \nUsage: python Run_MCMC.py experimental_force_pCa.csv input_params.csv")
         sys.exit(1)
-    input1, input2 = sys.argv[1], sys.argv[2]
 
     # Check if the current general directory is empty: 
     # If not empty, exit with an error message. 
@@ -64,8 +67,8 @@ def main():
     print(f"Copied source code to {os.path.join(destination_dir, os.path.basename(code_src))}")
 
     # Copy the input experimental file and input parameters to the destination direcotry 
-    shutil.copy(input1, destination_dir)
-    shutil.copy(input2, destination_dir)
+    shutil.copy(exp_data_input, destination_dir)
+    shutil.copy(parameter_filename, destination_dir)
     print(f"Copied input files to {destination_dir}")
 
     # Create a raw_data directory inside the destination directory
@@ -74,8 +77,8 @@ def main():
     print(f"Created raw_data directory at {raw_data_dir}")
 
     print("Runnign the binary at " + BINARY)
-    args = [BINARY, input1, input2]
-    subprocess.run([BINARY, input1, input2], check=True)
+    args = [BINARY, exp_data_input, parameter_filename]
+    subprocess.run([BINARY, exp_data_input, parameter_filename], check=True)
     # with open("stdout.out", 'w') as out:
     #         with open("stderr.err", 'w') as err:
     #             print("Running " + str(args))

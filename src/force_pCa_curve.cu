@@ -186,7 +186,7 @@ k3_minus        =  k3_plus_baseline / exp(g_M2 - g_M3) ;//0.3 / exp(g_Mc - g_Md)
 //0.834; //
 
 //k4_plus_ref     = pow(k_xb,0.5)*(pow(M*pow(x_xb,2),0.5)-N*x_xb)+ P;                 //X_k4_plus_PSO[i];
-k4_minus_ref    =  k4_plus_ref_baseline / exp(g_M3 - delta_G); // Changing terms based on the fact that delta_G is negative
+k4_minus_ref    =  k4_plus_ref_baseline / exp(g_M3 - delta_G) * g_Ca; // Changing terms based on the fact that delta_G is negative
 // 3.349;//
 
 //-------------------------------------

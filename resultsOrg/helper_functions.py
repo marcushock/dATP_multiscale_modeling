@@ -99,11 +99,11 @@ class states_structure:
         # Also creating a place for the pCa first, then renaming 
         num_rows = len(self.exp_data.pCa)
         num_cols = len(self.state_list) + 1
-        df = pd.DataFrame(np.zeros((num_rows,num_cols)), columns = ['pCa','M3','M2','M1','C','B','OFF'])
+        df = pd.DataFrame(np.zeros((num_rows,num_cols)), columns = ['pCa'] + self.state_list)
         df.pCa = self.exp_data.pCa
         df = df.set_index('pCa')
 
-        df_std = pd.DataFrame(np.zeros((num_rows,num_cols)), columns = ['pCa','M3','M2','M1','C','B','OFF'])
+        df_std = pd.DataFrame(np.zeros((num_rows,num_cols)), columns = ['pCa'] + self.state_list)
         df_std.pCa = self.exp_data.pCa
         df_std = df_std.set_index('pCa')
 
@@ -155,7 +155,7 @@ class states_structure:
         self.relaxation_time_50()
 
         self.max_twitch_force = smooth_twitch.max()
-
+        self.smoothed_twitch = smooth_twitch
 
         return time_to_peak
 
@@ -165,6 +165,7 @@ class states_structure:
 
 
         smooth_twitch = self.twitches.mean(axis = 1).rolling(50, center = True).mean()
+        self.smoothed_twitch = smooth_twitch
         index_max = smooth_twitch.idxmax()
         max_peak = smooth_twitch.max()
         # Find the first time point after the peak where the force is less than 50% of the peak

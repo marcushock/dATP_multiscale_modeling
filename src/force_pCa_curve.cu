@@ -148,7 +148,7 @@ float eta = args.eta; // parameter defined here
 k_xb = args.k_xb; // parameter defined here
 
 delta_G_ATP = args.delta_G_ATP; // units = RT
-delta_G = delta_G_ATP + log(conc_ATP/(conc_ADP*conc_Pi)); // units = RT (Changing to be +, based on delta_G as an input being negative)
+delta_G = delta_G_ATP + log((conc_ADP*conc_Pi)/conc_ATP); // units = RT (Changing the ratio to consider ATP a reactant and ADP Pi products, keep +)
 x_preR      = args.x_preR; // 0; XB distortion when pre-rotated.
 x_xb        = args.x_xb;        // 0.075; nm, XB distortion
 //x_b0        = eta * delta_G / k_xb; // xb distortion due to ATP hydrolysis

@@ -59,7 +59,14 @@ float scaling_factor = 1.0; // scaling factor for calcium values
 //------------------------------------
 // start time loop
 //------------------------------------
-for (int n = 0; n < 93; ++n)  // time marching ... ATP = 69, dATP = 30, 93 for aficamten data 
+
+int max_steps = 93; //ATP = 69, dATP = 30, 93 for aficamten data 
+while (current_time > time_vals[max_steps-1]){
+    current_time = current_time - time_vals[max_steps-1];
+}
+
+
+for (int n = 0; n < max_steps; ++n)  // time marching ... 
 {
 
     if(keep_going == 1){

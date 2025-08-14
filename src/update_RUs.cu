@@ -17,14 +17,16 @@
 // Output
 //---------
 // RUs:     updated RUs according to Neighboring states (X,Y)
-// Generally, these can be considered the 5 macrostates. 
-// B* - 0 Good
-// C* - 1 Good 
-// B  - 2 Good
-// C  - 3 Good 
+// Generally, these can be considered the 7 macrostates. 
+// B* - 0 
+// C* - 1  
+// B  - 2 
+// C  - 3  
 // M1 - 4 
 // M2 - 5
 // M3 - 6
+// B** - 7
+// C** - 8
 //--------------------------------------------------------------------------%
 #include "update_RUs.h"
 #include <stdio.h>
@@ -68,8 +70,11 @@ __device__ void update_RUs(float lambda,
 
     int state, x, y;
     bool caState;
-    float p1, p2, p3, p4, p5;
+    float p1, p2, p3, p4, p5, p6;
     float p_afi_bound = 1 - 1 / (1 + pow((percent_drug / 0.5934), 1.1687));
+    float k_plus_superslow = 1; // This will be changed later and read in through the CSV reader 
+    float k_minus_superslow = 0.5; // This will be changed later and read in through the CSV reader 
+
     for (int i=1; i < N_RU-1; i++)   // only the interior RUs
     //for (int i = 0; i < N_RU; ++i) 
     {
@@ -246,6 +251,7 @@ __device__ void update_RUs(float lambda,
             }
         }
         // CHECKED [X] 
+        // STATE THAT COULD SWITCH TO SUPER SLOW [ ] 
         //-----------------------------------------------------------------
         // if (state = [B = 2]):  Then    [B1]            else stay as [B0]
         //     & caState = 0               ^  
@@ -262,7 +268,12 @@ __device__ void update_RUs(float lambda,
             p1 = kCa_plus*dt;
             p2 = p1 + lambda*kB_plus[x*N_S+y]*dt;
             p3 = p2 + k_minus_SR*dt; // Calculate the probility of moving back into the SRX/OFF state 
-
+            if (rand_drug[i] <= p_afi_bound){
+                p4 = p3 + k_plus_superslow * dt; // Calculate the probability of moving into the super slow state
+            }
+            else {
+                p4 = p3;
+            }
             if (randNum[i] < p1)
             {
                 caRU[i] = 1;   // switch [B0---->B1]
@@ -275,8 +286,12 @@ __device__ void update_RUs(float lambda,
             {
             	RU[i] = 0; //switch [B0---->B0*]
             }
+            else if(randNum[i]<p4){
+                RU[i] = 7; //switch [B0---->B0**] (super slow)
+            }
         }
         // CHECKED [X] 
+        // STATE THAT COULD SWITCH TO SUPER SLOW [ ] 
         //-----------------------------------------------------------------
         // if (state = [B = 2]): Then  [B1*]<----	  else stay as [B1]
         //     & caState = 1		            |	
@@ -292,6 +307,12 @@ __device__ void update_RUs(float lambda,
             p2 = p1 + kB_plus[x*N_S+y]*dt; // Calculate probability of moving into the close state from blocked state 
             p3 = p2 + k_minus_SR*dt; // Calculate the probability of moving 
 
+            if (rand_drug[i] <= p_afi_bound){
+                p4 = p3 + k_plus_superslow * dt; // Calculate the probability of moving into the super slow state
+            }
+            else {
+                p4 = p3;
+            }
             if (randNum[i] < p1)
             {
                 caRU[i] = 0; // switch [B1---->B0] calcium unbinding 
@@ -304,9 +325,14 @@ __device__ void update_RUs(float lambda,
             {
                 RU[i] = 0; //switch [B1---->B1*] moving back into the blocked SRX state
             }
+            else if (randNum[i] < p4)
+            {
+                RU[i] = 7; //switch [B1---->B1**] (super slow)
+            }
 
         }
         // CHECKED [X] 
+        // STATE THAT COULD SWITCH TO SUPER SLOW [ ] 
         //-----------------------------------------------------------------
         // if (state = [C = 3]):  Then     [C1]           else stay as [C0]
         //     & caState = 0                ^  ---->[M1,0]
@@ -335,6 +361,12 @@ __device__ void update_RUs(float lambda,
                 p4 = p3 + k1_plus_baseline[x*N_S+y]*dt;
             }
             p5 = p4 + k4_minus[x*N_S+y]*dt;
+            if (rand_drug[i] <= p_afi_bound){
+                p6 = p5 + k_plus_superslow * dt; // Calculate the probability of moving into the super slow state
+            }
+            else {
+                p6 = p5;
+            }
 
             if  (randNum[i] < p1)
             {
@@ -350,26 +382,21 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p4)
             {
-                if (rand_drug[i] >= p_afi_bound) // Check to see if we assume aficamten is interacting with this myosin head 
-                // If rand_drug (just a random number between 0 and 1) is greater than p_afi_bound, we assume that the drug is not interacting with this myosin head. 
-                // If rand_drug is less than p_afi_bound, we assume that the drug is interacting with this myosin head, and we don't allow the transition to M1, 0
-                {
-                    RU[i] = 4; // switch [C0---->M1,0]
-                }
+                RU[i] = 4; // switch [C0---->M1,0]
             }
             else if (randNum[i] < p5)
             {
-                if (rand_drug[i] >= p_afi_bound) // Check to see if we assume aficamten is interacting with this myosin head
-                // If rand_drug (just a random number between 0 and 1) is greater than p_afi_bound, we assume that the drug is not interacting with this myosin head.
-                // If rand_drug is less than p_afi_bound, we assume that the drug is interacting with this myosin head, and we don't allow the transition to M3, 0
-                {
-                    RU[i] = 6; // switch [C0---->M3,0]
-                    // printf("Decrease ATPcounter: %f\n", *ATPcounter);
-                    *ATPcounter -= 1;
-                }
+                RU[i] = 6; // switch [C0---->M3,0]
+                // printf("Decrease ATPcounter: %f\n", *ATPcounter);
+                *ATPcounter -= 1;   
+            }
+            else if (randNum[i] < p6)
+            {
+                RU[i] = 8; // switch [C0---->C0**] (super slow)
             }
         }
         // CHECKED [X] 
+        // STATE THAT COULD SWITCH TO SUPER SLOW [ ] 
         //-----------------------------------------------------------------
         // if (state = [C = 3]):   Then                   else stay as [C1]
         //     & caState = 1	         [C1*]<----    ---->[M1,1]
@@ -393,7 +420,13 @@ __device__ void update_RUs(float lambda,
                 p4 = p3 + k1_plus_baseline[x*N_S+y]*dt;
             }
             p5 = p4 + k4_minus[x*N_S+y]*dt;
-
+            if (rand_drug[i] <= p_afi_bound)
+            {
+                p6 = p5 + k_plus_superslow * dt; // Calculate the probability of moving into the super slow state
+            }
+            else {
+                p6 = p5;
+            }
             if  (randNum[i] < p1)
             {
                 caRU[i] = 0; // switch [C1---->C0]
@@ -408,23 +441,17 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p4)
             {
-                if (rand_drug[i] >= p_afi_bound) // Check to see if we assume aficamten is interacting with this myosin head 
-                // If rand_drug (just a random number between 0 and 1) is greater than p_afi_bound, we assume that the drug is not interacting with this myosin head. 
-                // If rand_drug is less than p_afi_bound, we assume that the drug is interacting with this myosin head, and we don't allow the transition to M1, 0
-                {
-                    RU[i] = 4; // switch [C1---->M1,1]
-                }
+                RU[i] = 4; // switch [C1---->M1,1]
             }
             else if (randNum[i] < p5)
             {
-                if (rand_drug[i] >= p_afi_bound) // Check to see if we assume aficamten is interacting with this myosin head
-                // If rand_drug (just a random number between 0 and 1) is greater than p_afi_bound, we assume that the drug is not interacting with this myosin head.
-                // If rand_drug is less than p_afi_bound, we assume that the drug is interacting with this myosin head, and we don't allow the transition to M3, 0
-                {
-                    RU[i] = 6; // switch [C1---->M3,1]
-                    // printf("Decrease ATPcounter: %f\n", *ATPcounter);
-                    *ATPcounter -= 1;
-                }
+                RU[i] = 6; // switch [C1---->M3,1]
+                // printf("Decrease ATPcounter: %f\n", *ATPcounter);
+                *ATPcounter -= 1;
+            }
+            else if (randNum[i] < p6)
+            {
+                RU[i] = 8; // switch [C1---->C1**] (super slow)
             }
         }
         // CHECKED [X] 
@@ -653,7 +680,119 @@ __device__ void update_RUs(float lambda,
                 RU[i] = 5; // switch [M3,1---->M1,1]
             }
         }
+        //-----------------------------------------------------------------
+        // if (state = [B** = 7]): Then   [B1**]           else stay as [B0**]
+        //     & caState = 0             ^  
+        //                               | 
+        //                             [B0**]---->[C0**]
+        //				                 |
+        //				                 ---->[B0]
+        // So this is starting in state B0**
+        // We have no calcium bound caState = 0
+        //----------------------------------------------------------------
+        else if ((state == 7) && (caState == 0))
+        {
+            p1 = kCa_plus*dt; // Calculate binding probability of calcium 
+            p2 = p1 + lambda*kB_plus[x*N_S+y]*dt;  // We multiply by lambda, which I beleive is set to 0, in case we want to allow this transition without Ca 
+            p3 = p2 + k_minus_superslow*dt; // Calculate the probability of transitioning out of the super slow state
+            // Check if we have a state change in one of the 3 possible transitions based on above calculated probabilities. 
+            if (randNum[i] < p1)
+            {
+                caRU[i] = 1; // switch [B0**---->B1**]
+            }
+            else if(randNum[i] < p2)
+            {
+                RU[i] = 8; //switch [B0**---->C0**]
+            }
+            else if(randNum[i] < p3)
+            {
+                RU[i] = 2; //switch [B0**---->B0]
+            }
+
+        }
+        //-----------------------------------------------------------------
+        // if (state = [B** = 7]): Then   [B0**]           else stay as [B1**]
+        //     & caState = 1             ^  
+        //                               | 
+        //                             [B1**]---->[C1**]
+        //				                 |
+        //				                 ---->[B1]
+        // So this is starting in state B1**
+        // We have calcium bound caState = 1
+        //----------------------------------------------------------------
+        else if ((state == 7) && (caState == 1))
+        {
+            p1 = kCa_minus*dt; // Calculate unbinding probability of calcium 
+            p2 = p1 + kB_plus[x*N_S+y]*dt; // Calculate the transition probability from B1* to C1* which is the unblocking of the thin filament. 
+            p3 = p2 + k_minus_superslow*dt; // Calculate the probability of transitioning out of the super slow state
+            // Check if we have a state change in one of the 3 possible transitions based on above calculated probabilities. 
+            if (randNum[i] < p1)
+            {
+                caRU[i] = 0; // switch [B1**---->B0**]
+            }
+            else if(randNum[i] < p2)
+            {
+                RU[i] = 8; //switch [B1**---->C1**]
+            }
+            else if(randNum[i] < p3)
+            {
+                RU[i] = 2; //switch [B1**---->B1]
+            }
+        }
+        //-----------------------------------------------------------------
+        // if (state = [C** = 8]): Then     [C1**]       else stay as [C0**]
+        //     & caState = 0                  ^ 
+        //                                    |
+        //                                  [C0**]-->[B0**]
+        //                                    |
+        //                                    -->[C0]
+        // So we are starting in C0**
+        // We have no calcium bound 
         ///-----------------------------------------------------------------
+        else if ((state == 8) && (caState == 0)){
+            p1 = kCa_plus*dt; // Calculate binding probability of calcium 
+            p2 = p1 + kB_minus[x*N_S+y]*dt; // Calculate probability of moving back into the blocked state 
+            p3 = p2 + k_minus_superslow*dt; // Calculate the probability of transitioning out of the super slow state
+            if (randNum[i] < p1)
+            {
+                caRU[i] = 1; // switch [C0**---->C1**]
+            }
+            else if(randNum[i] < p2)
+            {
+                RU[i] = 7; //switch [C0**---->B0**]
+            }
+            else if(randNum[i] < p3)
+            {
+                RU[i] = 3; //switch [C0**---->C0]
+            }
+        }
+        //-----------------------------------------------------------------
+        // if (state = [C** = 8]): Then     [C0**]       else stay as [C1**]
+        //     & caState = 1                  ^ 
+        //                                    |
+        //                                  [C1**]-->[B1**]
+        //                                    |
+        //                                    -->[C1]
+        // So we are starting in C1**
+        // We have calcium bound 
+        ///-----------------------------------------------------------------
+        else if ((state == 8) && (caState == 1)){
+            p1 = lambda*kCa_minus*dt; // Calculate binding probability of calcium 
+            p2 = p1 + kB_minus[x*N_S+y]*dt; // Calculate probability of moving back into the blocked state 
+            p3 = p2 + k_minus_superslow*dt; // Calculate the probability of transitioning out of the super slow state
+            if (randNum[i] < p1)
+            {
+                caRU[i] = 0; // switch [C1**---->C0**]
+            }
+            else if(randNum[i] < p2)
+            {
+                RU[i] = 7; //switch [C1**---->B1**]
+            }
+            else if(randNum[i] < p3)
+            {
+                RU[i] = 3; //switch [C1**---->C1]
+            }
+        }
 
     } // close the for loop
 

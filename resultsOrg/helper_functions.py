@@ -118,23 +118,26 @@ class states_structure:
         
         self.steady_states_all  = df
         self.steady_states_all_std  = df_std
-        self.force_pCa = self.steady_states_all['M3'] + self.steady_states_all['M2']
+        if 'M3' not in self.steady_states_all.columns:
+            self.force_pCa =  self.steady_states_all['M2']
+        else: 
+            self.force_pCa = self.steady_states_all['M3'] + self.steady_states_all['M2']
         max_force = self.force_pCa.max()
         min_force = self.force_pCa.min()
         half_force = (max_force + min_force) / 2
         self.pCa_50 = np.interp(half_force, self.force_pCa.values, df.index)
 
 
+        if 'M3' in self.steady_states_all.columns:
+            # Note, this curve is likely going to be off because M2 + M3 issue now. 
+            upper_curve = self.force_pCa + self.steady_states_all_std['M3']
+            upper_half = (upper_curve.max() + upper_curve.min())/2
+            self.upper_pCa_50  = np.interp(upper_half, upper_curve.values, upper_curve.index)
+            
 
-        # Note, this curve is likely going to be off because M2 + M3 issue now. 
-        upper_curve = self.force_pCa + self.steady_states_all_std['M3']
-        upper_half = (upper_curve.max() + upper_curve.min())/2
-        self.upper_pCa_50  = np.interp(upper_half, upper_curve.values, upper_curve.index)
-        
-
-        lower_curve = self.force_pCa - self.steady_states_all_std['M3']
-        lower_half = (lower_curve.max() + lower_curve.min())/2
-        self.lower_pCa_50 = np.interp(lower_half, lower_curve.values, lower_curve.index)
+            lower_curve = self.force_pCa - self.steady_states_all_std['M3']
+            lower_half = (lower_curve.max() + lower_curve.min())/2
+            self.lower_pCa_50 = np.interp(lower_half, lower_curve.values, lower_curve.index)
 
     def twitch_tension_integral(self, reference_integral = 1):
         if self.twitches is None:

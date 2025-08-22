@@ -29,6 +29,7 @@ __device__ void update_RUs(float lambda,
                 float k_plus_SR_drug,
                 float k_plus_SR_baseline, 
                 float k_minus_SR,
+                float K_SS, 
                 float f,
                 float * ATPcounter
                );

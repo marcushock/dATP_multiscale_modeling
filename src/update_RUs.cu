@@ -62,6 +62,7 @@ __device__ void update_RUs(float lambda,
                             float k_plus_SR_drug,
                             float k_plus_SR_baseline, 
                             float k_minus_SR,
+                            float K_SS, 
                             float f,
                             float * ATPcounter
                             )
@@ -73,7 +74,7 @@ __device__ void update_RUs(float lambda,
     float p1, p2, p3, p4, p5, p6;
     float p_afi_bound = 1 - 1 / (1 + pow((percent_drug / 0.5934), 1.1687));
     float k_plus_superslow = 1; // This will be changed later and read in through the CSV reader 
-    float k_minus_superslow = 0.5; // This will be changed later and read in through the CSV reader 
+    float k_minus_superslow = k_plus_superslow / K_SS; // This will be changed later and read in through the CSV reader 
 
     for (int i=1; i < N_RU-1; i++)   // only the interior RUs
     //for (int i = 0; i < N_RU; ++i) 

@@ -53,7 +53,9 @@ void init_particle(initParticleArgs & args, int replicate_number)
     float * SRArrays_return;
     gpuErrchk(cudaMallocManaged(&SRArrays_return, sizeof(float)*n_pCa*MAX_TSTEPS));
     gpuErrchk(cudaMemset(SRArrays_return, 0, sizeof(float)*n_pCa*MAX_TSTEPS));
-    
+    float * SSArrays_return; // State array to track the super slow state
+    gpuErrchk(cudaMallocManaged(&SSArrays_return, sizeof(float)*n_pCa*MAX_TSTEPS));
+    gpuErrchk(cudaMemset(SSArrays_return, 0, sizeof(float)*n_pCa*MAX_TSTEPS));
     float * ATPaseArrays_return;
     gpuErrchk(cudaMallocManaged(&ATPaseArrays_return, sizeof(float)*n_pCa*MAX_TSTEPS));
     gpuErrchk(cudaMemset(ATPaseArrays_return, 0, sizeof(float)*n_pCa*MAX_TSTEPS));
@@ -73,6 +75,7 @@ void init_particle(initParticleArgs & args, int replicate_number)
             CArrays_return,
             BArrays_return,
             SRArrays_return,
+            SSArrays_return, 
             ATPaseArrays_return,
             cc);
         }));
@@ -189,7 +192,7 @@ void init_particle(initParticleArgs & args, int replicate_number)
             States_out << DT*j;
             for (int cc = 0; cc < n_pCa; cc++)  // Ca-loop
             {
-                States_out << "," << M3Arrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << M2Arrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << M1Arrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << CArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << BArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << SRArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS;
+                States_out << "," << M3Arrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << M2Arrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << M1Arrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << CArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << BArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS << "," << SRArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS<< "," << SSArrays_return[cc * MAX_TSTEPS + j]/MAX_REPS;
 
             }
             States_out << std::endl;
@@ -225,6 +228,7 @@ void init_particle(initParticleArgs & args, int replicate_number)
     gpuErrchk(cudaFree(CArrays_return));
     gpuErrchk(cudaFree(BArrays_return));
     gpuErrchk(cudaFree(SRArrays_return));
+    gpuErrchk(cudaFree(SSArrays_return));
     gpuErrchk(cudaFree(ATPaseArrays_return));
 
 }

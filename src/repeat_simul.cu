@@ -59,6 +59,7 @@ float * M3,
 float * C,
 float * B,
 float * SR,
+float * SS,
 float * ATPase,
 int cc,
 float protocol, 
@@ -111,6 +112,7 @@ float Calc_conc_exp
         int count_C_state  = 0;
         int count_B_state   = 0;
         int count_SR_state = 0;
+        int count_SS_state = 0;
         ATPcounter = 0;
         genrand(randNum, N_RU, &state); // fills array with random numbers
         genrand(rand_drug, N_RU, &state); // fills array with random numbers
@@ -220,6 +222,14 @@ float Calc_conc_exp
             {
                 ++count_M3_state;
             }
+            else if(RU[i]==7) // this represents B**
+            {
+                ++count_SS_state;
+            }
+            else if(RU[i]==8) // this represents C**
+            {
+                ++count_SS_state;
+            }
         }
         float forceValue = (float)count_M3_state / (N_RU); // Type casting because count_M3_state is defined as an int 
         float M1Value = (float)count_M1_state / (N_RU);
@@ -227,7 +237,8 @@ float Calc_conc_exp
         float CValue = (float)count_C_state / (N_RU);
         float BValue = (float)count_B_state / (N_RU);
         float SRValue = (float)count_SR_state / (N_RU);
-        
+        float SSValue = (float)count_SS_state / (N_RU);
+
         f =  (float)count_M3_state + (float)count_M2_state; // Could also include some function of the M2 value here 
         // float current_max = 0;
         // // This is to look at what happens after the there is an instance where there is at least one state in the force producing state 
@@ -264,6 +275,7 @@ float Calc_conc_exp
         atomicAdd(&(C[n]), CValue); // add results every repeat
         atomicAdd(&(B[n]), BValue); // add results every repeat
         atomicAdd(&(SR[n]), SRValue); // add results every repeat
+        atomicAdd(&(SS[n]), SSValue); // add results every repeat
         atomicAdd(&(ATPase[n]), ATPcounter); // add results every repeat
     } // end the (n-loop) of the time marching
 }

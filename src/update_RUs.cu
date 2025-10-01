@@ -75,7 +75,7 @@ __device__ void update_RUs(float lambda,
     float coop_N = 1; // Previously found a fit of 1.1687, but this shouldn't be anything but one given the mechanism of aficamten. 
     float K_D = 0.5934; // Found from fitting Mohran data 
     float p_afi_bound = 1 - 1 / (1 + pow((percent_drug / K_D), coop_N));
-    float k_plus_superslow = 1; // This will be changed later and read in through the CSV reader 
+    float k_plus_superslow = 5; // This will be changed later and read in through the CSV reader 
     float k_minus_superslow = k_plus_superslow / K_SS; // This will be changed later and read in through the CSV reader 
 
     for (int i=1; i < N_RU-1; i++)   // only the interior RUs

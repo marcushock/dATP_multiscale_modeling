@@ -53,12 +53,14 @@ float k_force_baseline,
 float k_plus_SR_drug,
 float k_plus_SR_baseline,
 float k_minus_SR,
+float K_SS,
 float * M1,
 float * M2,
 float * M3,
 float * C,
 float * B,
 float * SR,
+float * SS,
 float * ATPase,
 int cc,
 float protocol, 
@@ -111,6 +113,7 @@ float Calc_conc_exp
         int count_C_state  = 0;
         int count_B_state   = 0;
         int count_SR_state = 0;
+        int count_SS_state = 0;
         ATPcounter = 0;
         genrand(randNum, N_RU, &state); // fills array with random numbers
         genrand(rand_drug, N_RU, &state); // fills array with random numbers
@@ -171,7 +174,7 @@ float Calc_conc_exp
         // float k_minus_SR = k_minus_SR_ref; // DELETE THIS LINE 
         //printf("%f\n",k_plus_SR);
         //printf("%f\n",k_minus_SR);
-        update_RUs(lambda, DT, kCa_plus, kCa_minus, randNum, rand_drug, RU, caRU, kB_plus, kB_minus, k1_plus_drug, k1_plus_baseline, k1_minus, k2_plus_drug, k2_plus_baseline, k2_minus, k3_plus_drug, k3_plus_baseline, k3_minus, k4_plus_drug, k4_plus_baseline, k4_minus, percent_drug, k_force_drug, k_force_baseline, k_plus_SR_drug, k_plus_SR_baseline, k_minus_SR,f, &ATPcounter);
+        update_RUs(lambda, DT, kCa_plus, kCa_minus, randNum, rand_drug, RU, caRU, kB_plus, kB_minus, k1_plus_drug, k1_plus_baseline, k1_minus, k2_plus_drug, k2_plus_baseline, k2_minus, k3_plus_drug, k3_plus_baseline, k3_minus, k4_plus_drug, k4_plus_baseline, k4_minus, percent_drug, k_force_drug, k_force_baseline, k_plus_SR_drug, k_plus_SR_baseline, k_minus_SR, K_SS, f, &ATPcounter);
         // Print out all the kinetic variables that start with the letter k 
         // printf("k1_plus_drug = %f\n", k1_plus_drug[0]);
         // printf("k1_plus_baseline = %f\n", k1_plus_baseline[0]);
@@ -220,6 +223,14 @@ float Calc_conc_exp
             {
                 ++count_M3_state;
             }
+            else if(RU[i]==7) // this represents B**
+            {
+                ++count_SS_state;
+            }
+            else if(RU[i]==8) // this represents C**
+            {
+                ++count_SS_state;
+            }
         }
         float forceValue = (float)count_M3_state / (N_RU); // Type casting because count_M3_state is defined as an int 
         float M1Value = (float)count_M1_state / (N_RU);
@@ -227,7 +238,8 @@ float Calc_conc_exp
         float CValue = (float)count_C_state / (N_RU);
         float BValue = (float)count_B_state / (N_RU);
         float SRValue = (float)count_SR_state / (N_RU);
-        
+        float SSValue = (float)count_SS_state / (N_RU);
+
         f =  (float)count_M3_state + (float)count_M2_state; // Could also include some function of the M2 value here 
         // float current_max = 0;
         // // This is to look at what happens after the there is an instance where there is at least one state in the force producing state 
@@ -264,6 +276,7 @@ float Calc_conc_exp
         atomicAdd(&(C[n]), CValue); // add results every repeat
         atomicAdd(&(B[n]), BValue); // add results every repeat
         atomicAdd(&(SR[n]), SRValue); // add results every repeat
+        atomicAdd(&(SS[n]), SSValue); // add results every repeat
         atomicAdd(&(ATPase[n]), ATPcounter); // add results every repeat
     } // end the (n-loop) of the time marching
 }

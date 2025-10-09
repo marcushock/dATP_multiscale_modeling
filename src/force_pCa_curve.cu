@@ -37,6 +37,7 @@ void force_pCa_curve(initParticleArgs & args,
                      float * CArrays,
                      float * BArrays,
                      float * SRArrays,
+                     float * SSArrays,
                      float * ATPaseArrays,
                      int cc
                     )
@@ -52,6 +53,7 @@ float * M3 = &(M3Arrays[cc * MAX_TSTEPS]);
 float * C = &(CArrays[cc * MAX_TSTEPS]);
 float * B  = &(BArrays[cc * MAX_TSTEPS]);
 float * SR  = &(SRArrays[cc * MAX_TSTEPS]);
+float * SS  = &(SSArrays[cc * MAX_TSTEPS]);
 float * ATPase = &(ATPaseArrays[cc * MAX_TSTEPS]);
 float * kB_plus;
 gpuErrchk(cudaMallocManaged(&kB_plus, sizeof(float)*N_S*N_S));
@@ -109,6 +111,7 @@ float k_plus_SR_drug = args.k_plus_SR_drug;
 
 float k_minus_SR = args.k_minus_SR;
 float protocol = args.protocol;
+float K_SS = args.K_SS;
 
 
 
@@ -263,12 +266,14 @@ repeat_simul<<<MAX_REPS/32, 32, 0, s>>>(lambda,
                                         k_plus_SR_drug,
                                         k_plus_SR_baseline,
                                         k_minus_SR,
+                                        K_SS, 
                                         M1,
                                         M2,
                                         M3,
                                         C,
                                         B,
                                         SR,
+                                        SS, 
                                         ATPase,
                                         cc, 
                                         protocol, 

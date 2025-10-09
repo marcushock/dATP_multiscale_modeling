@@ -25,6 +25,8 @@ class states_structure:
         self.file_name = input_filename
         if num_states == 6:
             self.state_list = ['M3','M2','M1','C','B','OFF']
+        elif num_states == 7:
+            self.state_list = ['M3','M2','M1','C','B','OFF','SuperSlow']
         elif num_states == 5:
             self.state_list = ['M2','M1','C','B','OFF']
         else:

@@ -110,7 +110,7 @@ __device__ void update_RUs(float lambda,
             // This chunk of code is used to calculate kinetics based on either ATP parameters or drug parameters 
             if (0) // (rand_drug[i] <= percent_drug) // percent drug is somewhere between 0 and 1, which then helps to identify if we have baseline kinetics or drug kinetics 
             {
-                p3 = p2 + k_plus_SR_drug*(1+k_force_drug*f)*dt; // We calculate a new probability p3 using drug kinetic parameters 
+                p3 = p2 + k_plus_SR_drug*(1+k_force_drug*f)*dt; // Going from B0* -> B0 (out of SRX) We calculate a new probability p3 using drug kinetic parameters 
             }
             else
             {
@@ -155,7 +155,7 @@ __device__ void update_RUs(float lambda,
             p2 = p1 + kB_plus[x*N_S+y]*dt; // Calculate the transition probability from B1* to C1* which is the unblocking of the thin filament. 
             if (0) // (rand_drug[i] <= percent_drug)
             {
-                p3 = p2 + k_plus_SR_drug*(1+k_force_drug*f)*dt; // Calculate the probability of transitioning out of the SRX/OFF state
+                p3 = p2 + k_plus_SR_drug*(1+k_force_drug*f)*dt; // Going from B1* -> B1 (out of SRX) Calculate the probability of transitioning out of the SRX/OFF state
             }
             else
             {
@@ -191,9 +191,9 @@ __device__ void update_RUs(float lambda,
         {
             p1 = kCa_plus*dt; // Calculate the probability for calcium binding. 
             p2 = p1 + kB_minus[x*N_S+y]*dt; // Calculate probability of moving back into the blocked state 
-            if (0) // (rand_drug[i] <= percent_drug)
+            if (0) // (rand_drug[i] <= percent_drug) 
             {
-                p3 = p2 + k_plus_SR_drug*(1+k_force_drug*f)*dt; // Calcualte probability out of the SRX/OFF state (drug)
+                p3 = p2 + k_plus_SR_drug*(1+k_force_drug*f)*dt; // Going from C0* -> C0 (out of SRX) Calculate probability out of the SRX/OFF state (drug)
             }
             else
             {
@@ -472,7 +472,7 @@ __device__ void update_RUs(float lambda,
         else if ((state == 4) && (caState == 0))
         {
             p1 = kCa_plus*dt;
-            if (0) // (rand_drug[i] <= percent_drug)
+            if (rand_drug[i] <= p_afi_bound) // (rand_drug[i] <= percent_drug)
             {
                 p2 = p1 + k2_plus_drug*dt;
             }
@@ -507,7 +507,7 @@ __device__ void update_RUs(float lambda,
         else if ((state == 4) && (caState == 1))
         {
             p1 = lambda*kCa_minus*dt;
-            if (0) // (rand_drug[i] <= percent_drug)
+            if (rand_drug[i] <= p_afi_bound) // (rand_drug[i] <= percent_drug)
             {
                 p2 = p1 + k2_plus_drug*dt;
             }
@@ -546,7 +546,7 @@ __device__ void update_RUs(float lambda,
         else if ((state == 5) && (caState == 0))
         {
             p1 = kCa_plus*dt;
-            if (0) // (rand_drug[i] <= percent_drug)
+            if (rand_drug[i] <= p_afi_bound) // (rand_drug[i] <= percent_drug)
             {
                 p2 = p1 + k3_plus_drug*dt;
             }
@@ -582,7 +582,7 @@ __device__ void update_RUs(float lambda,
         else if ((state == 5) && (caState == 1))
         {
             p1 = lambda*kCa_minus*dt;
-            if (0) // (rand_drug[i] <= percent_drug)
+            if (rand_drug[i] <= p_afi_bound) // (rand_drug[i] <= percent_drug)
             {
                 p2 = p1 + k3_plus_drug*dt;
             }
@@ -618,7 +618,7 @@ __device__ void update_RUs(float lambda,
         else if ((state == 6) && (caState == 0))
         {
             p1 = kCa_plus*dt;
-            if (0) // (rand_drug[i] <= percent_drug)
+            if (rand_drug[i] <= p_afi_bound) // (rand_drug[i] <= percent_drug)
             {
                 p2 = p1 + k4_plus_drug[x*N_S+y]*dt;
             }
@@ -658,7 +658,7 @@ __device__ void update_RUs(float lambda,
         else if ((state == 6) && (caState == 1))
         {
             p1 = lambda*kCa_minus*dt;
-            if (0) // (rand_drug[i] <= percent_drug)
+            if (rand_drug[i] <= p_afi_bound) // (rand_drug[i] <= percent_drug)
             {
                 p2 = p1 + k4_plus_drug[x*N_S+y]*dt;
             }

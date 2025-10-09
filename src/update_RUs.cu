@@ -62,7 +62,8 @@ __device__ void update_RUs(float lambda,
                             float k_plus_SR_drug,
                             float k_plus_SR_baseline, 
                             float k_minus_SR,
-                            float K_SS, 
+                            float k_plus_SS,
+                            float k_minus_SS,
                             float f,
                             float * ATPcounter
                             )
@@ -75,8 +76,7 @@ __device__ void update_RUs(float lambda,
     float coop_N = 1; // Previously found a fit of 1.1687, but this shouldn't be anything but one given the mechanism of aficamten. 
     float K_D = 0.5934; // Found from fitting Mohran data 
     float p_afi_bound = 1 - 1 / (1 + pow((percent_drug / K_D), coop_N));
-    float k_plus_superslow = 0.02; // This will be changed later and read in through the CSV reader 
-    float k_minus_superslow = k_plus_superslow / K_SS; // This will be changed later and read in through the CSV reader 
+
 
     for (int i=1; i < N_RU-1; i++)   // only the interior RUs
     //for (int i = 0; i < N_RU; ++i) 
@@ -272,7 +272,7 @@ __device__ void update_RUs(float lambda,
             p2 = p1 + lambda*kB_plus[x*N_S+y]*dt;
             p3 = p2 + k_minus_SR*dt; // Calculate the probility of moving back into the SRX/OFF state 
             if (rand_drug[i] <= p_afi_bound){
-                p4 = p3 + k_plus_superslow * dt; // Calculate the probability of moving into the super slow state
+                p4 = p3 + k_plus_SS * dt; // Calculate the probability of moving into the super slow state
             }
             else {
                 p4 = p3;
@@ -311,7 +311,7 @@ __device__ void update_RUs(float lambda,
             p3 = p2 + k_minus_SR*dt; // Calculate the probability of moving 
 
             if (rand_drug[i] <= p_afi_bound){
-                p4 = p3 + k_plus_superslow * dt; // Calculate the probability of moving into the super slow state
+                p4 = p3 + k_plus_SS * dt; // Calculate the probability of moving into the super slow state
             }
             else {
                 p4 = p3;
@@ -365,7 +365,7 @@ __device__ void update_RUs(float lambda,
             }
             p5 = p4 + k4_minus[x*N_S+y]*dt;
             if (rand_drug[i] <= p_afi_bound){
-                p6 = p5 + k_plus_superslow * dt; // Calculate the probability of moving into the super slow state
+                p6 = p5 + k_plus_SS * dt; // Calculate the probability of moving into the super slow state
             }
             else {
                 p6 = p5;
@@ -425,7 +425,7 @@ __device__ void update_RUs(float lambda,
             p5 = p4 + k4_minus[x*N_S+y]*dt;
             if (rand_drug[i] <= p_afi_bound)
             {
-                p6 = p5 + k_plus_superslow * dt; // Calculate the probability of moving into the super slow state
+                p6 = p5 + k_plus_SS * dt; // Calculate the probability of moving into the super slow state
             }
             else {
                 p6 = p5;
@@ -697,7 +697,7 @@ __device__ void update_RUs(float lambda,
         {
             p1 = kCa_plus*dt; // Calculate binding probability of calcium 
             p2 = p1 + lambda*kB_plus[x*N_S+y]*dt;  // We multiply by lambda, which I beleive is set to 0, in case we want to allow this transition without Ca 
-            p3 = p2 + k_minus_superslow*dt; // Calculate the probability of transitioning out of the super slow state
+            p3 = p2 + k_minus_SS*dt; // Calculate the probability of transitioning out of the super slow state
             // Check if we have a state change in one of the 3 possible transitions based on above calculated probabilities. 
             if (randNum[i] < p1)
             {
@@ -727,7 +727,7 @@ __device__ void update_RUs(float lambda,
         {
             p1 = kCa_minus*dt; // Calculate unbinding probability of calcium 
             p2 = p1 + kB_plus[x*N_S+y]*dt; // Calculate the transition probability from B1* to C1* which is the unblocking of the thin filament. 
-            p3 = p2 + k_minus_superslow*dt; // Calculate the probability of transitioning out of the super slow state
+            p3 = p2 + k_minus_SS*dt; // Calculate the probability of transitioning out of the super slow state
             // Check if we have a state change in one of the 3 possible transitions based on above calculated probabilities. 
             if (randNum[i] < p1)
             {
@@ -755,7 +755,7 @@ __device__ void update_RUs(float lambda,
         else if ((state == 8) && (caState == 0)){
             p1 = kCa_plus*dt; // Calculate binding probability of calcium 
             p2 = p1 + kB_minus[x*N_S+y]*dt; // Calculate probability of moving back into the blocked state 
-            p3 = p2 + k_minus_superslow*dt; // Calculate the probability of transitioning out of the super slow state
+            p3 = p2 + k_minus_SS*dt; // Calculate the probability of transitioning out of the super slow state
             if (randNum[i] < p1)
             {
                 caRU[i] = 1; // switch [C0**---->C1**]
@@ -782,7 +782,7 @@ __device__ void update_RUs(float lambda,
         else if ((state == 8) && (caState == 1)){
             p1 = lambda*kCa_minus*dt; // Calculate binding probability of calcium 
             p2 = p1 + kB_minus[x*N_S+y]*dt; // Calculate probability of moving back into the blocked state 
-            p3 = p2 + k_minus_superslow*dt; // Calculate the probability of transitioning out of the super slow state
+            p3 = p2 + k_minus_SS*dt; // Calculate the probability of transitioning out of the super slow state
             if (randNum[i] < p1)
             {
                 caRU[i] = 0; // switch [C1**---->C0**]

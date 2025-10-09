@@ -73,44 +73,7 @@ for(int i = 0; i < argsArray.size(); ++i){
     std::cout << "One iteration runtime: " << (time(NULL)-startTime) << " second(s)" << std::endl;
 }
 
-// float gamma_B = atof(argv[2]); // [unitless] - RU-RU cooperative coefficient
-// float gamma_M = atof(argv[3]); // [unitless] - XB-RU/RU-XB coopcoefficient (Note: gamma_M = mu_B)
-// float mu_M = atof(argv[4]); // [unitless] - Inter-RU XB-XB cooperative coefficient
-// float k1_plus_ref = atof(argv[5]);
-// float k3_plus = atof(argv[6]);
-// float k4_plus_ref = atof(argv[7]);
-// float kB_plus_ref = atof(argv[8]); //               - (p = plus)
-// float kB_minus_ref = atof(argv[9]); //               - (m = minus)
-// float lambda = atof(argv[10]); // [unitless] must be between (0,1)
-// float kCa_plus_ref = atof(argv[11]);
-// float kCa_minus_ref = atof(argv[12]);
-// float percent_dATP = atof(argv[13]);
-// float k_force = atof(argv[14]);
-// float k_plus_SR_ref = atof(argv[15]);
-// float k_minus_SR_ref = atof(argv[16]);
-// float protocol = atoi(argv[17]);
 
-
-// initParticleArgs args = initParticleArgs(experimentalData,
-// gamma_B,
-// gamma_M,
-// mu_M,
-// k1_plus_ref,
-// k3_plus,
-// k4_plus_ref,
-// kB_plus_ref,
-// kB_minus_ref,
-// lambda,
-// kCa_plus_ref,
-// kCa_minus_ref,
-// percent_dATP,
-// k_force,
-// k_plus_SR_ref,
-// k_minus_SR_ref, 
-// protocol 
-// );
-// init_particle(args);
-// std::cout << "One iteration runtime: " << (time(NULL)-startTime) << " second(s)" << std::endl;
 
 return 0;
 

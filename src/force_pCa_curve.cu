@@ -111,7 +111,8 @@ float k_plus_SR_drug = args.k_plus_SR_drug;
 
 float k_minus_SR = args.k_minus_SR;
 float protocol = args.protocol;
-float K_SS = args.K_SS;
+float k_plus_SS = args.k_plus_SS;
+float k_minus_SS = args.k_minus_SS;
 
 
 
@@ -266,7 +267,8 @@ repeat_simul<<<MAX_REPS/32, 32, 0, s>>>(lambda,
                                         k_plus_SR_drug,
                                         k_plus_SR_baseline,
                                         k_minus_SR,
-                                        K_SS, 
+                                        k_plus_SS,
+                                        k_minus_SS,
                                         M1,
                                         M2,
                                         M3,

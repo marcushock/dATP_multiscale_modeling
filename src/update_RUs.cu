@@ -414,7 +414,7 @@ __device__ void update_RUs(float lambda,
             p1 = lambda*kCa_minus*dt;
             p2 = p1 + kB_minus[x*N_S+y]*dt;
 	        p3 = p2 + k_minus_SR*dt;
-	        if (0) // (rand_drug[i] <= percent_drug)
+	        if (rand_drug[i] <= p_afi_bound) // (rand_drug[i] <= percent_drug)
             {
                 p4 = p3 + k1_plus_drug[x*N_S+y]*dt;
             }

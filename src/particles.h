@@ -51,6 +51,8 @@ public:
     float g_Ca;
     float k_plus_SS;
     float k_minus_SS;
+    float K_D; 
+    float coop_N;
 
     // float gamma_B; // [unitless] - RU-RU cooperative coefficient
     // float gamma_M; // [unitless] - XB-RU/RU-XB coopcoefficient (Note: gamma_M = mu_B)
@@ -109,7 +111,9 @@ public:
         g_Cb(argsVector[36]),
         g_Ca(argsVector[37]),
         k_plus_SS(argsVector[38]),
-        k_minus_SS(argsVector[39])
+        k_minus_SS(argsVector[39]),
+        K_D(argsVector[40]),
+        coop_N(argsVector[41])
        {}
 
 

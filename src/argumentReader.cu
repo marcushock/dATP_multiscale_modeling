@@ -5,7 +5,7 @@
 #include <string>
 #include <cuda_runtime.h>
 
-#define NUM_COLUMNS 40 
+#define NUM_COLUMNS 42 
 
 // Define the kernel function to process the parameters with the data type given first (unlike void)
 std::vector< std::vector<float> > argumentReader(const char * name)

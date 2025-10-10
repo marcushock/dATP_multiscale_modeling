@@ -31,6 +31,8 @@ __device__ void update_RUs(float lambda,
                 float k_minus_SR,
                 float k_plus_SS, 
                 float k_minus_SS,
+                float K_D,
+                float coop_N,
                 float f,
                 float * ATPcounter
                );

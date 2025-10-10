@@ -64,6 +64,8 @@ __device__ void update_RUs(float lambda,
                             float k_minus_SR,
                             float k_plus_SS,
                             float k_minus_SS,
+                            float K_D, 
+                            float coop_N, 
                             float f,
                             float * ATPcounter
                             )
@@ -73,8 +75,8 @@ __device__ void update_RUs(float lambda,
     int state, x, y;
     bool caState;
     float p1, p2, p3, p4, p5, p6;
-    float coop_N = 1; // Previously found a fit of 1.1687, but this shouldn't be anything but one given the mechanism of aficamten. 
-    float K_D = 0.5934; // Found from fitting Mohran data 
+    // float coop_N = 1; // Previously found a fit of 1.1687, but this shouldn't be anything but one given the mechanism of aficamten. 
+    // float K_D = 0.5934; // Found from fitting Mohran data 
     float p_afi_bound = 1 - 1 / (1 + pow((percent_drug / K_D), coop_N));
 
 

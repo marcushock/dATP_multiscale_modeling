@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from scipy import optimize as opt
+import os 
+from tqdm import tqdm
 
 ### TODO #### 
 # 1. Fix the other auxillary functions to work with 5 or 4 states rather than just 1 
@@ -282,3 +284,166 @@ def get_nH(state_structure: states_structure):
     n_H = nparams[0]
     pCa_50 = nparams[1]
     return n_H, pCa_50
+
+
+#### Section for Manipulation of Lots of Simulations 
+
+def create_results_df(parameter_filename, simulation_directory, slice_sims = False, 
+                      exp_file = 'mohran_force_pCa_normal_normalized.csv', 
+                      num_states = 7):
+    """
+    Create a DataFrame with simulation results from a given parameter file and directory.
+    
+    Args:
+        parameter_filename (str): Path to the parameter file.
+        simulation_directory (str): Directory containing simulation files (but not the raw_data directory).
+        slice_sims (bool): Whether to rename the columns, and move the simulation column o the force_sim and twitch_sim, assumes all force sims first, then all twitch sims
+        exp_file (str): A file that is used to read in the results and matching pCa values
+        num_states (int): Number of states that are in the model (7 expected for the super slow state simulations)
+    Returns:
+        pd.DataFrame: DataFrame containing simulation results.
+    """
+    # Read the parameter file
+    params = pd.read_csv(parameter_filename, comment='#')
+    params['simulation'] = None
+    # Initialize an empty list to store results
+    results = []
+    
+    # Iterate through each row in the parameters DataFrame
+    for ind in tqdm(params.index):
+        # Construct the filename based on the index
+        filename = os.path.join(simulation_directory, f'Rep_{ind}States_out.csv')
+
+        # Check if the file exists
+        if os.path.exists(filename):
+            # Load the states structure from the file
+            simulation_instance = states_structure(filename, skip_params=True, exp_file=exp_file, num_states=num_states)
+            # Append the result to the list
+            params.loc[ind, 'simulation']  = simulation_instance
+        else:
+            print(f"File {filename} does not exist.")
+
+    if slice_sims:
+        n_sims = len(params)
+        force_sims = params.simulation.iloc[0:n_sims//2].values
+        twitch_sims = params.simulation.iloc[n_sims//2:n_sims].values
+        params_first_half = params.iloc[0:n_sims//2, 0:-1].reset_index(drop=True).copy()
+        params_first_half['force_sim'] = force_sims
+        params_first_half['twitch_sim'] = twitch_sims
+        return params_first_half
+    else: 
+        return params
+
+def add_data(original_df, new_path, parameter_file = '/parameter_input_temp.csv'):
+    '''
+    Make sure that the new_path points to the new larger directory 
+    The parmaeter file is just the file name. It's joined to the new path 
+    It's assumed that the data is in raw_data
+    Does not work with slicing sims. 
+    '''
+    temp_df = pd.read_csv(new_path + parameter_file, comment = '#')
+    temp_df
+
+    for index in temp_df.index: 
+        filename = new_path+"/raw_data/"+f'Rep_{index}States_out.csv'
+        simulation_instance = states_structure(filename, 
+                            skip_params = True, 
+                            exp_file = 'mohran_force_pCa_normal_normalized.csv')
+
+        temp_df.loc[index, 'simulation'] = simulation_instance
+
+    return pd.concat([original_df, temp_df], ignore_index=True)
+
+
+def average_twitch(twitch: np.ndarray, time: np.ndarray, period: float, skip_periods: int = 0) -> tuple[pd.Series, pd.Series]:
+    full_twitch = pd.DataFrame({'Time': time, 'Twitch': twitch})
+    num_twitches = int(np.ceil(full_twitch.Time.max()/period))
+
+
+    split_df = pd.DataFrame({'Time': time[time<period]})
+    twitch_column_names = []
+    for i in range(skip_periods, num_twitches):
+        start_time = i * period
+        end_time = (i + 1) * period
+        mask = (full_twitch['Time'] >= start_time) & (full_twitch['Time'] < end_time)
+        split_df[f'Twitch_{i}'] = np.nan  # Initialize with NaN
+        twitch_column_names.append(f'Twitch_{i}')
+        mask_len = sum(mask)
+        split_df.loc[0:mask_len-1, f'Twitch_{i}'] = full_twitch.loc[mask, 'Twitch'].values
+    return split_df['Time'], split_df[twitch_column_names].mean(axis = 1)
+
+
+def apply_parameteter_set(input_df, corresponding_parameter = 'k1_plus_ref_baseline', inplace = True):
+    alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    if not inplace:
+        input_df = input_df.copy()
+    input_df['parameter_set'] = None
+    param_dict = {}
+    counter = 0
+    for i in input_df.index:
+        if input_df.loc[i, corresponding_parameter] not in param_dict:
+            param_dict[input_df.loc[i, corresponding_parameter]] = alphabet[counter]
+            input_df.loc[i, 'parameter_set'] = alphabet[counter]
+            counter += 1
+        else:
+            input_df.loc[i, 'parameter_set'] = param_dict[input_df.loc[i, corresponding_parameter]]
+    return input_df
+
+def end_state_analysis(param_and_sim_df: pd.DataFrame, 
+                       separate_by: str, 
+                       x_axis_var: str = 'k2_plus_baseline', 
+                       ) -> list: 
+    '''
+    separate_by = "pCa" or "percent_drug"
+
+    '''
+    return 0
+    list_of_pCa = param_and_sim_df.simulation[0].steady_states_all.index.tolist()
+    
+    # This code still needs a lot of work. 
+    # for pCa_ind in param_and_sim_df.simulation[0].steady_states_all.index:
+    #     percent_drug = 0
+    #     end_states = []
+
+
+    #     filtered_df = param_and_sim_df.query('protocol == 1').sort_values(by='k2_plus_baseline')
+
+
+    #     for sim in filtered_df.simulation:
+    #         # sim.steady_states_all.plot(color = colors, ls = lines[i], ax = ax)
+    #         end_states.append(sim.steady_states_all.loc[pCa_ind].to_frame().T)
+
+    #     end_state_df = pd.concat(end_states)
+
+    #     end_state_df['k2_plus_baseline'] = filtered_df.k2_plus_baseline.values
+
+    #     melted = pd.melt(end_state_df, id_vars = 'k2_plus_baseline', var_name = 'State', value_name = 'Fraction')
+
+    #     melted
+
+
+    #     i = 0
+    #     for state in melted.State.unique():
+    #         title_str = f'k2_plus_drug varied @ afic = {percent_drug} uM'
+    #         # plt.figure(figsize=(8,6))
+    #         col, row = divmod(i, 4)
+    #         ax[row, col].set_title(f'State {state} fractions')
+    #         ax[row, col].set_xlabel('k2_plus_drug')
+    #         ax[row, col].set_ylabel('Fraction')
+    #         # ax[row, col].plot(melted.query('State == @state').k2_plus_baseline, melted.query('State == @state').Fraction, marker='o')
+    #         # ax[row, col].legend(None)
+    #         i +=1 
+    #         if state == 'C':
+    #             sns.lineplot(data = melted.query('State == @state'), x = 'k2_plus_baseline', y = 'Fraction', marker='o', ax = ax[row, col], label = f'pCa {pCa_ind:.1f}')
+    #             ax[row, col].legend(loc = (1.05,0))
+    #         else:
+    #             sns.lineplot(data = melted.query('State == @state'), x = 'k2_plus_baseline', y = 'Fraction', marker='o', ax = ax[row, col])
+
+    #             # ax[row, col].legend()# [f'pCa {pca:.1f}' for pca in list_of_pCa], loc = (1.05,-0.2))
+    #             # ax[row, col].set_yscale('log')
+    # # plt.scatter(melted.query('State == "M3"').k2_plus_drug, melted.query('State == "M3"').Fraction, color = 'red')
+    # # Hide the plot in the last subplot (bottom right)
+    # ax[3,1].axis('off')
+    # # plt.suptitle(f'Changes at all aficamten concentrations at various calcium')
+    # plt.tight_layout()
+    # plt.show()

@@ -82,7 +82,7 @@ gpuErrchk(cudaMemset(k4_minus, 0, sizeof(float)*N_S*N_S));
 
 float gamma_B = args.gamma_B;
 float gamma_M = args.gamma_M;
-float mu_B = args.gamma_M;
+float mu_B = args.mu_B;
 float mu_M = args.mu_M;
 float kB_plus_ref = args.kB_plus_ref;
 float kB_minus_ref = args.kB_minus_ref;

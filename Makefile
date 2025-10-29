@@ -27,7 +27,7 @@ clean:
 
 # New executable for coop testing
 COOP_BIN=bin/coop_testing
-COOP_SRC=src/coop_testing.cu src/compute_coop_factor.cu
+COOP_SRC=tests/coop_testing.cu src/compute_coop_factor.cu
 
 coop_test: $(COOP_SRC)
 	@mkdir -p bin

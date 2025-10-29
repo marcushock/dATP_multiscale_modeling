@@ -1,9 +1,9 @@
-#include "compute_coop_factor.h" 
+#include "../src/compute_coop_factor.h" 
 #include <math.h>
-#include "problemDefines.h"
+#include "../src/problemDefines.h"
 
-#include "gpuErrchk.h"
-#include "setGPU.h"
+#include "../src/gpuErrchk.h"
+#include "../src/setGPU.h"
 
 #include <iostream>
 #include <fstream>
@@ -14,9 +14,9 @@
 //--------------------------
 // Function to be called
 //--------------------------
-#include "particles.h"
-#include "csvReader.h"
-#include "argumentReader.h"
+#include "../src/particles.h"
+#include "../src/csvReader.h"
+#include "../src/argumentReader.h"
 
 int main(int argc, const char *argv[])
 {

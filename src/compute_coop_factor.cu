@@ -12,7 +12,7 @@ void compute_coop_factor(const int n_s,
 )
     {
         int B_states[] = {0, 2, 7};
-        int M_states[] = {5, 6}; // Normally 4,5,6 but 4 is not used in this iteration. 
+        int M_states[] = {4, 5, 6}; // Normally 4,5,6 but 4 is not used in this iteration. 
         // int C_states[3] = {1, 3, 8}; // not used in this function
 
         // Number of elements in the array
@@ -29,14 +29,14 @@ void compute_coop_factor(const int n_s,
                     if (row == B_states[i]) {
                         B_count++;
                     }
-                    else if (row == M_states[i]) {
-                        M_count++;
+                    if (col == B_states[i]) {
+                        B_count++;
                     }
                 }
                 // Check if col is in B_states
-                for (int i = 0; i < N_B_states; i++) {
-                    if (col == B_states[i]) {
-                        B_count++;
+                for (int i = 0; i < N_M_states; i++) {
+                    if (row == M_states[i]) {
+                        M_count++;
                     }
                     else if (col == M_states[i]) {
                         M_count++;

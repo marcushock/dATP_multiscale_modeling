@@ -23,3 +23,12 @@ obj/%.o: src/%.cu
 clean:
 	@mkdir -p obj bin
 	rm -r obj bin
+
+
+# New executable for coop testing
+COOP_BIN=bin/coop_testing
+COOP_SRC=src/coop_testing.cu src/compute_coop_factor.cu
+
+coop_test: $(COOP_SRC)
+	@mkdir -p bin
+	$(NVCC) $(NVCC_FLAGS) $(LIBS) -o $(COOP_BIN) $(COOP_SRC)

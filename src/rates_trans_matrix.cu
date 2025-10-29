@@ -92,6 +92,11 @@
     //--------------------------------------------------
     compute_coop_factor(n_s, k1_plus_ref_drug, mu_B, mu_M, k1_plus_drug, r);
 
+    //--------------------------------------------------
+    // Step 4: Build the k1_minus [ns*N_S+ns] matrix
+    //--------------------------------------------------
+    compute_coop_factor(n_s, k1_minus_ref, mu_B, mu_M, k1_minus, r-1);
+
 
     //---------------------------------------------------
     // Step 5: Build the k4_plus_reference [ns*N_S+ns] matrix

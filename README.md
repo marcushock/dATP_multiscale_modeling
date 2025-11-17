@@ -10,8 +10,21 @@ The `molecular_analysis` directory contains scripts and notebooks for performing
 Note: This code is set up to run on an NVIDIA GeForce RTX 3080 Ti with CUDA 11.7; you may need to reconfigure the code if you have a different GPU/version
 *Refer to McCabe et al. 2020 for more details
 - Makefile: If you change anything in any of the source files, you will need to run "make clean" and then "make all"
-- sweep.py: Runs force pCa simulation for spatially explicit sarcomere model; change parameters here to run ATP vs dATP, varying percentages of dATP etc
-    - to run, just run "python sweep.py" in command line
+
+
+
+Requirements: 
+- cuda compiler nvcc, version 11.7 has been used in this workflow 
+- boost library 
+- cuda tool kit (developer level)
+- sumatra # Version 0.8.1 for carrying out different experimental runs. Example
+     `smt run expData/mohran_force_pCa_normal_normalized.csv parameters/parameter_input.csv`
+    - Note that the `-r` flag can be used to name the reason for the "experiment" 
+    - Also note that the `smt web` tool allows for a useful web browser gui to sort through the data. 
+-  Complete guide to set-up in progress. 
+- *Make* utility 
+
+
 
 Directories:
 - bin: contains binary called by sweep.py (MCMC_CUDA_10States)
@@ -28,6 +41,8 @@ Directories:
     - repeat_simul.cu: calls rates_trans_matrix.cu, genrand.cu, update_RUs.cu, lin_interp_ca.cu (for twitch simulations; loops through     simulations
 - SA_krecruit: simulation data for plotting supplemental figure S9
 - States: simulation data for plotting supplemental figures S7 and S10
+- MCMC_simulation_results: This is where all subsequent data runs are stored. Each new run with generate a datestamped folder. 
+- resultsOrg: Helper functions for viewing, analyzing and working with simulations carried out from the MCMC model. 
 
 
 ## MYOCYTE (Spatially implicit sarcomere model)

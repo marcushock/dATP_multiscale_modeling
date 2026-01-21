@@ -12,7 +12,7 @@ void compute_coop_factor(const int n_s,
 )
     {
         int B_states[] = {0, 2, 7};
-        int M_states[] = {5, 6}; // Normally 4,5,6 but 4 is not used in this iteration. 
+        int M_states[] = {4, 5, 6}; // Normally 4,5,6 but 4 is not used in this iteration if excluding M1. 
         // int C_states[3] = {1, 3, 8}; // not used in this function
 
         // Number of elements in the array

@@ -51,6 +51,8 @@ public:
     float g_Ca;
     float k_plus_SS;
     float k_minus_SS;
+    float k_plus_alt; // Backdoor pathway
+    float k_minus_alt; // Backdoor pathway
     float K_D; 
     float coop_N;
 
@@ -113,7 +115,9 @@ public:
         k_plus_SS(argsVector[38]),
         k_minus_SS(argsVector[39]),
         K_D(argsVector[40]),
-        coop_N(argsVector[41])
+        coop_N(argsVector[41]),
+        k_plus_alt(argsVector[42]), // Backdoor pathway 
+        k_minus_alt(argsVector[43]) // Backdoor pathway # Note order difference! 
        {}
 
 

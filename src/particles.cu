@@ -124,11 +124,11 @@ void init_particle(initParticleArgs & args, int replicate_number)
         // " k_force " + std::to_string(args.k_force_drug) +
         // " k_plus_SR_ref " + std::to_string(args.k_plus_SR_drug) +
         // " k_minus_SR_ref " + std::to_string(args.k_minus_SR);
-        std::string Force_out_Filename = ("MCMC_simulation_results/General_results/Rep_" + std::to_string(replicate_number) + "Force_out"+".csv");
-        std::string ATP_out_Filename = ("MCMC_simulation_results/General_results/Rep_" + std::to_string(replicate_number) + "ATP_out"+".csv");
-        std::string States_out_Filename = ("MCMC_simulation_results/General_results/Rep_" + std::to_string(replicate_number) + "States_out"+".csv");
-        std::string Force_pCa_out_Filename = ("MCMC_simulation_results/General_results/Rep_" + std::to_string(replicate_number) + "Force_pCa_Optmz"+".csv");
-        std::string Force_pCa_normalized_out_Filename = ("MCMC_simulation_results/General_results/Rep_" + std::to_string(replicate_number) + "Force_pCa_Optmz_Normalized"+".csv");
+        std::string Force_out_Filename = ("/crucial/modified_MCMC/dATP_multiscale_modeling/MCMC_simulation_results/General_results/Rep_" + std::to_string(replicate_number) + "Force_out"+".csv");
+        std::string ATP_out_Filename = ("/crucial/modified_MCMC/dATP_multiscale_modeling/MCMC_simulation_results/General_results/Rep_" + std::to_string(replicate_number) + "ATP_out"+".csv");
+        std::string States_out_Filename = ("/crucial/modified_MCMC/dATP_multiscale_modeling/MCMC_simulation_results/General_results/Rep_" + std::to_string(replicate_number) + "States_out"+".csv");
+        std::string Force_pCa_out_Filename = ("/crucial/modified_MCMC/dATP_multiscale_modeling/MCMC_simulation_results/General_results/Rep_" + std::to_string(replicate_number) + "Force_pCa_Optmz"+".csv");
+        std::string Force_pCa_normalized_out_Filename = ("/crucial/modified_MCMC/dATP_multiscale_modeling/MCMC_simulation_results/General_results/Rep_" + std::to_string(replicate_number) + "Force_pCa_Optmz_Normalized"+".csv");
 
         /* raw force out */
         const int skipFactor = 1000;

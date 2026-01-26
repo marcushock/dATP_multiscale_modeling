@@ -99,6 +99,10 @@ def evaluate_cuda_fit(trial_parameters, settings_dict):
 
     # Combine the default parameters with the trial parameters to create a full parameter set
     new_parameters_df = combine_params(default_params_df, trial_parameters)
+
+    if not os.path.exists(new_savedata):
+        os.makedirs(new_savedata)
+
     # Assert force pCa always 
     new_parameters_df['protocol'] = 1
     if exp_twitch_file is not None:
@@ -108,6 +112,9 @@ def evaluate_cuda_fit(trial_parameters, settings_dict):
     new_parameters_df.to_csv(new_parameter_file, index=False)
 
     # Call run MCMC 
+    # First ensure that the output directory exists
+
+
     raw_data_dir_output = run_mcmc(binary_path,
             exp_force_pCa_file,
             new_parameter_file,
@@ -128,32 +135,4 @@ def evaluate_cuda_fit(trial_parameters, settings_dict):
     return error_metric, new_parameters_df
 
 
-
-#### Goal is to be able to say something like: 
-'''
-for trial_index, trial_parameters in trials.items():
-    # Note that parameters is a dict
-    result = evaluate_cuda_fit(trial_parameters, fpca_exp = experimental_data ,twitch_exp = twitch_data or None)
-'''
-
-default_params = pd.read_csv('/crucial/modified_MCMC/dATP_multiscale_modeling/MCMC_simulation_results/2026-01-22_1602/combined_pathway_long_twitch_sim_01222026.csv',
-                             nrows =1)
-
-
-
-settings_dict = {
-    'binary_path': '/crucial/modified_MCMC/dATP_multiscale_modeling/bin/MCMC_CUDA_10States',
-    'general_outdata': '/crucial/modified_MCMC/dATP_multiscale_modeling/MCMC_simulation_results/General_results',
-    'new_savedata': '/crucial/modified_MCMC/dATP_multiscale_modeling/optimization_temps/runs',
-    'exp_force_pCa': '/crucial/modified_MCMC/dATP_multiscale_modeling/expData/mohran_force_pCa_normal_normalized.csv',
-    'exp_twitch': None,
-    'default_params': default_params,
-    'code_src': None
-}
-
-new_parameters = {'k_force_baseline':0.243, 'k_plus_SR_drug':0.297}
-run_mcmc_result, df = evaluate_cuda_fit(new_parameters, settings_dict)
-print('Error metric from test run: ', run_mcmc_result)
-# new_parameters = {'k_force_baseline':0.343, 'k_plus_SR_drug':0.397}
-# run_mcmc_result = evaluate_cuda_fit(new_parameters, settings_dict)
 

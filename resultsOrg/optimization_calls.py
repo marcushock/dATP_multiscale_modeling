@@ -50,14 +50,28 @@ def read_states_output(directory, exp_file, num_states=7):
     simulation = hf.states_structure(filename, num_states = num_states, skip_params = True, exp_file = exp_file)
     return simulation
 
-def calcuate_error_metric(simulation, exp_file, type = 'SSE', normalization = None):
+def calcuate_error_metric(simulation, exp_file, type = 'SSE', scaling_factor = None):
+    '''
+    Docstring for calcuate_error_metric
+    
+    :param simulation: Simulation object that has been created and contains the force pCa
+    :param exp_file: Filepath to the experimental csv for which this should be compared against
+    :param type: Type of error to return. Options are 'SSE' for sum of squared errors, or 'residuals' for just the residuals
+    :param scaling_factor: Value to normalize the simulation force to. If none, will autoscale to one. It should be a factor that when multiplied by the raw force, it will give it on a scale of 0 to 1. 
+    Generally this should be the 1/max(raw force) of the simulation without any drug present. 
+    Ex: 
+    - No afi present, raw force = 0.3, then enter the normalziation = 1/0.3. = 3.33 
+    '''
+
     exp_data = pd.read_csv(exp_file, names = ['pCa', 'Force'])
     # Need to scale the force_pCa first 
-    if normalization is None: 
-        force_pCa = simulation.force_pCa.values / simulation.force_pCa.max()
+    if scaling_factor is None: 
+        scaling_factor = 1 / simulation.force_pCa.max()
+        force_pCa = simulation.force_pCa.values * scaling_factor
+        assert force_pCa.max() == 1.0, "Scaling factor did not properly scale the force to max of 1.0"
     else:
-        print('Not implemented yet. Error!')
-        exit(1)
+        force_pCa = simulation.force_pCa.values * scaling_factor
+    
 
     residues = exp_data['Force'].values - force_pCa
     if type == 'SSE':
@@ -85,6 +99,7 @@ def evaluate_cuda_fit(trial_parameters, settings_dict):
         - 'default_params' = Default parameter set (Should be a df)
         - 'temporary_parameter_file' = Name of temporary parameter file to write the combined parameters to (could be optional) [Not implemented yet]
         - 'code_src' = Path to the source code (optional) and probably won't be used much 
+        - 'fpCa_scaling_factor' = Normalization approach for force pCa (optional) (should be 1/max(no drug force pCa))
     
     '''
     # Unpack the settings dict so that they can be used. 
@@ -95,6 +110,7 @@ def evaluate_cuda_fit(trial_parameters, settings_dict):
     exp_twitch_file = settings_dict['exp_twitch'] # Full path to experimental twitch data (optional, and likely will be None)
     default_params_df = settings_dict['default_params'] # Full path to default parameter set (CSV)
     code_src_dir = settings_dict['code_src'] # Full path to source code (optional, likely None)
+    fpCa_scaling_factor = settings_dict.get('fpCa_scaling_factor', None) # Normalization approach for force pCa (optional)
 
 
     # Combine the default parameters with the trial parameters to create a full parameter set
@@ -106,7 +122,7 @@ def evaluate_cuda_fit(trial_parameters, settings_dict):
     # Assert force pCa always 
     new_parameters_df['protocol'] = 1
     if exp_twitch_file is not None:
-        new_parameter
+        new_parameter = 0 # Not implememnted yet 
     # Write the new parameters to a temporary CSV file
     new_parameter_file = os.path.join(new_savedata, 'temp_parameters.csv')
     new_parameters_df.to_csv(new_parameter_file, index=False)
@@ -130,7 +146,7 @@ def evaluate_cuda_fit(trial_parameters, settings_dict):
     # read_simulation()
     new_parameters_df['simulation'] = [sim]
 
-    error_metric = calcuate_error_metric(sim, exp_force_pCa_file, type = 'SSE', normalization = None)
+    error_metric = calcuate_error_metric(sim, exp_force_pCa_file, type = 'SSE', scaling_factor = fpCa_scaling_factor)
 
     return error_metric, new_parameters_df
 

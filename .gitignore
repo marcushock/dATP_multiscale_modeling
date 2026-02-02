@@ -37,4 +37,4 @@ src/variables_of_interest.csv
 Misc_notebooks/temp_output
 *.pkl
 *.json
-
+bayesian_opt/model_run_jsons

@@ -22,6 +22,7 @@ import shutil
 from datetime import datetime
 import subprocess
 import time
+import numpy as np 
 import pandas as pd
 
 
@@ -45,8 +46,8 @@ def combine_params(default_params, new_params):
         new_param_df[key] = new_params[key]
     return new_param_df 
 
-def read_states_output(directory, exp_file, num_states=7):
-    filename = os.path.join(directory, 'Rep_0States_out.csv')
+def read_states_output(directory, exp_file, file_name = 'Rep_0States_out.csv', num_states=7):
+    filename = os.path.join(directory, file_name)
     simulation = hf.states_structure(filename, num_states = num_states, skip_params = True, exp_file = exp_file)
     return simulation
 
@@ -68,7 +69,7 @@ def calcuate_error_metric(simulation, exp_file, type = 'SSE', scaling_factor = N
     if scaling_factor is None: 
         scaling_factor = 1 / simulation.force_pCa.max()
         force_pCa = simulation.force_pCa.values * scaling_factor
-        assert force_pCa.max() == 1.0, "Scaling factor did not properly scale the force to max of 1.0"
+        assert abs(force_pCa.max() - 1.0) < 1e6, "Scaling factor did not properly scale the force to max of 1.0"
     else:
         force_pCa = simulation.force_pCa.values * scaling_factor
     
@@ -95,7 +96,8 @@ def evaluate_cuda_fit(trial_parameters, settings_dict):
         - 'general_outdata' = Path to the General results dir 
         - 'new_savedata' = Path to the savedata location 
         - 'exp_force_pCa' = Experimental force pCa data path
-        - 'exp_twitch' = Experimental twitch data (optional)
+        - 'exp_SuperSlow_curve' = Experimental SuperSlow curve data path (optional, but required for additional fitting of SuperSlow ATPase curve) [Implementation in progress 2/5/26]
+        - 'exp_twitch' = Experimental twitch data path (optional) 
         - 'default_params' = Default parameter set (Should be a df)
         - 'temporary_parameter_file' = Name of temporary parameter file to write the combined parameters to (could be optional) [Not implemented yet]
         - 'code_src' = Path to the source code (optional) and probably won't be used much 
@@ -111,10 +113,19 @@ def evaluate_cuda_fit(trial_parameters, settings_dict):
     default_params_df = settings_dict['default_params'] # Full path to default parameter set (CSV)
     code_src_dir = settings_dict['code_src'] # Full path to source code (optional, likely None)
     fpCa_scaling_factor = settings_dict.get('fpCa_scaling_factor', None) # Normalization approach for force pCa (optional)
+    SuperSlow_curve_file = settings_dict.get('exp_SuperSlow', None) # Full PATH to experimental SuperSlow curve data (optional, likely None)
 
 
     # Combine the default parameters with the trial parameters to create a full parameter set
     new_parameters_df = combine_params(default_params_df, trial_parameters)
+    
+    # If carrying out the super slow curve fitting, we need to read in the data, and lengthen the parameters df 
+    if SuperSlow_curve_file is not None:
+        super_slow_data, where_1_uM = read_SuperSlow_data(SuperSlow_curve_file)
+        len_superslow = len(super_slow_data)
+        new_parameters_df = pd.concat([new_parameters_df]*len_superslow, ignore_index=True)
+        new_parameters_df['percent_drug'] = super_slow_data['drug_conc'].values # Apologies for different keys, but same meaning. 
+    
 
     if not os.path.exists(new_savedata):
         os.makedirs(new_savedata)
@@ -141,14 +152,93 @@ def evaluate_cuda_fit(trial_parameters, settings_dict):
     # Then something will read the data from there and read:
     # - the parameters use
     # - the states data and create a states structure 
-    sim = read_states_output(raw_data_dir_output, exp_file = exp_force_pCa_file, num_states =7)
-    print(sim.force_pCa)
-    # read_simulation()
-    new_parameters_df['simulation'] = [sim]
+    if SuperSlow_curve_file is None:
+        sim = read_states_output(raw_data_dir_output, exp_file = exp_force_pCa_file, num_states =7)
+        print(sim.force_pCa)
+        # read_simulation()
+        new_parameters_df['simulation'] = [sim]
 
-    error_metric = calcuate_error_metric(sim, exp_force_pCa_file, type = 'SSE', scaling_factor = fpCa_scaling_factor)
+        error_metric = calcuate_error_metric(sim, exp_force_pCa_file, type = 'SSE', scaling_factor = fpCa_scaling_factor)
 
-    return error_metric, new_parameters_df
+        return error_metric, new_parameters_df
+    elif SuperSlow_curve_file is not None:
+        # Iterate through the number of simulations that have been run
+        simulation_list = []
+        for i in range(len_superslow):
+            sim = read_states_output(raw_data_dir_output, exp_file = exp_force_pCa_file, num_states =7, file_name = f'Rep_{i}States_out.csv')
+            simulation_list.append(sim)
+            new_parameters_df.loc[i, 'simulation'] = sim
+        sim_1_uM = simulation_list[where_1_uM]
+        error_metric_fpCa = calcuate_error_metric(sim_1_uM, exp_force_pCa_file, type = 'SSE', scaling_factor = fpCa_scaling_factor)
+        error_metric_superslow = calcualte_error_superslow_percentage(simulation_list, super_slow_data, metric_type = 'SSE')
+        print("Error metric for force pCa curve: ", error_metric_fpCa)
+        print("Error metric for SuperSlow curve: ", error_metric_superslow)
+        return (error_metric_fpCa, error_metric_superslow), new_parameters_df
 
+def calcualte_error_superslow_percentage(simulation_list, super_slow_data, metric_type = 'SSE'):
+    '''
+    Docstring for calcuate_error_superslow_percentage
+    
+    :param simulation_list: A list of simulation objects that have been created and contains the necessary data to compare against the SuperSlow curve. The order should be the same as the order of the super slow data points. 
+    :param super_slow_data: A dataframe that has the drug concentrations and percent superslow for each point. 
+    :param metric_type: Type of error to return. Options are 'SSE' for sum of squared errors, or 'residuals' for just the residuals
+    '''
+    residuals = np.zeros(len(simulation_list))
+    for i, sim in enumerate(simulation_list):
+        # For each simulation, we need to extract the percent superslow at maximal calcium, which is the last point in the force pCa curve. 
+        min_index = sim.steady_states_all.index.min()
+        sim_percent_superslow = sim.steady_states_all.loc[min_index,'SuperSlow'] # Note that the percentages are actually 0 to 1
+        exp_percent_superslow = super_slow_data.iloc[i]['percent_superslow'] # Note that the percentages are actually 0 to 1
+        residuals[i] = exp_percent_superslow - sim_percent_superslow
+    if metric_type == 'SSE':
+        error_metric = sum(residuals**2)
+    elif metric_type == 'residuals':
+        error_metric = residuals
+    else:
+        print('Error metric type not recognized!')
+        exit(1)
+    return error_metric
+    # For each simulation, we need to extract the percent superslow at maximal calcium, which is the last point in the force pCa curve. 
+    
 
+### Super Slow via ATPase Curve Function Call and optimization 
+# End goal for function: 
+# ATPase_optimization(some_inputs) -> error_metric_single_force_pCa, error_metric_ATPase_curve, new_parameters_df (with the simulation object included)
+# Overall, I think it'll make sense to use the same "evaluate cuda_fit" function, but then if there's ATPase data, then we run more steps... 
+# In this optimization code, we assume that 1 uM aficamten is always going to be used for one of the points in the ATPase curve, and also be used for the force pCa
+# General scheme: 
+'''
+1. Call the "evaluate cuda function" but have a setting for the Super Slow curve via ATPase data.
+2. If: 
+    - the super_slow curve is None, continue with normal optimization. 
+   Elif SuperSlow curve is something: 
+   [X]  First read in the SuperSlow data
+   [X]  Then create a dataframe that has all the necessary afimcanten (or drug) concentrations 
+   [X]  Write that CSV in the same way that the other CSV has been written. 
+   [X]  Call the MCMC function to carry out those simulations, it will by default run all 4 (or however many points we have). 
+   [X]  Read in each of the super slow states at maximal calcium, and compare it against the SuperSlow curve experimetnal data. 
+   [X]  Compute an SSE metric for the SuperSlow curve 
+   [X]  Then find the simulation that has the 1 uM aficamten, and compute the error metric for the force pCa curve.
+   [X]  Return both error metrics, and the new parameters df with the simulation object for the force pCa curve.
+'''
+
+def read_SuperSlow_data(SuperSlow_curve_file):
+    '''
+    Docstring for read_SuperSlow_data
+    
+    :param SuperSlow_curve_file: Description
+    Notes: 
+    - The SuperSlow curve data should be in a CSV with two columns, one for drug concentration and one for percent SuperSlow state. The percent superslow should be between 0 and 1. (not 0 and 100)
+    - If any data is great than one, it will automatically convert it to be between 0 and 1 by dividing by 100.
+    '''
+    # Note that this is actually storing the percent that's not superslow. 
+    cols = ["drug_conc", "percent_superslow"]
+
+    # Read CSV assuming there are no header names. 
+    SuperSlow_data = pd.read_csv(SuperSlow_curve_file, names=cols)
+    if SuperSlow_data['percent_superslow'].max() > 1:
+        SuperSlow_data['percent_superslow'] = SuperSlow_data['percent_superslow'] / 100.0
+    # SuperSlow_data['percent_superslow'] = 1 - SuperSlow_data['percent_superslow']
+    where_1_uM = np.argwhere(SuperSlow_data['drug_conc'] == 1.0).flatten()[0]
+    return SuperSlow_data, int(where_1_uM)
 

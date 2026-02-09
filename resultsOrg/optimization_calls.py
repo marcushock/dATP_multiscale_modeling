@@ -88,20 +88,19 @@ def calcuate_error_metric(simulation, exp_file, type = 'SSE', scaling_factor = N
 
 def evaluate_cuda_fit(trial_parameters, settings_dict):
     '''
-    A function that can easily be called and ultimately returns an error measurement. 
+    A function that can easily be called and ultimately returns an error measurement in the form of a dictionary. 
     :param trial_parameters: A dictionary of the actual parameter that are changed and tested in the optimization 
     :param settings_dict: A detailed dictionary that contains the necessary information for the rest of the run. Likely defined outside the optimization loop
         Should contain: 
-        - 'binary_path' = Path to the binary 
-        - 'general_outdata' = Path to the General results dir 
-        - 'new_savedata' = Path to the savedata location 
-        - 'exp_force_pCa' = Experimental force pCa data path
+        - 'binary_path' = Path to the binary (Default value is set in function, but can be overwritten)
+        - 'general_outdata' = Path to the General results dir (Default value is set in function, but can be overwritten)
+        - 'new_savedata' = Path to the savedata location (required)
+        - 'exp_force_pCa' = Experimental force pCa data path (required)
         - 'exp_SuperSlow_curve' = Experimental SuperSlow curve data path (optional, but required for additional fitting of SuperSlow ATPase curve) [Implementation in progress 2/5/26]
         - 'exp_twitch' = Experimental twitch data path (optional) 
-        - 'default_params' = Default parameter set (Should be a df)
-        - 'temporary_parameter_file' = Name of temporary parameter file to write the combined parameters to (could be optional) [Not implemented yet]
+        - 'default_params' = Default parameter set (Must be a df)
         - 'code_src' = Path to the source code (optional) and probably won't be used much 
-        - 'fpCa_scaling_factor' = Normalization approach for force pCa (optional) (should be 1/max(no drug force pCa))
+        - 'fpCa_scaling_factor' = Normalization approach for force pCa (optional, but useful for drug optimizations) (should be 1/max(no drug force pCa))
         - 'L1_lambda_term' = Regularization strength for L1 regularization (optional, default = 0, meaning no regularization) 
         
     
@@ -112,7 +111,7 @@ def evaluate_cuda_fit(trial_parameters, settings_dict):
     new_savedata = settings_dict.get('new_savedata', None)  # Make sure it's the full path 
     exp_force_pCa_file = settings_dict.get('exp_force_pCa', None)  # Full path to experimental force pCa data
     exp_twitch_file = settings_dict.get('exp_twitch', None)  # Full path to experimental twitch data (optional, and likely will be None)
-    default_params_df = settings_dict('default_params', None) 
+    default_params_df = settings_dict.get('default_params', None) 
     code_src_dir = settings_dict.get('code_src', None) # Full path to source code (optional, likely None)
     fpCa_scaling_factor = settings_dict.get('fpCa_scaling_factor', None) # Normalization approach for force pCa (optional)
     SuperSlow_curve_file = settings_dict.get('exp_SuperSlow', None) # Full PATH to experimental SuperSlow curve data (optional, likely None)
@@ -172,15 +171,13 @@ def evaluate_cuda_fit(trial_parameters, settings_dict):
         # read_simulation()
         new_parameters_df['simulation'] = [sim]
 
-        error_metric = calcuate_error_metric(sim, exp_force_pCa_file, type = 'SSE', scaling_factor = fpCa_scaling_factor)
-        print("Error metric for force pCa curve: ", error_metric)
+        error_metric_fpCa = calcuate_error_metric(sim, exp_force_pCa_file, type = 'SSE', scaling_factor = fpCa_scaling_factor)
+        print("Error metric for force pCa curve: ", error_metric_fpCa)
         
         L1_term = compute_L1_term(new_parameters_df, lambda_L1 = L1_lambda)
-        error_metric += L1_term
-        print("L1 regularization term: ", L1_term)
-        print("After adding L1 regularization:")
-        print("Error metric for force pCa curve: ", error_metric)
-        return error_metric, new_parameters_df
+        # error_metric += L1_term
+        return_dict = {'force_pCa_SSE': error_metric_fpCa, 'results_df': new_parameters_df, 'L1_term': L1_term}
+        return return_dict
     elif SuperSlow_curve_file is not None:
         # Iterate through the number of simulations that have been run
         simulation_list = []
@@ -191,17 +188,15 @@ def evaluate_cuda_fit(trial_parameters, settings_dict):
         sim_1_uM = simulation_list[where_1_uM]
         error_metric_fpCa = calcuate_error_metric(sim_1_uM, exp_force_pCa_file, type = 'SSE', scaling_factor = fpCa_scaling_factor)
         error_metric_superslow = calcualte_error_superslow_percentage(simulation_list, super_slow_data, metric_type = 'SSE')
-        # print("Error metric for force pCa curve: ", error_metric_fpCa)
-        # print("Error metric for SuperSlow curve: ", error_metric_superslow)
+
 
         L1_term = compute_L1_term(new_parameters_df , lambda_L1 = L1_lambda)
-        error_metric_fpCa += L1_term
-        error_metric_superslow += L1_term
-        # print("L1 regularization term: ", L1_term)
-        # print("After adding L1 regularization:")
-        # print("Error metric for force pCa curve: ", error_metric_fpCa)
-        # print("Error metric for SuperSlow curve: ", error_metric_superslow)
-        return (error_metric_fpCa, error_metric_superslow), new_parameters_df
+
+        return_dict = {'force_pCa_SSE': error_metric_fpCa,
+                       'superslow_SSE': error_metric_superslow,
+                       'results_df': new_parameters_df,
+                       'L1_term': L1_term}
+        return return_dict
 
 def calcualte_error_superslow_percentage(simulation_list, super_slow_data, metric_type = 'SSE'):
     '''

@@ -107,17 +107,28 @@ def evaluate_cuda_fit(trial_parameters, settings_dict):
     
     '''
     # Unpack the settings dict so that they can be used. 
-    binary_path = settings_dict['binary_path'] # Make sure it's the full path 
-    general_outdata = settings_dict['general_outdata'] # /crucial/modified_MCMC/dATP_multiscale_modeling/MCMC_simulation_results/General_results
-    new_savedata = settings_dict['new_savedata'] # Make sure it's the full path 
-    exp_force_pCa_file = settings_dict['exp_force_pCa'] # Full path to experimental force pCa data
-    exp_twitch_file = settings_dict['exp_twitch'] # Full path to experimental twitch data (optional, and likely will be None)
-    default_params_df = settings_dict['default_params'] # Full path to default parameter set (CSV)
-    code_src_dir = settings_dict['code_src'] # Full path to source code (optional, likely None)
+    binary_path = settings_dict.get('binary_path', '/crucial/modified_MCMC/dATP_multiscale_modeling/bin/MCMC_CUDA_10States') # Path to the binary, this is required
+    general_outdata = settings_dict.get('general_outdata', '/crucial/modified_MCMC/dATP_multiscale_modeling/MCMC_simulation_results/General_results') # Path to the general results directory, this is required
+    new_savedata = settings_dict.get('new_savedata', None)  # Make sure it's the full path 
+    exp_force_pCa_file = settings_dict.get('exp_force_pCa', None)  # Full path to experimental force pCa data
+    exp_twitch_file = settings_dict.get('exp_twitch', None)  # Full path to experimental twitch data (optional, and likely will be None)
+    default_params_df = settings_dict('default_params', None) 
+    code_src_dir = settings_dict.get('code_src', None) # Full path to source code (optional, likely None)
     fpCa_scaling_factor = settings_dict.get('fpCa_scaling_factor', None) # Normalization approach for force pCa (optional)
     SuperSlow_curve_file = settings_dict.get('exp_SuperSlow', None) # Full PATH to experimental SuperSlow curve data (optional, likely None)
     L1_lambda = settings_dict.get('L1_term_lambda', 0) # Regularization strength for L1 regularization (optional, default = 0, meaning no regularization)
 
+
+    if new_savedata is None:
+        print("Error: new_savedata path must be provided in settings_dict")
+        exit(1)
+    if exp_force_pCa_file is None:
+        print("Error: exp_force_pCa path must be provided in settings_dict")
+        exit(1)
+    if default_params_df is None or not isinstance(default_params_df, pd.DataFrame):
+        print("Error: default_params as a must be provided in settings_dict as a pandas dataframe")
+        exit(1)
+    
 
     # Combine the default parameters with the trial parameters to create a full parameter set
     new_parameters_df = combine_params(default_params_df, trial_parameters)
@@ -129,7 +140,7 @@ def evaluate_cuda_fit(trial_parameters, settings_dict):
         new_parameters_df = pd.concat([new_parameters_df]*len_superslow, ignore_index=True)
         new_parameters_df['percent_drug'] = super_slow_data['drug_conc'].values # Apologies for different keys, but same meaning. 
     
-
+    
     if not os.path.exists(new_savedata):
         os.makedirs(new_savedata)
 

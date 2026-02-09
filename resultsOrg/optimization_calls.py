@@ -102,6 +102,8 @@ def evaluate_cuda_fit(trial_parameters, settings_dict):
         - 'temporary_parameter_file' = Name of temporary parameter file to write the combined parameters to (could be optional) [Not implemented yet]
         - 'code_src' = Path to the source code (optional) and probably won't be used much 
         - 'fpCa_scaling_factor' = Normalization approach for force pCa (optional) (should be 1/max(no drug force pCa))
+        - 'L1_lambda_term' = Regularization strength for L1 regularization (optional, default = 0, meaning no regularization) 
+        
     
     '''
     # Unpack the settings dict so that they can be used. 
@@ -114,6 +116,7 @@ def evaluate_cuda_fit(trial_parameters, settings_dict):
     code_src_dir = settings_dict['code_src'] # Full path to source code (optional, likely None)
     fpCa_scaling_factor = settings_dict.get('fpCa_scaling_factor', None) # Normalization approach for force pCa (optional)
     SuperSlow_curve_file = settings_dict.get('exp_SuperSlow', None) # Full PATH to experimental SuperSlow curve data (optional, likely None)
+    L1_lambda = settings_dict.get('L1_term_lambda', 0) # Regularization strength for L1 regularization (optional, default = 0, meaning no regularization)
 
 
     # Combine the default parameters with the trial parameters to create a full parameter set
@@ -159,7 +162,13 @@ def evaluate_cuda_fit(trial_parameters, settings_dict):
         new_parameters_df['simulation'] = [sim]
 
         error_metric = calcuate_error_metric(sim, exp_force_pCa_file, type = 'SSE', scaling_factor = fpCa_scaling_factor)
-
+        print("Error metric for force pCa curve: ", error_metric)
+        
+        L1_term = compute_L1_term(new_parameters_df, lambda_L1 = L1_lambda)
+        error_metric += L1_term
+        print("L1 regularization term: ", L1_term)
+        print("After adding L1 regularization:")
+        print("Error metric for force pCa curve: ", error_metric)
         return error_metric, new_parameters_df
     elif SuperSlow_curve_file is not None:
         # Iterate through the number of simulations that have been run
@@ -171,8 +180,16 @@ def evaluate_cuda_fit(trial_parameters, settings_dict):
         sim_1_uM = simulation_list[where_1_uM]
         error_metric_fpCa = calcuate_error_metric(sim_1_uM, exp_force_pCa_file, type = 'SSE', scaling_factor = fpCa_scaling_factor)
         error_metric_superslow = calcualte_error_superslow_percentage(simulation_list, super_slow_data, metric_type = 'SSE')
-        print("Error metric for force pCa curve: ", error_metric_fpCa)
-        print("Error metric for SuperSlow curve: ", error_metric_superslow)
+        # print("Error metric for force pCa curve: ", error_metric_fpCa)
+        # print("Error metric for SuperSlow curve: ", error_metric_superslow)
+
+        L1_term = compute_L1_term(new_parameters_df , lambda_L1 = L1_lambda)
+        error_metric_fpCa += L1_term
+        error_metric_superslow += L1_term
+        # print("L1 regularization term: ", L1_term)
+        # print("After adding L1 regularization:")
+        # print("Error metric for force pCa curve: ", error_metric_fpCa)
+        # print("Error metric for SuperSlow curve: ", error_metric_superslow)
         return (error_metric_fpCa, error_metric_superslow), new_parameters_df
 
 def calcualte_error_superslow_percentage(simulation_list, super_slow_data, metric_type = 'SSE'):
@@ -241,4 +258,30 @@ def read_SuperSlow_data(SuperSlow_curve_file):
     # SuperSlow_data['percent_superslow'] = 1 - SuperSlow_data['percent_superslow']
     where_1_uM = np.argwhere(SuperSlow_data['drug_conc'] == 1.0).flatten()[0]
     return SuperSlow_data, int(where_1_uM)
+
+def compute_L1_term(parameters_df, lambda_L1 = 1.0):
+    '''
+    Docstring for compute_L1_term
+    
+    :param parameters_df: DataFrame of parameters, note, that including the simulation is optional. However, only the first row will be used 
+    :param lambda_L1: Regularization strength for L1 regularization. 
+    '''
+    baseline_parmaeter_names = ['k_force_baseline','k_plus_SR_baseline','k1_plus_ref_baseline','k2_plus_baseline','k3_plus_baseline','k4_plus_ref_baseline']
+    # This is the list of possible parameters that we might be changing
+    # For these parameters, we care about the difference between the drug parameter and the baseline parameter, so we want to regularize the difference.
+    drug_parameter_names = ['k_force_drug', 'k_plus_SR_drug','k1_plus_ref_drug','k2_plus_drug','k3_plus_drug','k4_plus_ref_drug']
+    # These parameters, technically the no drug value is 0, so we just care about the value itself. 
+    drug_only_names = ['k_plus_SS', 'k_minus_SS', 'k_plus_alt', 'k_minus_alt']
+    # These parameters are necessary, but we might allow them to vary, therefore we don't want to regularize them. 
+    no_regularization_parameters = ['K_D', 'coop_N'] # Probabyl wont' use this list 
+    L1_term = 0
+    for baseline_param, drug_param in zip(baseline_parmaeter_names, drug_parameter_names):
+        baseline_value = parameters_df.loc[0, baseline_param]
+        drug_value = parameters_df.loc[0, drug_param]
+        L1_term += abs((drug_value - baseline_value))
+    for drug_only_param in drug_only_names:
+        drug_value = parameters_df.loc[0, drug_only_param]
+        L1_term += abs(drug_value)
+    return lambda_L1 * L1_term
+
 

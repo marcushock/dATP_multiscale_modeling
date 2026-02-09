@@ -27,6 +27,8 @@ __global__ void repeat_simul(float lambda,
                             float k_minus_SR,
                             float k_plus_SS,
                             float k_minus_SS,
+                            float k_plus_alt, // Backdoor pathway
+                            float k_minus_alt, // Backdoor pathway
                             float K_D, 
                             float coop_N,
                              float * M1,

@@ -114,6 +114,10 @@ float protocol = args.protocol;
 float k_plus_SS = args.k_plus_SS;
 float k_minus_SS = args.k_minus_SS;
 
+float k_plus_alt = args.k_plus_alt; // Backdoor pathway 
+float k_minus_alt = args.k_minus_alt; // Backdoor pathway
+
+
 float K_D = args.K_D;
 float coop_N = args.coop_N;
 
@@ -272,6 +276,8 @@ repeat_simul<<<MAX_REPS/32, 32, 0, s>>>(lambda,
                                         k_minus_SR,
                                         k_plus_SS,
                                         k_minus_SS,
+                                        k_plus_alt, 
+                                        k_minus_alt, 
                                         K_D, 
                                         coop_N, 
                                         M1,

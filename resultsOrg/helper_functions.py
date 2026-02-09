@@ -290,7 +290,7 @@ def get_nH(state_structure: states_structure):
 
 def create_results_df(parameter_filename, simulation_directory, slice_sims = False, 
                       exp_file = 'mohran_force_pCa_normal_normalized.csv', 
-                      num_states = 7):
+                      num_states = 7, suppress_output = False):
     """
     Create a DataFrame with simulation results from a given parameter file and directory.
     
@@ -310,7 +310,7 @@ def create_results_df(parameter_filename, simulation_directory, slice_sims = Fal
     results = []
     
     # Iterate through each row in the parameters DataFrame
-    for ind in tqdm(params.index):
+    for ind in tqdm(params.index, disable=suppress_output):
         # Construct the filename based on the index
         filename = os.path.join(simulation_directory, f'Rep_{ind}States_out.csv')
 

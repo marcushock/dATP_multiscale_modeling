@@ -1,5 +1,5 @@
 NVCC=nvcc
-ARCH= sm_86 # sm_61 #or sm_61 _35
+ARCH= sm_61 #or sm_61 _35
 OBJ=$(patsubst src/%,obj/%,$(patsubst %.cu,%.o,$(wildcard src/*.cu)))
 UNAME := $(shell uname)
 ifeq ($(UNAME), Darwin)

@@ -1,11 +1,7 @@
 NVCC=nvcc
-ARCH= sm_61 #or sm_61 _35
+ARCH= sm_86 #or sm_61 _35
 OBJ=$(patsubst src/%,obj/%,$(patsubst %.cu,%.o,$(wildcard src/*.cu)))
 UNAME := $(shell uname)
-ifeq ($(UNAME), Darwin)
-LIBS=-lcudadevrt -lboost_system-mt -lboost_thread-mt
-NVCC_FLAGS=-rdc=true -arch=$(ARCH) --compiler-options -O3
-endif
 ifneq ($(UNAME), Darwin)
 LIBS=-lcudadevrt -lboost_system -lboost_thread
 NVCC_FLAGS=-rdc=true -arch=$(ARCH) --compiler-options -O3 -std=c++11
@@ -32,3 +28,7 @@ COOP_SRC=tests/coop_testing.cu src/compute_coop_factor.cu
 coop_test: $(COOP_SRC)
 	@mkdir -p bin
 	$(NVCC) $(NVCC_FLAGS) $(LIBS) -o $(COOP_BIN) $(COOP_SRC)
+
+# Docker compilation target
+dockercompile:
+	docker run --user $(id -u):$(id -g) --gpus all -v $(shell pwd):/workspace -it my-cuda-boost:12.2 bash -c "cd /workspace && make clean && make all"

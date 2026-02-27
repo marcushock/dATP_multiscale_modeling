@@ -11,18 +11,37 @@ Note: This code is set up to run on an NVIDIA GeForce RTX 3080 Ti with CUDA 11.7
 *Refer to McCabe et al. 2020 for more details
 - Makefile: If you change anything in any of the source files, you will need to run "make clean" and then "make all"
 
+### Building with Docker (Recommended for reproducibility)
+A Dockerfile is provided with CUDA 12.2 and Boost dependencies pre-configured.
 
+**Build the Docker image:**
+```bash
+docker build -t my-cuda-boost:12.2 .
+```
 
-Requirements: 
-- cuda compiler nvcc, version 11.7 has been used in this workflow 
-- boost library 
+**Run compilation inside Docker:**
+```bash
+docker run --gpus all -v $(pwd):/workspace -it my-cuda-boost:12.2 bash
+cd /workspace && make clean && make all
+```
+
+**Note:** Docker GPU support requires:
+- Linux or Mac with Docker installed
+- NVIDIA GPU with Docker GPU support
+- Returns exit code 127 on Windows (GPU passthrough not supported)
+
+### Local Build Requirements (without Docker)
+- cuda compiler nvcc, version 11.7 or 12.2+
+- boost library (libboost-system-dev, libboost-thread-dev)
 - cuda tool kit (developer level)
-- sumatra # Version 0.8.1 for carrying out different experimental runs. Example
+- *Make* utility
+
+### Running Simulations
+- sumatra # Version 0.8.1 for carrying out different experimental runs. Example:
      `smt run expData/mohran_force_pCa_normal_normalized.csv parameters/parameter_input.csv`
     - Note that the `-r` flag can be used to name the reason for the "experiment" 
     - Also note that the `smt web` tool allows for a useful web browser gui to sort through the data. 
--  Complete guide to set-up in progress. 
-- *Make* utility 
+- Complete guide to set-up in progress. 
 
 
 

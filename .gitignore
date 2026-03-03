@@ -38,3 +38,4 @@ Misc_notebooks/temp_output
 *.pkl
 *.json
 bayesian_opt/model_run_jsons
+/resultsOrg/optiziation_dir/*csv

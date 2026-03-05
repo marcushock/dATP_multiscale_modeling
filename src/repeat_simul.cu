@@ -79,6 +79,7 @@ float Calc_conc_exp
     float rand_drug[N_RU];
     int RU[N_RU];
     bool caRU[N_RU];
+    bool drugboundRU[N_RU];
     curandState_t state;
     float f;
     int flag = 0;
@@ -179,7 +180,7 @@ float Calc_conc_exp
         // float k_minus_SR = k_minus_SR_ref; // DELETE THIS LINE 
         //printf("%f\n",k_plus_SR);
         //printf("%f\n",k_minus_SR);
-        update_RUs(lambda, DT, kCa_plus, kCa_minus, randNum, rand_drug, RU, caRU, kB_plus, kB_minus, k1_plus_drug, k1_plus_baseline, k1_minus, k2_plus_drug, k2_plus_baseline, k2_minus, k3_plus_drug, k3_plus_baseline, k3_minus, k4_plus_drug, k4_plus_baseline, k4_minus, percent_drug, k_force_drug, k_force_baseline, k_plus_SR_drug, k_plus_SR_baseline, k_minus_SR, k_plus_SS, k_minus_SS, k_plus_alt, k_minus_alt, K_D, coop_N, f, &ATPcounter);
+        update_RUs(lambda, DT, kCa_plus, kCa_minus, randNum, rand_drug, RU, caRU, drugboundRU, kB_plus, kB_minus, k1_plus_drug, k1_plus_baseline, k1_minus, k2_plus_drug, k2_plus_baseline, k2_minus, k3_plus_drug, k3_plus_baseline, k3_minus, k4_plus_drug, k4_plus_baseline, k4_minus, percent_drug, k_force_drug, k_force_baseline, k_plus_SR_drug, k_plus_SR_baseline, k_minus_SR, k_plus_SS, k_minus_SS, k_plus_alt, k_minus_alt, K_D, coop_N, f, &ATPcounter);
         // Print out all the kinetic variables that start with the letter k 
         // printf("k1_plus_drug = %f\n", k1_plus_drug[0]);
         // printf("k1_plus_baseline = %f\n", k1_plus_baseline[0]);

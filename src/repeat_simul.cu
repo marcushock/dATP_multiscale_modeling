@@ -76,7 +76,7 @@ float Calc_conc_exp
     int index = blockIdx.x * blockDim.x + threadIdx.x;
     /* initialize random number generation per thread */
     float randNum[N_RU];
-    float rand_drug[N_RU];
+    // float rand_drug[N_RU];
     int RU[N_RU];
     bool caRU[N_RU];
     bool drugboundRU[N_RU];
@@ -99,6 +99,7 @@ float Calc_conc_exp
     //reset RUs again to B0
     memset(RU, 0, sizeof(int)*N_RU);
     memset(caRU, 0, sizeof(bool)*N_RU);
+    memset(drugboundRU, 0, sizeof(bool)*N_RU);
     RU[0]=2;
     RU[N_RU-1]=2;
     
@@ -122,7 +123,7 @@ float Calc_conc_exp
         int count_SS_state = 0;
         ATPcounter = 0;
         genrand(randNum, N_RU, &state); // fills array with random numbers
-        genrand(rand_drug, N_RU, &state); // fills array with random numbers
+        // genrand(rand_drug, N_RU, &state); // fills array with random numbers
 
 
         if (protocol == 1){
@@ -158,43 +159,12 @@ float Calc_conc_exp
         {
         	f = 0;
         }
-        // NOTE: This has been commented out, because I believe that this was the cause of the max_repeats issue. 
-        // Force is eventually normalized when it saved, however, at this point, with all of the repeats 
-        // running simultaneously, the Force array is inflated when there are more repeats running. 
-        // Instead, we are getting the previous fraction of force states from the filament via the 
-        // code below after counting the states (f = forceValue;)
+ 
 
+        update_RUs(lambda, DT, kCa_plus, kCa_minus, randNum,
+            //  rand_drug, 
+             RU, caRU, drugboundRU, kB_plus, kB_minus, k1_plus_drug, k1_plus_baseline, k1_minus, k2_plus_drug, k2_plus_baseline, k2_minus, k3_plus_drug, k3_plus_baseline, k3_minus, k4_plus_drug, k4_plus_baseline, k4_minus, percent_drug, k_force_drug, k_force_baseline, k_plus_SR_drug, k_plus_SR_baseline, k_minus_SR, k_plus_SS, k_minus_SS, k_plus_alt, k_minus_alt, K_D, coop_N, f, &ATPcounter);
 
-        // else
-        // {
-        // 	f = (float)Force[n-1];
-        // }
-        // float current_max=0.0;
-        // if (current_max < f){
-        //     current_max = f;
-        //     printf("New_max = %f, %i\n",f, cc);
-        // }
-        
-        // float k_plus_SR_ATP = k_plus_SR_baseline; //*(1+k_force_ATP*f); DELETE THIS
-        // float k_plus_SR_drug = k_plus_SR_ref_drug; //*(1+k_force_drug*f); DELETE THIS LINE
-        // float k_minus_SR = k_minus_SR_ref; // DELETE THIS LINE 
-        //printf("%f\n",k_plus_SR);
-        //printf("%f\n",k_minus_SR);
-        update_RUs(lambda, DT, kCa_plus, kCa_minus, randNum, rand_drug, RU, caRU, drugboundRU, kB_plus, kB_minus, k1_plus_drug, k1_plus_baseline, k1_minus, k2_plus_drug, k2_plus_baseline, k2_minus, k3_plus_drug, k3_plus_baseline, k3_minus, k4_plus_drug, k4_plus_baseline, k4_minus, percent_drug, k_force_drug, k_force_baseline, k_plus_SR_drug, k_plus_SR_baseline, k_minus_SR, k_plus_SS, k_minus_SS, k_plus_alt, k_minus_alt, K_D, coop_N, f, &ATPcounter);
-        // Print out all the kinetic variables that start with the letter k 
-        // printf("k1_plus_drug = %f\n", k1_plus_drug[0]);
-        // printf("k1_plus_baseline = %f\n", k1_plus_baseline[0]);
-        // printf("k1_minus = %f\n", k1_minus[0]);
-        // printf("k2_plus_drug = %f\n", k2_plus_drug);
-        // printf("k2_plus_baseline = %f\n", k2_plus_baseline);
-        // printf("k2_minus = %f\n", k2_minus);
-        // printf("k3_plus_drug = %f\n", k3_plus_drug);
-        // printf("k3_plus_baseline = %f\n", k3_plus_baseline);
-        // printf("k3_minus = %f\n", k3_minus);
-        // printf("k4_plus_drug = %f\n", k4_plus_drug[0]);
-        // printf("k4_plus_baseline = %f\n", k4_plus_baseline[0]);
-        // printf("k4_minus = %f\n", k4_minus[0]);
-        // printf("kB_plus = %f\n", kB_plus[0]);
 
 
         //--------------------------------------------

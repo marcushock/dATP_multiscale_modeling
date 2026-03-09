@@ -39,7 +39,7 @@ __device__ void update_RUs(float lambda,
                             float kCa_plus,
                             float kCa_minus,
                             float randNum[N_RU],
-                            float rand_drug[N_RU],
+                            // float rand_drug[N_RU],
                             int   RU[N_RU],
                             bool caRU[N_RU],
                             bool drugboundRU[N_RU],
@@ -77,10 +77,19 @@ __device__ void update_RUs(float lambda,
 
     int state, x, y;
     bool caState;
-    float p1, p2, p3, p4, p5, p6;
+    bool drugState;
+    float p1, p2, p3, p4, p5, p6, p7;
+    float k_plus_SR_eff, k_force_eff;
+    float k_plus_SS_eff, k_minus_SS_eff;
+    float k_plus_alt_eff, k_minus_alt_eff;
+    float k1_plus_eff, k2_plus_eff, k3_plus_eff, k4_plus_eff; 
+    float k_drug, k_drug_on, k_drug_off;
+
     // float coop_N = 1; // Previously found a fit of 1.1687, but this shouldn't be anything but one given the mechanism of aficamten. 
     // float K_D = 0.5934; // Found from fitting Mohran data 
     float prob_drug_bound = 1 - 1 / (1 + pow((percent_drug / K_D), coop_N));
+    k_drug_on = K_D;
+    k_drug_off = 1; 
 
 
     for (int i=1; i < N_RU-1; i++)   // only the interior RUs
@@ -88,9 +97,43 @@ __device__ void update_RUs(float lambda,
     {
         state = RU[i];     // get the current RU  state ID number i.e., B* = 0, C* = 1,  B = 2, C = 3, M1 = 4, M2 = 5
         caState = caRU[i];      // get current calcium status (1 = calcium present, 0 = calcium not present)
+        drugState = drugboundRU[i]; // get current drug bound status (1 = drug bound, 0 = drug not bound)
         x     = RU[i-1];
         y     = RU[i+1];
 
+        // Check whether or not the drug is bound at this RU
+        // Then calculate the correct effective kinetic parameters 
+        if (drugboundRU[i]){
+            k_plus_SR_eff = k_plus_SR_drug;
+            k_force_eff = k_force_drug;
+            k_plus_SS_eff = k_plus_SS;
+            k_minus_SS_eff = k_minus_SS;
+            k_plus_alt_eff = k_plus_alt;
+            k_minus_alt_eff = k_minus_alt;
+            k1_plus_eff = k1_plus_drug[x*N_S+y];
+            k2_plus_eff = k2_plus_drug;
+            k3_plus_eff = k3_plus_drug;
+            k4_plus_eff = k4_plus_drug[x*N_S+y];
+            k_drug = k_drug_off; // Transition is going to be the off rate    
+        }
+        else {
+            k_plus_SR_eff = k_plus_SR_baseline;
+            k_force_eff = k_force_baseline;
+            k_plus_SS_eff = 0.0;
+            k_minus_SS_eff = 0.0;
+            k_plus_alt_eff = 0.0;
+            k_minus_alt_eff = 0.0;
+            k1_plus_eff = k1_plus_baseline[x*N_S+y];
+            k2_plus_eff = k2_plus_baseline;
+            k3_plus_eff = k3_plus_baseline;
+            k4_plus_eff = k4_plus_baseline[x*N_S+y];
+            k_drug = k_drug_on; // Transition is going to be the on rate
+        }
+
+        ///////////////////
+        // BLOCK ONE:    //
+        // NO DRUG BOUND //
+        ///////////////////
         // printf("%d %f %f\n", i, rand_drug[i], randNum[i]);
         // CHECKED [X] 
         //-----------------------------------------------------------------
@@ -112,23 +155,13 @@ __device__ void update_RUs(float lambda,
             // Per Abby, is due to a prevention of calcium from unbinding (in a general case). 
             // Here, it appears that you cannot move into a C0 state ever... 
 
-            // This chunk of code is used to calculate kinetics based on either ATP parameters or drug parameters 
-            if (rand_drug[i] <= prob_drug_bound) // percent drug is somewhere between 0 and 1, which then helps to identify if we have baseline kinetics or drug kinetics 
-            {
-                p3 = p2 + k_plus_SR_drug*(1+k_force_drug*f)*dt; // Going from B0* -> B0 (out of SRX) We calculate a new probability p3 using drug kinetic parameters 
-            }
-            else
-            {
-                p3 = p2 + k_plus_SR_baseline*(1+k_force_baseline*f)*dt; // Otherwise use the basal baseline kinetic parameters to calcualte p3
-            }
+            p3 = p2 + k_plus_SR_eff*(1+k_force_eff*f)*dt; // Going from B0* -> B0 (out of SRX) We calculate a new probability p3 using drug kinetic parameters 
+            
             // P3 is used for calculating whether we transition into or out of the SRX. 
             // Implementing the "backdoor" pathway 
-            if (rand_drug[i] <= prob_drug_bound){
-                p4 = p3 + k_plus_alt * dt; // Calculate the probability of moving into the super slow state
-            }
-            else {
-                p4 = p3;
-            }
+            p4 = p3 + k_plus_alt_eff * dt; // Calculate the probability of moving into the super slow state
+            p5 = p4 + k_drug * dt; // Note that this is going to be a term that flips and can be k_on or k_off
+
             if (randNum[i] < p1)
             {
                 caRU[i] = 1;   // switch [B0*---->B1*]'
@@ -144,6 +177,10 @@ __device__ void update_RUs(float lambda,
             else if (randNum[i] < p4){
                 RU[i] = 7; //switch [B0*---->B0**] (super slow)
             }
+            else if (randNum[i] < p5){
+                drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
+            }
+
         }
         // CHECKED [X] 
         //-----------------------------------------------------------------
@@ -158,23 +195,9 @@ __device__ void update_RUs(float lambda,
         {
             p1 = kCa_minus*dt; // Calculate unbinding probability of calcium 
             p2 = p1 + kB_plus[x*N_S+y]*dt; // Calculate the transition probability from B1* to C1* which is the unblocking of the thin filament. 
-            if (rand_drug[i] <= prob_drug_bound) // (rand_drug[i] <= percent_drug)
-            {
-                p3 = p2 + k_plus_SR_drug*(1+k_force_drug*f)*dt; // Going from B1* -> B1 (out of SRX) Calculate the probability of transitioning out of the SRX/OFF state
-            }
-            else
-            {
-                p3 = p2 + k_plus_SR_baseline*(1+k_force_baseline*f)*dt; //Calculate rate of out OFF state but instead assuming baseline kinetics. 
-            }
-
-            // Implementing the "backdoor" pathway
-            if (rand_drug[i] <= prob_drug_bound){
-                p4 = p3 + k_plus_alt * dt; // Calculate the probability of moving into the super slow state
-            }
-            else {
-                p4 = p3;
-            }
-            
+            p3 = p2 + k_plus_SR_eff*(1+k_force_eff*f)*dt; // Going from B1* -> B1 (out of SRX) Calculate the probability of transitioning out of the SRX/OFF state
+            p4 = p3 + k_plus_alt_eff * dt; // Calculate the probability of moving into the super slow state
+            p5 = p4 + k_drug * dt; // Note that this is going to be a term that flips and can be k_on or k_off
             // Check if we have a state change in one of the 3 possible transitions based on above calculated probabilities. 
             if (randNum[i] < p1)
             {
@@ -190,6 +213,9 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p4){
                 RU[i] = 7; //switch [B1*---->B1**] (super slow)
+            }
+            else if (randNum[i] < p5){
+                drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
             }
 
         }
@@ -207,21 +233,11 @@ __device__ void update_RUs(float lambda,
         {
             p1 = kCa_plus*dt; // Calculate the probability for calcium binding. 
             p2 = p1 + kB_minus[x*N_S+y]*dt; // Calculate probability of moving back into the blocked state 
-            if (rand_drug[i] <= prob_drug_bound) // (rand_drug[i] <= percent_drug)
-            {
-                p3 = p2 + k_plus_SR_drug*(1+k_force_drug*f)*dt; // Going from C0* -> C0 (out of SRX) Calculate probability out of the SRX/OFF state (drug)
-            }
-            else
-            {
-                p3 = p2 + k_plus_SR_baseline*(1+k_force_baseline*f)*dt; // Calcualte probability out of the SRX/OFF state (drug)
-            }
+            p3 = p2 + k_plus_SR_eff*(1+k_force_eff*f)*dt; // Going from C0* -> C0 (out of SRX) Calculate probability out of the SRX/OFF state (drug)
             // Checking for backdoor pathway 
-            if (rand_drug[i] <= prob_drug_bound){
-                p4 = p3 + k_plus_alt * dt; // Calculate the probability of moving into the super slow state
-            }
-            else {
-                p4 = p3;
-            }
+            p4 = p3 + k_plus_alt_eff * dt; // Calculate the probability of moving into the super slow state
+            p5 = p4 + k_drug * dt; // Note that this is going to be a term that flips and can be k_on or k_off
+
             if  (randNum[i] < p1) // Check to see if moving into calcium bound state 
             {
                 caRU[i] = 1;   // switch [C0*---->C1*]
@@ -236,6 +252,9 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p4){
                 RU[i] = 8; //switch [C0*---->C0**] (super slow)
+            }
+            else if (randNum[i] < p5){
+                drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
             }
         }
         // CHECKED [X] 
@@ -255,22 +274,10 @@ __device__ void update_RUs(float lambda,
         {
             p1 = lambda*kCa_minus*dt; // Once again Lambda is included and still set to 0. 
             p2 = p1 + kB_minus[x*N_S+y]*dt; // Calculate prob of going back to the blocked state 
-            if (rand_drug[i] <= prob_drug_bound) // Calculate prob of going out of the SRX (again drug dependent)
-            {
-                p3 = p2 + k_plus_SR_drug*(1+k_force_drug*f)*dt;
-            }
-            else
-            {
-                p3 = p2 + k_plus_SR_baseline*(1+k_force_baseline*f)*dt;
-            }
+            p3 = p2 + k_plus_SR_eff*(1+k_force_eff*f)*dt;
             // Check for backdoor pathway
-            if (rand_drug[i] <= prob_drug_bound){
-                p4 = p3 + k_plus_alt * dt; // Calculate the probability of moving into the super slow state
-            }
-            else {
-                p4 = p3;
-            }
-
+            p4 = p3 + k_plus_alt_eff * dt; // Calculate the probability of moving into the super slow state
+            p5 = p4 + k_drug * dt; // Note that this is going to be a term that flips and can be k_on or k_off
             if  (randNum[i] < p1)
             {
                 caRU[i] = 0; // switch [C1*---->C0*]
@@ -285,6 +292,9 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p4){
                 RU[i] = 8; //switch [C1*---->C1**] (super slow)
+            }
+            else if (randNum[i] < p5){
+                drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
             }
         }
         // CHECKED [X] 
@@ -305,12 +315,9 @@ __device__ void update_RUs(float lambda,
             p1 = kCa_plus*dt;
             p2 = p1 + lambda*kB_plus[x*N_S+y]*dt;
             p3 = p2 + k_minus_SR*dt; // Calculate the probility of moving back into the SRX/OFF state 
-            if (rand_drug[i] <= prob_drug_bound){
-                p4 = p3 + k_plus_SS * dt; // Calculate the probability of moving into the super slow state
-            }
-            else {
-                p4 = p3;
-            }
+            p4 = p3 + k_plus_SS_eff * dt; // Calculate the probability of moving into the super slow state
+            p5 = p4 + k_drug * dt; // Note that this is going to be a term that flips and can be k_on or k_off
+
             if (randNum[i] < p1)
             {
                 caRU[i] = 1;   // switch [B0---->B1]
@@ -325,6 +332,9 @@ __device__ void update_RUs(float lambda,
             }
             else if(randNum[i]<p4){
                 RU[i] = 7; //switch [B0---->B0**] (super slow)
+            }
+            else if(randNum[i] < p5){
+                drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
             }
         }
         // CHECKED [X] 
@@ -343,13 +353,8 @@ __device__ void update_RUs(float lambda,
             p1 = kCa_minus*dt; // Calculate the probility of calcium unbinding. 
             p2 = p1 + kB_plus[x*N_S+y]*dt; // Calculate probability of moving into the close state from blocked state 
             p3 = p2 + k_minus_SR*dt; // Calculate the probability of moving 
-
-            if (rand_drug[i] <= prob_drug_bound){
-                p4 = p3 + k_plus_SS * dt; // Calculate the probability of moving into the super slow state
-            }
-            else {
-                p4 = p3;
-            }
+            p4 = p3 + k_plus_SS_eff * dt; // Calculate the probability of moving into the super slow state
+            p5 = p4 + k_drug * dt; // Note that this is going to be a term that flips and can be k_on or k_off
             if (randNum[i] < p1)
             {
                 caRU[i] = 0; // switch [B1---->B0] calcium unbinding 
@@ -365,6 +370,9 @@ __device__ void update_RUs(float lambda,
             else if (randNum[i] < p4)
             {
                 RU[i] = 7; //switch [B1---->B1**] (super slow)
+            }
+            else if (randNum[i] < p5){
+                drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
             }
 
         }
@@ -389,21 +397,10 @@ __device__ void update_RUs(float lambda,
             p1 = kCa_plus*dt; // Calculate probability of calcium binding. 
             p2 = p1 + kB_minus[x*N_S+y]*dt;
 	        p3 = p2 + k_minus_SR*dt;
-	        if (rand_drug[i] <= prob_drug_bound) // (rand_drug[i] <= percent_drug)
-            {
-                p4 = p3 + k1_plus_drug[x*N_S+y]*dt;
-            }
-            else
-            {
-                p4 = p3 + k1_plus_baseline[x*N_S+y]*dt;
-            }
+            p4 = p3 + k1_plus_eff*dt;
             p5 = p4 + k4_minus[x*N_S+y]*dt;
-            if (rand_drug[i] <= prob_drug_bound){
-                p6 = p5 + k_plus_SS * dt; // Calculate the probability of moving into the super slow state
-            }
-            else {
-                p6 = p5;
-            }
+            p6 = p5 + k_plus_SS_eff * dt; // Calculate the probability of moving into the super slow state
+            p7 = p6 + k_drug * dt; // Note that this is going to be a term that flips and can be k_on or k_off
 
             if  (randNum[i] < p1)
             {
@@ -431,6 +428,9 @@ __device__ void update_RUs(float lambda,
             {
                 RU[i] = 8; // switch [C0---->C0**] (super slow)
             }
+            else if (randNum[i] < p7){
+                drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
+            }
         }
         // CHECKED [X] 
         // STATE THAT COULD SWITCH TO SUPER SLOW [ ] 
@@ -448,22 +448,10 @@ __device__ void update_RUs(float lambda,
             p1 = lambda*kCa_minus*dt;
             p2 = p1 + kB_minus[x*N_S+y]*dt;
 	        p3 = p2 + k_minus_SR*dt;
-	        if (rand_drug[i] <= prob_drug_bound) // (rand_drug[i] <= percent_drug)
-            {
-                p4 = p3 + k1_plus_drug[x*N_S+y]*dt;
-            }
-            else
-            {
-                p4 = p3 + k1_plus_baseline[x*N_S+y]*dt;
-            }
+            p4 = p3 + k1_plus_eff*dt;
             p5 = p4 + k4_minus[x*N_S+y]*dt;
-            if (rand_drug[i] <= prob_drug_bound)
-            {
-                p6 = p5 + k_plus_SS * dt; // Calculate the probability of moving into the super slow state
-            }
-            else {
-                p6 = p5;
-            }
+            p6 = p5 + k_plus_SS_eff * dt; // Calculate the probability of moving into the super slow state
+            p7 = p6 + k_drug * dt; // Note that this is going to be a term that flips and can be k_on or k_off
             if  (randNum[i] < p1)
             {
                 caRU[i] = 0; // switch [C1---->C0]
@@ -490,6 +478,9 @@ __device__ void update_RUs(float lambda,
             {
                 RU[i] = 8; // switch [C1---->C1**] (super slow)
             }
+            else if (randNum[i] < p7){
+                drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
+            }
         }
         // CHECKED [X] 
         //-----------------------------------------------------------------
@@ -506,16 +497,9 @@ __device__ void update_RUs(float lambda,
         else if ((state == 4) && (caState == 0))
         {
             p1 = kCa_plus*dt;
-            if (rand_drug[i] <= prob_drug_bound) // (rand_drug[i] <= percent_drug)
-            {
-                p2 = p1 + k2_plus_drug*dt;
-            }
-            else
-            {
-                p2 = p1 + k2_plus_baseline*dt;
-            }
+            p2 = p1 + k2_plus_eff*dt;
             p3 = p2 + k1_minus[x*N_S+y]*dt;
-
+            p4 = p3 + k_drug * dt; // Note that this is going to be a term that flips and can be k_on or k_off
             if  (randNum[i] < p1)
             {
                 caRU[i] = 1;   // switch [M1,0---->M1,1]
@@ -527,6 +511,9 @@ __device__ void update_RUs(float lambda,
             else if (randNum[i] < p3)
             {
                 RU[i] = 3; // switch [M1,0---->C0]
+            }
+            else if (randNum[i] < p4){
+                drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
             }
         }
         // CHECKED [X] 
@@ -541,16 +528,9 @@ __device__ void update_RUs(float lambda,
         else if ((state == 4) && (caState == 1))
         {
             p1 = lambda*kCa_minus*dt;
-            if (rand_drug[i] <= prob_drug_bound) // (rand_drug[i] <= percent_drug)
-            {
-                p2 = p1 + k2_plus_drug*dt;
-            }
-            else
-            {
-                p2 = p1 + k2_plus_baseline*dt;
-            }
+            p2 = p1 + k2_plus_eff*dt;
             p3 = p2 + k1_minus[x*N_S+y]*dt;
-
+            p4 = p3 + k_drug * dt; // Note that this is going to be a term that flips and can be k_on or k_off
             if  (randNum[i] < p1)
             {
                 caRU[i] = 0;   // switch [M1,1---->M1,0]
@@ -562,6 +542,9 @@ __device__ void update_RUs(float lambda,
             else if (randNum[i] < p3)
             {
                 RU[i] = 3; // switch [M1,1---->C1]
+            }
+            else if (randNum[i] < p4){
+                drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
             }
         }
         //New State M2 No Calcium
@@ -580,15 +563,9 @@ __device__ void update_RUs(float lambda,
         else if ((state == 5) && (caState == 0))
         {
             p1 = kCa_plus*dt;
-            if (rand_drug[i] <= prob_drug_bound) // (rand_drug[i] <= percent_drug)
-            {
-                p2 = p1 + k3_plus_drug*dt;
-            }
-            else
-            {
-                p2 = p1 + k3_plus_baseline*dt;
-            }
+            p2 = p1 + k3_plus_eff*dt;
             p3 = p2 + k2_minus*dt;
+            p4 = p3 + k_drug * dt; // Note that this is going to be a term that flips and can be k_on or k_off
 
             if  (randNum[i] < p1)
             {
@@ -601,6 +578,9 @@ __device__ void update_RUs(float lambda,
             else if (randNum[i] < p3)
             {
                 RU[i] = 4; // switch [M2,0---->M1,0]
+            }
+            else if (randNum[i] < p4){
+                drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
             }
         }
         //New State M2,1 Calcium 
@@ -616,16 +596,9 @@ __device__ void update_RUs(float lambda,
         else if ((state == 5) && (caState == 1))
         {
             p1 = lambda*kCa_minus*dt;
-            if (rand_drug[i] <= prob_drug_bound) // (rand_drug[i] <= percent_drug)
-            {
-                p2 = p1 + k3_plus_drug*dt;
-            }
-            else
-            {
-                p2 = p1 + k3_plus_baseline*dt;
-            }
+            p2 = p1 + k3_plus_eff*dt;
             p3 = p2 + k2_minus*dt;
-
+            p4 = p3 + k_drug * dt; // Note that this is going to be a term that flips and can be k_on or k_off
             if  (randNum[i] < p1)
             {
                 caRU[i] = 0;   // switch [M2,1---->M2,0]
@@ -637,6 +610,9 @@ __device__ void update_RUs(float lambda,
             else if (randNum[i] < p3)
             {
                 RU[i] = 4; // switch [M2,1---->M1,1]
+            }
+            else if (randNum[i] < p4){
+                drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
             }
         }
 
@@ -652,16 +628,9 @@ __device__ void update_RUs(float lambda,
         else if ((state == 6) && (caState == 0))
         {
             p1 = kCa_plus*dt;
-            if (rand_drug[i] <= prob_drug_bound) // (rand_drug[i] <= percent_drug)
-            {
-                p2 = p1 + k4_plus_drug[x*N_S+y]*dt;
-            }
-            else
-            {
-                p2 = p1 + k4_plus_baseline[x*N_S+y]*dt;
-            }
+            p2 = p1 + k4_plus_eff*dt;
             p3 = p2 + k3_minus*dt;
-
+            p4 = p3 + k_drug * dt; // Note that this is going to be a term that flips and can be k_on or k_off
             if  (randNum[i] < p1)
             {
                 caRU[i] = 1;   // switch [M3,0---->M3,1]
@@ -675,6 +644,9 @@ __device__ void update_RUs(float lambda,
             else if (randNum[i] < p3)
             {
                 RU[i] = 5; // switch [M3,0---->M2,0]
+            }
+            else if (randNum[i] < p4){
+                drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
             }
         }
         // CHECKED [ ]
@@ -692,15 +664,9 @@ __device__ void update_RUs(float lambda,
         else if ((state == 6) && (caState == 1))
         {
             p1 = lambda*kCa_minus*dt;
-            if (rand_drug[i] <= prob_drug_bound) // (rand_drug[i] <= percent_drug)
-            {
-                p2 = p1 + k4_plus_drug[x*N_S+y]*dt;
-            }
-            else
-            {
-                p2 = p1 + k4_plus_baseline[x*N_S+y]*dt;
-            }
+            p2 = p1 + k4_plus_eff*dt;
             p3 = p2 + k3_minus*dt;
+            p4 = p3 + k_drug * dt; // Note that this is going to be a term that flips and can be k_on or k_off
 
             if  (randNum[i] < p1)
             {
@@ -715,6 +681,9 @@ __device__ void update_RUs(float lambda,
             else if (randNum[i] < p3)
             {
                 RU[i] = 5; // switch [M3,1---->M1,1]
+            }
+            else if (randNum[i] < p4){
+                drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
             }
         }
         //-----------------------------------------------------------------
@@ -731,8 +700,8 @@ __device__ void update_RUs(float lambda,
         {
             p1 = kCa_plus*dt; // Calculate binding probability of calcium 
             p2 = p1 + lambda*kB_plus[x*N_S+y]*dt;  // We multiply by lambda, which I beleive is set to 0, in case we want to allow this transition without Ca 
-            p3 = p2 + k_minus_SS*dt; // Calculate the probability of transitioning out of the super slow state into DRX
-            p4 = p3 + k_minus_alt * dt; // Calculate the probability of transitioning out of the super slow state into SRX 
+            p3 = p2 + k_minus_SS_eff*dt; // Calculate the probability of transitioning out of the super slow state into DRX
+            p4 = p3 + k_minus_alt_eff * dt; // Calculate the probability of transitioning out of the super slow state into SRX 
             // Check if we have a state change in one of the 3 possible transitions based on above calculated probabilities. 
             if (randNum[i] < p1)
             {
@@ -765,8 +734,8 @@ __device__ void update_RUs(float lambda,
         {
             p1 = kCa_minus*dt; // Calculate unbinding probability of calcium 
             p2 = p1 + kB_plus[x*N_S+y]*dt; // Calculate the transition probability from B1* to C1* which is the unblocking of the thin filament. 
-            p3 = p2 + k_minus_SS*dt; // Calculate the probability of transitioning out of the super slow state
-            p4 = p3 + k_minus_alt * dt; // Calculate the probability of transitioning out of the super slow state into SRX
+            p3 = p2 + k_minus_SS_eff*dt; // Calculate the probability of transitioning out of the super slow state
+            p4 = p3 + k_minus_alt_eff * dt; // Calculate the probability of transitioning out of the super slow state into SRX
             // Check if we have a state change in one of the 3 possible transitions based on above calculated probabilities. 
             if (randNum[i] < p1)
             {
@@ -797,8 +766,8 @@ __device__ void update_RUs(float lambda,
         else if ((state == 8) && (caState == 0)){
             p1 = kCa_plus*dt; // Calculate binding probability of calcium 
             p2 = p1 + kB_minus[x*N_S+y]*dt; // Calculate probability of moving back into the blocked state 
-            p3 = p2 + k_minus_SS*dt; // Calculate the probability of transitioning out of the super slow state
-            p4 = p3 + k_minus_alt * dt; // Calculate the probability of transitioning out of the super slow state into SRX
+            p3 = p2 + k_minus_SS_eff*dt; // Calculate the probability of transitioning out of the super slow state
+            p4 = p3 + k_minus_alt_eff * dt; // Calculate the probability of transitioning out of the super slow state into SRX
             if (randNum[i] < p1)
             {
                 caRU[i] = 1; // switch [C0**---->C1**]
@@ -828,8 +797,8 @@ __device__ void update_RUs(float lambda,
         else if ((state == 8) && (caState == 1)){
             p1 = lambda*kCa_minus*dt; // Calculate binding probability of calcium 
             p2 = p1 + kB_minus[x*N_S+y]*dt; // Calculate probability of moving back into the blocked state 
-            p3 = p2 + k_minus_SS*dt; // Calculate the probability of transitioning out of the super slow state
-            p4 = p3 + k_minus_alt * dt; // Calculate the probability of transitioning out of the super slow state into SRX
+            p3 = p2 + k_minus_SS_eff*dt; // Calculate the probability of transitioning out of the super slow state
+            p4 = p3 + k_minus_alt_eff * dt; // Calculate the probability of transitioning out of the super slow state into SRX
             if (randNum[i] < p1)
             {
                 caRU[i] = 0; // switch [C1**---->C0**]

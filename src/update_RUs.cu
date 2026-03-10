@@ -91,7 +91,16 @@ __device__ void update_RUs(float lambda,
     k_drug_on = K_D;
     k_drug_off = 1; 
 
-
+    // // if (blockIdx.x == 0 && threadIdx.x == 0){
+    // printf("Memory addres: ");
+    // printf("INSIDE: drugboundRU ptr = %p, val[0] = %d\n", drugboundRU, (int)drugboundRU[0]);
+    // printf("drugboundRU: ");
+    // for (int d = 0; d < N_RU; d++){
+    //     printf("%d ", (int)drugboundRU[d]);
+    // }
+    // printf("\n");
+    // // }
+    // // return; 
     for (int i=1; i < N_RU-1; i++)   // only the interior RUs
     //for (int i = 0; i < N_RU; ++i) 
     {
@@ -116,7 +125,7 @@ __device__ void update_RUs(float lambda,
             k4_plus_eff = k4_plus_drug[x*N_S+y];
             k_drug = k_drug_off; // Transition is going to be the off rate    
         }
-        else {
+        else { // If drug is not bound, turn off pathways
             k_plus_SR_eff = k_plus_SR_baseline;
             k_force_eff = k_force_baseline;
             k_plus_SS_eff = 0.0;
@@ -127,7 +136,7 @@ __device__ void update_RUs(float lambda,
             k2_plus_eff = k2_plus_baseline;
             k3_plus_eff = k3_plus_baseline;
             k4_plus_eff = k4_plus_baseline[x*N_S+y];
-            k_drug = k_drug_on; // Transition is going to be the on rate
+            k_drug = k_drug_on * percent_drug; // Transition is going to be the on rate
         }
 
         ///////////////////
@@ -179,6 +188,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p5){
                 drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
+                // printf("In state %d with Ca as state %d RU %d drug bound status switched to %d\n", state, caState, i, (int)drugboundRU[i]);
             }
 
         }
@@ -216,6 +226,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p5){
                 drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
+                // printf("In state %d with Ca as state %d RU %d drug bound status switched to %d\n", state, caState, i, (int)drugboundRU[i]);
             }
 
         }
@@ -255,6 +266,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p5){
                 drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
+                // printf("In state %d with Ca as state %d RU %d drug bound status switched to %d\n", state, caState, i, (int)drugboundRU[i]);
             }
         }
         // CHECKED [X] 
@@ -295,6 +307,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p5){
                 drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
+                // printf("In state %d with Ca as state %d RU %d drug bound status switched to %d\n", state, caState, i, (int)drugboundRU[i]);
             }
         }
         // CHECKED [X] 
@@ -335,6 +348,7 @@ __device__ void update_RUs(float lambda,
             }
             else if(randNum[i] < p5){
                 drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
+                // printf("In state %d with Ca as state %d RU %d drug bound status switched to %d\n", state, caState, i, (int)drugboundRU[i]);
             }
         }
         // CHECKED [X] 
@@ -373,6 +387,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p5){
                 drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
+                // printf("In state %d with Ca as state %d RU %d drug bound status switched to %d\n", state, caState, i, (int)drugboundRU[i]);
             }
 
         }
@@ -430,6 +445,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p7){
                 drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
+                // printf("In state %d with Ca as state %d RU %d drug bound status switched to %d\n", state, caState, i, (int)drugboundRU[i]);
             }
         }
         // CHECKED [X] 
@@ -480,6 +496,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p7){
                 drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
+                // printf("In state %d with Ca as state %d RU %d drug bound status switched to %d\n", state, caState, i, (int)drugboundRU[i]);
             }
         }
         // CHECKED [X] 
@@ -514,6 +531,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p4){
                 drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
+                // printf("In state %d with Ca as state %d RU %d drug bound status switched to %d\n", state, caState, i, (int)drugboundRU[i]);
             }
         }
         // CHECKED [X] 
@@ -545,6 +563,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p4){
                 drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
+                // printf("In state %d with Ca as state %d RU %d drug bound status switched to %d\n", state, caState, i, (int)drugboundRU[i]);
             }
         }
         //New State M2 No Calcium
@@ -581,6 +600,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p4){
                 drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
+                // printf("In state %d with Ca as state %d RU %d drug bound status switched to %d\n", state, caState, i, (int)drugboundRU[i]);
             }
         }
         //New State M2,1 Calcium 
@@ -613,6 +633,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p4){
                 drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
+                // printf("In state %d with Ca as state %d RU %d drug bound status switched to %d\n", state, caState, i, (int)drugboundRU[i]);
             }
         }
 
@@ -647,6 +668,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p4){
                 drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
+                // printf("In state %d with Ca as state %d RU %d drug bound status switched to %d\n", state, caState, i, (int)drugboundRU[i]);
             }
         }
         // CHECKED [ ]
@@ -684,6 +706,7 @@ __device__ void update_RUs(float lambda,
             }
             else if (randNum[i] < p4){
                 drugboundRU[i] = !drugboundRU[i]; // switch drug bound status 
+                // printf("In state %d with Ca as state %d RU %d drug bound status switched to %d\n", state, caState, i, (int)drugboundRU[i]);
             }
         }
         //-----------------------------------------------------------------

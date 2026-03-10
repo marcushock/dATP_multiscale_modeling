@@ -160,7 +160,15 @@ float Calc_conc_exp
         	f = 0;
         }
  
-
+        // if (blockIdx.x == 0 && threadIdx.x == 0){
+        //     printf("Memory addres: ");
+        //     printf("BEFORE: drugboundRU ptr = %p, val[0] = %d\n", drugboundRU, (int)drugboundRU[0]);
+        //     printf("drugboundRU: ");
+        //     for (int d = 0; d < N_RU; d++){
+        //         printf("%d ", (int)drugboundRU[d]);
+        //     }
+        //     printf("\n");
+        // }
         update_RUs(lambda, DT, kCa_plus, kCa_minus, randNum,
             //  rand_drug, 
              RU, caRU, drugboundRU, kB_plus, kB_minus, k1_plus_drug, k1_plus_baseline, k1_minus, k2_plus_drug, k2_plus_baseline, k2_minus, k3_plus_drug, k3_plus_baseline, k3_minus, k4_plus_drug, k4_plus_baseline, k4_minus, percent_drug, k_force_drug, k_force_baseline, k_plus_SR_drug, k_plus_SR_baseline, k_minus_SR, k_plus_SS, k_minus_SS, k_plus_alt, k_minus_alt, K_D, coop_N, f, &ATPcounter);

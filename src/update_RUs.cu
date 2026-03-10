@@ -88,8 +88,8 @@ __device__ void update_RUs(float lambda,
     // float coop_N = 1; // Previously found a fit of 1.1687, but this shouldn't be anything but one given the mechanism of aficamten. 
     // float K_D = 0.5934; // Found from fitting Mohran data 
     float prob_drug_bound = 1 - 1 / (1 + pow((percent_drug / K_D), coop_N));
-    k_drug_on = K_D/100.0;
-    k_drug_off = 1.0/100.0; 
+    k_drug_on = K_D;
+    k_drug_off = 1.0; 
 
     // // if (blockIdx.x == 0 && threadIdx.x == 0){
     // printf("Memory addres: ");

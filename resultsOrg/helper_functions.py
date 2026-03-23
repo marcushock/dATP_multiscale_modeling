@@ -400,6 +400,28 @@ def end_state_analysis(param_and_sim_df: pd.DataFrame,
     return 0
     list_of_pCa = param_and_sim_df.simulation[0].steady_states_all.index.tolist()
     
+
+'''
+Code for plotting twitches, need to turn this into a proper function at some time 
+for row in df.iloc[6:12].itertuples():
+    sim = row.twitch_sim
+    mean_value = (sim.get_twitch().mean(axis = 1).values[0:-1].reshape(10, -1)).mean(axis = 0)
+    std_value = (sim.get_twitch().mean(axis = 1).values[0:-1].reshape(10, -1)).std(axis = 0)
+    if scaling:
+        mean_value /= scaling
+        std_value /= scaling
+    else:
+        scaling = mean_value.max()
+        mean_value /= scaling
+        std_value /= scaling
+    plt.plot(np.linspace(0,1,500), mean_value, label=r'Dec. $k_{Ca+}$ '+ f'{(scales[i]-1)*100:.0f}%',  color=colors[i])
+    plt.fill_between(np.linspace(0,1,500), mean_value - std_value, mean_value + std_value, alpha = 0.2,  color=colors[i])
+    i-=1
+plt.legend(loc='upper right')
+plt.xlabel('Time (s)')
+plt.ylabel('Normalized Force')
+
+'''
     # This code still needs a lot of work. 
     # for pCa_ind in param_and_sim_df.simulation[0].steady_states_all.index:
     #     percent_drug = 0
